@@ -57,7 +57,7 @@ as well as the default ‘centre’. ‘vjust’ and ‘hjust’ are set automat
 aspect ratio will be maintained, so usually the size of the text will only be
 maximised along one axis. As with `geom_shrink_text`, you specify the position
 of the boundary box and the placement of the text label within the box.
-`geom_fill_text` only support three places: ‘top’, ‘middle’ (the default) and
+`geom_fill_text` only supports three places: ‘top’, ‘middle’ (the default) and
 ‘bottom’.
 
 ```{r}
