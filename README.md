@@ -69,10 +69,10 @@ as well as the default ‘centre’. ‘vjust’ and ‘hjust’ are set automat
 
 # `geom_fill_text`
 
-`geom_fill_text` will expand the text label to fix the bounding box. The text
-aspect ratio will be maintained, so usually the size of the text will only be
-maximised along one axis. As with `geom_shrink_text`, you specify the position
-of the boundary box and the placement of the text label within the box.
+`geom_fill_text` will expand or shrink the text label to fix the bounding box.
+The text aspect ratio will be maintained, so usually the size of the text will
+only be maximised along one axis. As with `geom_shrink_text`, you specify the
+position of the boundary box and the placement of the text label within the box.
 `geom_fill_text` only supports three places: ‘top’, ‘middle’ (the default) and
 ‘bottom’.
 
