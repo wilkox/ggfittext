@@ -8,7 +8,7 @@
 #' \code{geom_fill_text} will shrink or expand the label text to fill the box.
 #'
 #' Except where noted, these geoms should behave like \code{geom_text}. In
-#' addition to the normal \code{geom_text} aesthetics, \code{ggtextfit} geoms
+#' addition to the normal \code{geom_text} aesthetics, \code{ggfittext} geoms
 #' use xmin, xmax, ymin and ymax to specify the bounding box for the label text
 #' (x and y aesthetics, if passed, will be ignored).
 #'

@@ -15,6 +15,7 @@ Sometimes you want to draw some text in ggplot2 so that it doesn't spill outside
 a bounding box. For example:
 
 ```{r}
+library(ggfittext)
 flyers
 ggplot(flyers) +
   geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = class)) +
