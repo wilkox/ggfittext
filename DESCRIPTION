@@ -1,0 +1,13 @@
+Package: ggtextfit
+Version: pre-release
+Authors@R: person("David", "Wilkins", email = "david@wilkox.org",
+  role = c("aut", "cre"))
+Description: ggplot2 geoms to fit text into bounding boxes.
+Depends:
+    R (>= 3.3.2),
+    ggplot2 (>= 2.2.1)
+License: GPL-2
+LazyData: true
+Imports:
+    grid
+RoxygenNote: 5.0.1

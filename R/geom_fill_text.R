@@ -1,6 +1,5 @@
-#' Shrink text to fit box
-#' TODO write some more documentation
-geom_shrink_text <- function(
+#' @rdname geom_shrink_text
+geom_fill_text <- function(
   mapping = NULL,
   data = NULL,
   stat = "identity",
@@ -14,7 +13,7 @@ geom_shrink_text <- function(
   ...
 ) {
   layer(
-    geom = GeomShrinkText,
+    geom = GeomFillText,
     mapping = mapping,
     data = data,
     stat = stat,
@@ -31,13 +30,13 @@ geom_shrink_text <- function(
   )
 }
 
-#' GeomShrinkText
+#' GeomFillText
 #' @rdname ggplot2-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomShrinkText <- ggproto(
-  "GeomShrinkText",
+GeomFillText <- ggproto(
+  "GeomFillText",
   Geom,
   required_aes = c("label", "xmin", "ymin", "xmax", "ymax"),
   default_aes = aes(
@@ -48,7 +47,7 @@ GeomShrinkText <- ggproto(
     fontface = 1,
     lineheight = 1.2,
     size = 3.88,
-    place = "centre"
+    place = "middle"
   ),
   draw_key = draw_key_text,
   draw_panel = function(
@@ -67,20 +66,20 @@ GeomShrinkText <- ggproto(
       padding.x = padding.x,
       padding.y = padding.y,
       min.size = min.size,
-      cl = "shrinktexttree"
+      cl = "filltexttree"
     )
-    gt$name <- grobName(gt, "geom_shrink_text")
+    gt$name <- grobName(gt, "geom_fill_text")
     gt
 
   }
 )
 
 
-#' grid::makeContent function for the grobTree of shrinkTextTree objects
+#' grid::makeContent function for the grobTree of fillTextTree objects
 #' @param x A grid grobTree.
 #' @export
 #' @noRd
-makeContent.shrinktexttree <- function(x) {
+makeContent.filltexttree <- function(x) {
 
   data <- x$data
 
@@ -95,62 +94,26 @@ makeContent.shrinktexttree <- function(x) {
     text <- data[i, ]
 
     # Place text within bounding box according to 'place' aesthetic
-    if (text$place == "topleft") {
-      text$x <- text$xmin + paddingx
-      text$y <- text$ymax - paddingy
-      text$hjust <- 0
-      text$vjust <- 1
-
-    } else if (text$place == "top") {
+    if (text$place == "top") {
       text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- text$ymax - paddingy
+      text$vjust <- 1
       text$hjust <- 0.5
-      text$vjust <- 1
 
-    } else if (text$place == "topright") {
-      text$x <- text$xmax - paddingx
-      text$y <- text$ymax - paddingy
-      text$hjust <- 1
-      text$vjust <- 1
-
-    } else if (text$place == "right") {
-      text$x <- text$xmax - paddingx
+    } else if (text$place == "middle") {
+      text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- mean(c(text$ymin, text$ymax))
-      text$hjust <- 1
       text$vjust <- 0.5
-
-    } else if (text$place == "bottomright") {
-      text$x <- text$xmax - paddingx
-      text$y <- text$ymin + paddingy
-      text$hjust <- 1
-      text$vjust <- 0
+      text$hjust <- 0.5
 
     } else if (text$place == "bottom") {
       text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- text$ymin + paddingy
-      text$hjust <- 0.5
       text$vjust <- 0
-
-    } else if (text$place == "bottomleft") {
-      text$x <- text$xmin + paddingx
-      text$y <- text$ymin + paddingy
-      text$hjust <- 0
-      text$vjust <- 0
-
-    } else if (text$place == "left") {
-      text$x <- text$xmin + paddingx
-      text$y <- mean(c(text$ymin, text$ymax))
-      text$hjust <- 0
-      text$vjust <- 0.5
-
-    } else if (text$place == "centre" | text$place == "center") {
-      text$x <- mean((c(text$xmin, text$xmax)))
-      text$y <- mean(c(text$ymin, text$ymax))
       text$hjust <- 0.5
-      text$vjust <- 0.5
-
+    
     } else {
-      stop("geom_shrink_text does not recognise place ‘", text$place, "’ (try something like ‘topright’ or ‘centre’)", call. = F)
+      stop("geom_fill_text does not recognise place ‘", text$place, "’ (try ‘top’, ‘middle’ or ‘bottom’)", call. = F)
     }
 
     # Get x and y dimensions of bounding box
@@ -187,11 +150,16 @@ makeContent.shrinktexttree <- function(x) {
       ) + (2 * paddingy)
     }
 
-    # If the label doesn't fit, shrink it until it does
+    # If the label is too big, shrink it until it fits
     # This is a very crude algorithm...some time later should come back and make
     # it more efficient
     while (labelw(tg) > xdim | labelh(tg) > ydim) {
       tg$gp$fontsize <- tg$gp$fontsize * 0.99
+    }
+
+    # If the label is too small, grow it until it fits
+    while (labelw(tg) < xdim & labelh(tg) < ydim) {
+      tg$gp$fontsize <- tg$gp$fontsize * 1.01
     }
 
     # If a min size is set, don't draw if size < min size
@@ -206,22 +174,3 @@ makeContent.shrinktexttree <- function(x) {
   class(grobs) <- "gList"
   setChildren(x, grobs)
 }
-
-treeMapCoordinates <- treemapify(
-  G20,
-  area = "Nom.GDP.mil.USD",
-  fill = "HDI",
-  label = "Country",
-  group = "Region"
-)
-treeMapCoordinates %>% 
-  ggplot(aes(
-    xmin = xmin,
-    xmax = xmax,
-    ymin = ymin,
-    ymax = ymax,
-    label = label,
-    fill = fill
-  )) + 
- geom_rect() + 
- geom_shrink_text(place = "centre", min.size = 6)
