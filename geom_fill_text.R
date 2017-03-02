@@ -1,13 +1,3 @@
-# TODO stolen directly from slowkow/ggrepel
-# Name ggplot grid object
-# Convenience function to name grid objects
-#
-# @keyword internal
-ggname <- function(prefix, grob) {
-  grob$name <- grobName(grob, prefix)
-  grob
-}
-
 #' Fill text to fit box
 #' TODO write some more documentation
 geom_fill_text <- function(
@@ -72,13 +62,15 @@ GeomFillText <- ggproto(
 
     data <- coord$transform(data, panel_scales)
 
-    ggname("geom_fill_text", gTree(
+    gt <- gTree(
       data = data,
       padding.x = padding.x,
       padding.y = padding.y,
       min.size = min.size,
       cl = "filltexttree"
-    ))
+    )
+    gt$name <- grobName(gt, "geom_fill_text")
+    gt
 
   }
 )

@@ -1,13 +1,3 @@
-# TODO stolen directly from slowkow/ggrepel
-# Name ggplot grid object
-# Convenience function to name grid objects
-#
-# @keyword internal
-ggname <- function(prefix, grob) {
-  grob$name <- grobName(grob, prefix)
-  grob
-}
-
 #' Shrink text to fit box
 #' TODO write some more documentation
 geom_shrink_text <- function(
@@ -72,13 +62,15 @@ GeomShrinkText <- ggproto(
 
     data <- coord$transform(data, panel_scales)
 
-    ggname("geom_shrink_text", gTree(
+    gt <- gTree(
       data = data,
       padding.x = padding.x,
       padding.y = padding.y,
       min.size = min.size,
       cl = "shrinktexttree"
-    ))
+    )
+    gt$name <- grobName(gt, "geom_shrink_text")
+    gt
 
   }
 )
