@@ -26,6 +26,7 @@
 #' geom arguments as for ‘geom_text’. Note that x and y aesthetics will be
 #' ignored; xmin, xmax, ymin and ymax aesthetics specifying the bounding box are
 #' required.
+#' @export
 geom_shrink_text <- function(
   mapping = NULL,
   data = NULL,

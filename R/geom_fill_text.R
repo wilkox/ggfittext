@@ -1,4 +1,5 @@
 #' @rdname geom_shrink_text
+#' @export
 geom_fill_text <- function(
   mapping = NULL,
   data = NULL,
