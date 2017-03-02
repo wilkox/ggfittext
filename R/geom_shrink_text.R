@@ -36,8 +36,8 @@ geom_shrink_text <- function(
   inherit.aes = TRUE,
   padding.x = unit(1, "mm"),
   padding.y = unit(0.1, "lines"),
-  min.size = NULL,
   place = "centre",
+  min.size = NULL,
   ...
 ) {
   layer(
@@ -53,6 +53,7 @@ geom_shrink_text <- function(
       padding.x = padding.x,
       padding.y = padding.y,
       min.size = min.size,
+      place = place,
       ...
     )
   )
@@ -74,8 +75,7 @@ GeomShrinkText <- ggproto(
     family = "",
     fontface = 1,
     lineheight = 1.2,
-    size = 3.88,
-    place = "centre"
+    size = 3.88
   ),
   draw_key = draw_key_text,
   draw_panel = function(
@@ -84,19 +84,21 @@ GeomShrinkText <- ggproto(
     coord,
     padding.x = unit(1, "mm"),
     padding.y = unit(0.1, "lines"),
-    min.size = NULL
+    min.size = NULL,
+    place = "centre"
   ) {
 
     data <- coord$transform(data, panel_scales)
 
-    gt <- gTree(
+    gt <- grid::gTree(
       data = data,
       padding.x = padding.x,
       padding.y = padding.y,
       min.size = min.size,
+      place = place,
       cl = "shrinktexttree"
     )
-    gt$name <- grobName(gt, "geom_shrink_text")
+    gt$name <- grid::grobName(gt, "geom_shrink_text")
     gt
 
   }
@@ -112,8 +114,8 @@ makeContent.shrinktexttree <- function(x) {
   data <- x$data
 
   # Padding around text
-  paddingx <- convertWidth(x$padding.x, "native", valueOnly = TRUE)
-  paddingy <- convertHeight(x$padding.y, "native", valueOnly = TRUE)
+  paddingx <- grid::convertWidth(x$padding.x, "native", valueOnly = TRUE)
+  paddingy <- grid::convertHeight(x$padding.y, "native", valueOnly = TRUE)
 
   # Prepare grob for each text label
   grobs <- lapply(1:nrow(data), function(i) {
@@ -122,62 +124,62 @@ makeContent.shrinktexttree <- function(x) {
     text <- data[i, ]
 
     # Place text within bounding box according to 'place' aesthetic
-    if (text$place == "topleft") {
+    if (x$place == "topleft") {
       text$x <- text$xmin + paddingx
       text$y <- text$ymax - paddingy
       text$hjust <- 0
       text$vjust <- 1
 
-    } else if (text$place == "top") {
+    } else if (x$place == "top") {
       text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- text$ymax - paddingy
       text$hjust <- 0.5
       text$vjust <- 1
 
-    } else if (text$place == "topright") {
+    } else if (x$place == "topright") {
       text$x <- text$xmax - paddingx
       text$y <- text$ymax - paddingy
       text$hjust <- 1
       text$vjust <- 1
 
-    } else if (text$place == "right") {
+    } else if (x$place == "right") {
       text$x <- text$xmax - paddingx
       text$y <- mean(c(text$ymin, text$ymax))
       text$hjust <- 1
       text$vjust <- 0.5
 
-    } else if (text$place == "bottomright") {
+    } else if (x$place == "bottomright") {
       text$x <- text$xmax - paddingx
       text$y <- text$ymin + paddingy
       text$hjust <- 1
       text$vjust <- 0
 
-    } else if (text$place == "bottom") {
+    } else if (x$place == "bottom") {
       text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- text$ymin + paddingy
       text$hjust <- 0.5
       text$vjust <- 0
 
-    } else if (text$place == "bottomleft") {
+    } else if (x$place == "bottomleft") {
       text$x <- text$xmin + paddingx
       text$y <- text$ymin + paddingy
       text$hjust <- 0
       text$vjust <- 0
 
-    } else if (text$place == "left") {
+    } else if (x$place == "left") {
       text$x <- text$xmin + paddingx
       text$y <- mean(c(text$ymin, text$ymax))
       text$hjust <- 0
       text$vjust <- 0.5
 
-    } else if (text$place == "centre" | text$place == "center") {
+    } else if (x$place == "centre" | x$place == "center") {
       text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- mean(c(text$ymin, text$ymax))
       text$hjust <- 0.5
       text$vjust <- 0.5
 
     } else {
-      stop("geom_shrink_text does not recognise place ‘", text$place, "’ (try something like ‘topright’ or ‘centre’)", call. = F)
+      stop("geom_shrink_text does not recognise place ‘", x$place, "’ (try something like ‘topright’ or ‘centre’)", call. = F)
     }
 
     # Get x and y dimensions of bounding box
@@ -185,7 +187,7 @@ makeContent.shrinktexttree <- function(x) {
     ydim <- abs(text$ymin - text$ymax)
 
     # Create textGrob
-    tg <- textGrob(
+    tg <- grid::textGrob(
       label = text$label,
       x = text$x,
       y = text$y,
@@ -193,7 +195,7 @@ makeContent.shrinktexttree <- function(x) {
       hjust = text$hjust,
       vjust = text$vjust,
       rot = text$angle,
-      gp = gpar(
+      gp = grid::gpar(
         col = alpha(text$colour, text$alpha),
         fontsize = text$size * .pt,
         fontfamily = text$family,
@@ -204,11 +206,11 @@ makeContent.shrinktexttree <- function(x) {
 
     # Get textGrob dimensions
     labelw <- function(tg) {
-      convertWidth(grobWidth(tg), "native", TRUE) + (2 * paddingx)
+      grid::convertWidth(grid::grobWidth(tg), "native", TRUE) + (2 * paddingx)
     }
     labelh <- function(tg) {
-      convertHeight(
-        grobAscent(tg) + grobHeight(tg) + grobDescent(tg),
+      grid::convertHeight(
+        grid::grobAscent(tg) + grid::grobHeight(tg) + grid::grobDescent(tg),
         "native",
         TRUE
       ) + (2 * paddingy)
@@ -231,5 +233,5 @@ makeContent.shrinktexttree <- function(x) {
   })
 
   class(grobs) <- "gList"
-  setChildren(x, grobs)
+  grid::setChildren(x, grobs)
 }

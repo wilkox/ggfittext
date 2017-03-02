@@ -61,14 +61,14 @@ GeomFillText <- ggproto(
 
     data <- coord$transform(data, panel_scales)
 
-    gt <- gTree(
+    gt <- grid::gTree(
       data = data,
       padding.x = padding.x,
       padding.y = padding.y,
       min.size = min.size,
       cl = "filltexttree"
     )
-    gt$name <- grobName(gt, "geom_fill_text")
+    gt$name <- grid::grobName(gt, "geom_fill_text")
     gt
 
   }
@@ -84,8 +84,8 @@ makeContent.filltexttree <- function(x) {
   data <- x$data
 
   # Padding around text
-  paddingx <- convertWidth(x$padding.x, "native", valueOnly = TRUE)
-  paddingy <- convertHeight(x$padding.y, "native", valueOnly = TRUE)
+  paddingx <- grid::convertWidth(x$padding.x, "native", valueOnly = TRUE)
+  paddingy <- grid::convertHeight(x$padding.y, "native", valueOnly = TRUE)
 
   # Prepare grob for each text label
   grobs <- lapply(1:nrow(data), function(i) {
@@ -121,7 +121,7 @@ makeContent.filltexttree <- function(x) {
     ydim <- abs(text$ymin - text$ymax)
 
     # Create textGrob
-    tg <- textGrob(
+    tg <- grid::textGrob(
       label = text$label,
       x = text$x,
       y = text$y,
@@ -129,7 +129,7 @@ makeContent.filltexttree <- function(x) {
       hjust = text$hjust,
       vjust = text$vjust,
       rot = text$angle,
-      gp = gpar(
+      gp = grid::gpar(
         col = alpha(text$colour, text$alpha),
         fontsize = text$size * .pt,
         fontfamily = text$family,
@@ -140,11 +140,11 @@ makeContent.filltexttree <- function(x) {
 
     # Get textGrob dimensions
     labelw <- function(tg) {
-      convertWidth(grobWidth(tg), "native", TRUE) + (2 * paddingx)
+      grid::convertWidth(grid::grobWidth(tg), "native", TRUE) + (2 * paddingx)
     }
     labelh <- function(tg) {
-      convertHeight(
-        grobAscent(tg) + grobHeight(tg) + grobDescent(tg),
+      grid::convertHeight(
+        grid::grobAscent(tg) + grid::grobHeight(tg) + grid::grobDescent(tg),
         "native",
         TRUE
       ) + (2 * paddingy)
@@ -172,5 +172,5 @@ makeContent.filltexttree <- function(x) {
   })
 
   class(grobs) <- "gList"
-  setChildren(x, grobs)
+  grid::setChildren(x, grobs)
 }
