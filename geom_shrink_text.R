@@ -19,6 +19,7 @@ geom_shrink_text <- function(
   show.legend = NA,
   inherit.aes = TRUE,
   padding = unit(1, "mm"),
+  min.size = NULL,
   ...
 ) {
   layer(
@@ -32,6 +33,7 @@ geom_shrink_text <- function(
     params = list(
       na.rm = na.rm,
       padding = padding,
+      min.size = min.size,
       ...
     )
   )
@@ -63,8 +65,8 @@ GeomShrinkText <- ggproto(
     data,
     panel_scales,
     coord,
-    padding = unit(1, "mm")
-
+    padding = unit(1, "mm"),
+    min.size = NULL
   ) {
 
     data <- coord$transform(data, panel_scales)
@@ -72,6 +74,7 @@ GeomShrinkText <- ggproto(
     ggname("geom_shrink_text", gTree(
       data = data,
       padding = padding,
+      min.size = min.size,
       cl = "shrinktexttree"
     ))
 
@@ -173,6 +176,11 @@ makeContent.shrinktexttree <- function(x) {
       labelh <- convertHeight(grobHeight(tg), "native", TRUE) + (2 * paddingy)
     }
 
+    # If a min size is set, don't draw if size < min size
+    if (!is.null(x$min.size)) {
+      if (tg$gp$fontsize < x$min.size) { return() }
+    }
+
     # Return the textGrob
     tg
   })
@@ -198,4 +206,4 @@ treeMapCoordinates %>%
     fill = fill
   )) + 
  geom_rect() + 
- geom_shrink_text(hjust = 0, vjust = 1, place = "topleft")
+ geom_shrink_text(hjust = 0, vjust = 1, place = "topleft", min.size = 10)
