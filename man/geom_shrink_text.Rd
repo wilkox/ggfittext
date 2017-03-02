@@ -13,7 +13,7 @@ geom_fill_text(mapping = NULL, data = NULL, stat = "identity",
 geom_shrink_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, padding.x = unit(1, "mm"), padding.y = unit(0.1,
-  "lines"), min.size = NULL, place = "centre", ...)
+  "lines"), place = "centre", min.size = NULL, ...)
 }
 \arguments{
 \item{mapping, data, stat, position, na.rm, show.legend, inherit.aes, ...}{Standard

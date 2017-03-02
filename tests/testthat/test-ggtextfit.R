@@ -1,9 +1,9 @@
 testdata <- data.frame(
   vehicle = c("light plane", "jumbo jet", "space shuttle"),
-  xmin = c(0, 20, 50),
-  xmax = c(10, 35, 90),
-  ymin = c(1, 11, 13),
-  ymax = c(8, 12, 20),
+  xmin = c(10, 20, 80),
+  xmax = c(20, 60, 90),
+  ymin = c(10, 75, 15),
+  ymax = c(20, 95, 50),
   class = c("plane", "plane", "spaceship")
 )
 
