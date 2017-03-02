@@ -18,7 +18,8 @@ geom_fill_text <- function(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  padding = unit(1, "mm"),
+  padding.x = unit(1, "mm"),
+  padding.y = unit(0.1, "lines"),
   min.size = NULL,
   ...
 ) {
@@ -32,7 +33,8 @@ geom_fill_text <- function(
     inherit.aes = inherit.aes,
     params = list(
       na.rm = na.rm,
-      padding = padding,
+      padding.x = padding.x,
+      padding.y = padding.y,
       min.size = min.size,
       ...
     )
@@ -54,18 +56,17 @@ GeomFillText <- ggproto(
     colour = "black",
     family = "",
     fontface = 1,
-    hjust = 0.5,
     lineheight = 1.2,
     size = 3.88,
-    vjust = 0.5,
-    place = "centre"
+    place = "middle"
   ),
   draw_key = draw_key_text,
   draw_panel = function(
     data,
     panel_scales,
     coord,
-    padding = unit(1, "mm"),
+    padding.x = unit(1, "mm"),
+    padding.y = unit(0.1, "lines"),
     min.size = NULL
   ) {
 
@@ -73,7 +74,8 @@ GeomFillText <- ggproto(
 
     ggname("geom_fill_text", gTree(
       data = data,
-      padding = padding,
+      padding.x = padding.x,
+      padding.y = padding.y,
       min.size = min.size,
       cl = "filltexttree"
     ))
@@ -91,8 +93,8 @@ makeContent.filltexttree <- function(x) {
   data <- x$data
 
   # Padding around text
-  paddingx <- convertWidth(x$padding, "native", valueOnly = TRUE)
-  paddingy <- convertHeight(x$padding, "native", valueOnly = TRUE)
+  paddingx <- convertWidth(x$padding.x, "native", valueOnly = TRUE)
+  paddingy <- convertHeight(x$padding.y, "native", valueOnly = TRUE)
 
   # Prepare grob for each text label
   grobs <- lapply(1:nrow(data), function(i) {
@@ -101,44 +103,26 @@ makeContent.filltexttree <- function(x) {
     text <- data[i, ]
 
     # Place text within bounding box according to 'place' aesthetic
-    if (text$place == "topleft") {
-      text$x <- text$xmin + paddingx
-      text$y <- text$ymax - paddingy
-
-    } else if (text$place == "top") {
+    if (text$place == "top") {
       text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- text$ymax - paddingy
+      text$vjust <- 1
+      text$hjust <- 0.5
 
-    } else if (text$place == "topright") {
-      text$x <- text$xmax - paddingx
-      text$y <- text$ymax - paddingy
-
-    } else if (text$place == "right") {
-      text$x <- text$xmax - paddingx
+    } else if (text$place == "middle") {
+      text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- mean(c(text$ymin, text$ymax))
+      text$vjust <- 0.5
+      text$hjust <- 0.5
 
-    } else if (text$place == "bottomright") {
-      text$x <- text$xmax - paddingx
-      text$y <- text$ymin + padddingy
-    
     } else if (text$place == "bottom") {
       text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- text$ymin + paddingy
+      text$vjust <- 0
+      text$hjust <- 0.5
     
-    } else if (text$place == "bottomleft") {
-      text$x <- text$xmin + paddingx
-      text$y <- text$ymin + paddingy
-
-    } else if (text$place == "left") {
-      text$x <- text$xmin + paddingx
-      text$y <- mean(c(text$ymin, text$ymax))
-    
-    } else if (text$place == "centre" | text$place == "center") {
-      text$x <- mean((c(text$xmin, text$xmax)))
-      text$y <- mean(c(text$ymin, text$ymax))
-
     } else {
-      stop("geom_fill_text does not recognise place ‘", text$place, "’ (try something like ‘topright’ or ‘centre’)", call. = F)
+      stop("geom_fill_text does not recognise place ‘", text$place, "’ (try ‘top’, ‘middle’ or ‘bottom’)", call. = F)
     }
 
     # Get x and y dimensions of bounding box
@@ -164,23 +148,27 @@ makeContent.filltexttree <- function(x) {
     )
 
     # Get textGrob dimensions
-    labelw <- convertWidth(grobWidth(tg), "native", TRUE) + (2 * paddingx)
-    labelh <- convertHeight(grobHeight(tg), "native", TRUE) + (2 * paddingy)
+    labelw <- function(tg) {
+      convertWidth(grobWidth(tg), "native", TRUE) + (2 * paddingx)
+    }
+    labelh <- function(tg) {
+      convertHeight(
+        grobAscent(tg) + grobHeight(tg) + grobDescent(tg),
+        "native",
+        TRUE
+      ) + (2 * paddingy)
+    }
 
     # If the label is too big, shrink it until it fits
     # This is a very crude algorithm...some time later should come back and make
     # it more efficient
-    while (labelw > xdim | labelh > ydim) {
+    while (labelw(tg) > xdim | labelh(tg) > ydim) {
       tg$gp$fontsize <- tg$gp$fontsize * 0.99
-      labelw <- convertWidth(grobWidth(tg), "native", TRUE) + (2 * paddingx)
-      labelh <- convertHeight(grobHeight(tg), "native", TRUE) + (2 * paddingy)
     }
 
     # If the label is too small, grow it until it fits
-    while (labelw < xdim & labelh < ydim) {
+    while (labelw(tg) < xdim & labelh(tg) < ydim) {
       tg$gp$fontsize <- tg$gp$fontsize * 1.01
-      labelw <- convertWidth(grobWidth(tg), "native", TRUE) + (2 * paddingx)
-      labelh <- convertHeight(grobHeight(tg), "native", TRUE) + (2 * paddingy)
     }
 
     # If a min size is set, don't draw if size < min size
@@ -203,7 +191,7 @@ treeMapCoordinates <- treemapify(
   label = "Country",
   group = "Region"
 )
-treeMapCoordinates %>% 
+treeMapCoordinates %>%
   ggplot(aes(
     xmin = xmin,
     xmax = xmax,
@@ -211,6 +199,6 @@ treeMapCoordinates %>%
     ymax = ymax,
     label = label,
     fill = fill
-  )) + 
- geom_rect() + 
- geom_fill_text(hjust = 0.5, vjust = 0.5, place = "centre")
+  )) +
+ geom_rect() +
+ geom_fill_text(place = "middle")
