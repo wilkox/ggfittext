@@ -18,6 +18,7 @@ geom_shrink_text <- function(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
+  padding = unit(1, "mm"),
   ...
 ) {
   layer(
@@ -28,7 +29,11 @@ geom_shrink_text <- function(
     position = position,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
-    params = list(na.rm = na.rm, ...)
+    params = list(
+      na.rm = na.rm,
+      padding = padding,
+      ...
+    )
   )
 }
 
@@ -54,11 +59,21 @@ GeomShrinkText <- ggproto(
     place = "centre"
   ),
   draw_key = draw_key_text,
-  draw_panel = function(data, panel_scales, coord) {
+  draw_panel = function(
+    data,
+    panel_scales,
+    coord,
+    padding = unit(1, "mm")
+
+  ) {
 
     data <- coord$transform(data, panel_scales)
 
-    ggname("geom_shrink_text", gTree(data = data, cl = "shrinktexttree"))
+    ggname("geom_shrink_text", gTree(
+      data = data,
+      padding = padding,
+      cl = "shrinktexttree"
+    ))
 
   }
 )
@@ -72,6 +87,10 @@ makeContent.shrinktexttree <- function(x) {
 
   data <- x$data
 
+  # Padding around text
+  paddingx <- convertWidth(x$padding, "native", valueOnly = TRUE)
+  paddingy <- convertHeight(x$padding, "native", valueOnly = TRUE)
+
   # Prepare grob for each text label
   grobs <- lapply(1:nrow(data), function(i) {
 
@@ -80,35 +99,35 @@ makeContent.shrinktexttree <- function(x) {
 
     # Place text within bounding box according to 'place' aesthetic
     if (text$place == "topleft") {
-      text$x <- text$xmin
-      text$y <- text$ymax
+      text$x <- text$xmin + paddingx
+      text$y <- text$ymax - paddingy
 
     } else if (text$place == "top") {
       text$x <- mean((c(text$xmin, text$xmax)))
-      text$y <- text$ymax
+      text$y <- text$ymax - paddingy
 
     } else if (text$place == "topright") {
-      text$x <- text$xmax
-      text$y <- text$ymax
+      text$x <- text$xmax - paddingx
+      text$y <- text$ymax - paddingy
 
     } else if (text$place == "right") {
-      text$x <- text$xmax
+      text$x <- text$xmax - paddingx
       text$y <- mean(c(text$ymin, text$ymax))
 
     } else if (text$place == "bottomright") {
-      text$x <- text$xmax
-      text$y <- text$ymin 
+      text$x <- text$xmax - paddingx
+      text$y <- text$ymin + padddingy
     
     } else if (text$place == "bottom") {
       text$x <- mean((c(text$xmin, text$xmax)))
-      text$y <- text$ymin
+      text$y <- text$ymin + paddingy
     
     } else if (text$place == "bottomleft") {
-      text$x <- text$xmin
-      text$y <- text$ymin
+      text$x <- text$xmin + paddingx
+      text$y <- text$ymin + paddingy
 
     } else if (text$place == "left") {
-      text$x <- text$xmin
+      text$x <- text$xmin + paddingx
       text$y <- mean(c(text$ymin, text$ymax))
     
     } else if (text$place == "centre" | text$place == "center") {
@@ -142,18 +161,19 @@ makeContent.shrinktexttree <- function(x) {
     )
 
     # Get textGrob dimensions
-    labelw <- convertWidth(grobWidth(tg), "native", TRUE)
-    labelh <- convertHeight(grobHeight(tg), "native", TRUE)
+    labelw <- convertWidth(grobWidth(tg), "native", TRUE) + (2 * paddingx)
+    labelh <- convertHeight(grobHeight(tg), "native", TRUE) + (2 * paddingy)
 
     # If the label doesn't fit, shrink it until it does
     # This is a very crude algorithm...some time later should come back and make
     # it more efficient
     while (labelw > xdim | labelh > ydim) {
       tg$gp$fontsize <- tg$gp$fontsize * 0.99
-      labelw <- convertWidth(grobWidth(tg), "native", TRUE)
-      labelh <- convertHeight(grobHeight(tg), "native", TRUE)
+      labelw <- convertWidth(grobWidth(tg), "native", TRUE) + (2 * paddingx)
+      labelh <- convertHeight(grobHeight(tg), "native", TRUE) + (2 * paddingy)
     }
 
+    # Return the textGrob
     tg
   })
 
@@ -178,4 +198,4 @@ treeMapCoordinates %>%
     fill = fill
   )) + 
  geom_rect() + 
- geom_shrink_text(hjust = 0.5, vjust = 0.5, place = "center")
+ geom_shrink_text(hjust = 0, vjust = 1, place = "topleft")
