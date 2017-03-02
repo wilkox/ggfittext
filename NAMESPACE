@@ -2,5 +2,7 @@
 
 export(GeomFillText)
 export(GeomShrinkText)
+export(geom_fill_text)
+export(geom_shrink_text)
 export(makeContent.filltexttree)
 export(makeContent.shrinktexttree)
