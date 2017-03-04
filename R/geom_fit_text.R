@@ -88,7 +88,12 @@ GeomFitText <- ggproto(
     lineheight = 1.2,
     size = 3.88,
     discrete.height = 4,
-    discrete.width = 4
+    discrete.width = 4,
+    x = NULL,
+    xmin = NULL,
+    xmax = NULL,
+    ymin = NULL,
+    ymax = NULL
   ),
   draw_key = draw_key_text,
   draw_panel = function(
@@ -250,17 +255,38 @@ makeContent.shrinktexttree <- function(x) {
       ) + (2 * paddingy)
     }
 
-    # If the label doesn't fit, shrink it until it does
-    # This is a very crude algorithm...some time later should come back and make
-    # it more efficient
-    while (labelw(tg) > xdim | labelh(tg) > ydim) {
-      tg$gp$fontsize <- tg$gp$fontsize * 0.99
+    # If the label doesn't fit, shrink it to an appropriate size
+    if (labelw(tg) > xdim | labelh(tg) > ydim) {
+
+      # Determine the limiting dimension
+      ratiow <- labelw(tg) / xdim
+      ratioh <- labelh(tg) / ydim
+
+      # Shrink as appropriate
+      if (ratiow > ratioh) {
+        tg$gp$fontsize <- tg$gp$fontsize * (1 / ratiow)
+      } else {
+        tg$gp$fontsize <- tg$gp$fontsize * (1 / ratioh)
+      }
+
+      # Don't know why this is necessary, but it seems to work
+      while (labelw(tg) > xdim | labelh(tg) > ydim) {
+        tg$gp$fontsize <- tg$gp$fontsize * 0.99
+      }
     }
 
     # If the label is too small and fill.text is true, expand it until it fits
-    if (x$fill.text) {
-      while (labelw(tg) < xdim & labelh(tg) < ydim) {
-        tg$gp$fontsize <- tg$gp$fontsize * 1.01
+    if (x$fill.text & (labelw(tg) < xdim & labelh(tg) < ydim)) {
+
+      # Determine the limiting dimension
+      ratiow <- labelw(tg) / xdim
+      ratioh <- labelh(tg) / ydim
+
+      # Expand as appropriate
+      if (ratiow > ratioh) {
+        tg$gp$fontsize <- tg$gp$fontsize * (1 / ratiow)
+      } else {
+        tg$gp$fontsize <- tg$gp$fontsize * (1 / ratioh)
       }
     }
 
