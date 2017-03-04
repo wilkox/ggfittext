@@ -9,7 +9,7 @@
 geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, padding.x = unit(1, "mm"), padding.y = unit(0.1,
-  "lines"), place = "centre", min.size = 1, fill.text = F, ...)
+  "lines"), place = "centre", min.size = 4, fill.text = F, ...)
 
 geom_fill_text(...)
 
@@ -30,9 +30,9 @@ object. Default is 0.1 lines.}
 \item{place}{Where to place the text within the bounding box. Default is
 ‘centre’, other options are ‘topleft’, ‘top’, ‘topright’, etc.}
 
-\item{min.size}{Minimum font size, in millimetres. If specified, text that
+\item{min.size}{Minimum font size, in points. If specified, text that
 would need to be shrunk below this size to fit the bounding box will not be
-drawn. Defaults to 1 mm}
+drawn. Defaults to 4 pt.}
 
 \item{fill.text}{Logical, indicating whether text should expand larger than
 the set size to fill the bounding box. Defaults to FALSE.}

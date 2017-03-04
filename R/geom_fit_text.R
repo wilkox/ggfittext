@@ -24,9 +24,9 @@
 #' object. Default is 1 mm.
 #' @param padding.y Amount of padding around text vertically, as a grid ‘unit’
 #' object. Default is 0.1 lines.
-#' @param min.size Minimum font size, in millimetres. If specified, text that
+#' @param min.size Minimum font size, in points. If specified, text that
 #' would need to be shrunk below this size to fit the bounding box will not be
-#' drawn. Defaults to 1 mm
+#' drawn. Defaults to 4 pt.
 #' @param place Where to place the text within the bounding box. Default is
 #' ‘centre’, other options are ‘topleft’, ‘top’, ‘topright’, etc.
 #' @param fill.text Logical, indicating whether text should expand larger than
@@ -50,7 +50,7 @@ geom_fit_text <- function(
   padding.x = unit(1, "mm"),
   padding.y = unit(0.1, "lines"),
   place = "centre",
-  min.size = 1,
+  min.size = 4,
   fill.text = F,
   ...
 ) {
@@ -106,7 +106,7 @@ GeomFitText <- ggproto(
     coord,
     padding.x = unit(1, "mm"),
     padding.y = unit(0.1, "lines"),
-    min.size = 1,
+    min.size = 4,
     fill.text = F,
     place = "centre"
   ) {
@@ -143,9 +143,6 @@ GeomFitText <- ggproto(
 makeContent.shrinktexttree <- function(x) {
 
   data <- x$data
-
-  # Convert min.size into grid internal units
-  x$min.size <- x$min.size * .pt
 
   # If discrete x axis, convert x to xmin and xmax
   if ("x" %in% names(data)) {
@@ -243,7 +240,7 @@ makeContent.shrinktexttree <- function(x) {
       rot = text$angle,
       gp = grid::gpar(
         col = alpha(text$colour, text$alpha),
-        fontsize = text$size * .pt,
+        fontsize = text$size,
         fontfamily = text$family,
         fontface = text$fontface,
         lineheight = text$lineheight
