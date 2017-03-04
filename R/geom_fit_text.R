@@ -24,8 +24,9 @@
 #' object. Default is 1 mm.
 #' @param padding.y Amount of padding around text vertically, as a grid ‘unit’
 #' object. Default is 0.1 lines.
-#' @param min.size Minimum font size. If specified, text that would need to be
-#' shrunk below this size to fit the bounding box will not be drawn.
+#' @param min.size Minimum font size, in millimetres. If specified, text that
+#' would need to be shrunk below this size to fit the bounding box will not be
+#' drawn. Defaults to 1 mm
 #' @param place Where to place the text within the bounding box. Default is
 #' ‘centre’, other options are ‘topleft’, ‘top’, ‘topright’, etc.
 #' @param fill.text Logical, indicating whether text should expand larger than
@@ -34,6 +35,9 @@
 #' geom arguments as for ‘geom_text’. Note that x and y aesthetics will be
 #' ignored; xmin, xmax, ymin and ymax aesthetics specifying the bounding box are
 #' required.
+#' @param discrete.height, discrete.width (Numeric, in millimetres.) If
+#' ‘xmin’/‘xmax’ and/or ‘ymin’/‘ymax’ are not provided, these values will
+#' determine the dimensions of the bounding box. Default to 4 mm.
 #' @export
 geom_fit_text <- function(
   mapping = NULL,
@@ -46,7 +50,7 @@ geom_fit_text <- function(
   padding.x = unit(1, "mm"),
   padding.y = unit(0.1, "lines"),
   place = "centre",
-  min.size = NULL,
+  min.size = 1,
   fill.text = F,
   ...
 ) {
@@ -97,7 +101,7 @@ GeomFitText <- ggproto(
     coord,
     padding.x = unit(1, "mm"),
     padding.y = unit(0.1, "lines"),
-    min.size = NULL,
+    min.size = 1,
     fill.text = F,
     place = "centre"
   ) {
@@ -110,18 +114,6 @@ GeomFitText <- ggproto(
     }
     if (!xor(("ymin" %in% names(data)) & ("ymax" %in% names(data)), "y" %in% names(data))) {
       stop("geom_fit_text needs either ‘ymin’ and ‘ymax’, or ‘y’", .call = F)
-    }
-
-    # If discrete x axis, convert x to xmin and xmax
-    if ("x" %in% names(data)) {
-      data$xmin <- data$x - grid::convertWidth(unit(data$discrete.height, "mm"), "native", valueOnly = T)
-      data$xmax <- data$x + grid::convertWidth(unit(data$discrete.height, "mm"), "native", valueOnly = T)
-    }
-
-    # If discrete y axis, convert y to ymin and ymax
-    if ("y" %in% names(data)) {
-      data$ymin <- data$y - grid::convertWidth(unit(data$discrete.width, "mm"), "native", valueOnly = T)
-      data$ymax <- data$y + grid::convertWidth(unit(data$discrete.width, "mm"), "native", valueOnly = T)
     }
 
     gt <- grid::gTree(
@@ -146,6 +138,21 @@ GeomFitText <- ggproto(
 makeContent.shrinktexttree <- function(x) {
 
   data <- x$data
+
+  # Convert min.size into grid internal units
+  x$min.size <- x$min.size * .pt
+
+  # If discrete x axis, convert x to xmin and xmax
+  if ("x" %in% names(data)) {
+    data$xmin <- data$x - grid::convertWidth(unit(data$discrete.width, "mm"), "native", valueOnly = T)
+    data$xmax <- data$x + grid::convertWidth(unit(data$discrete.width, "mm"), "native", valueOnly = T)
+  }
+
+  # If discrete y axis, convert y to ymin and ymax
+  if ("y" %in% names(data)) {
+    data$ymin <- data$y - grid::convertHeight(unit(data$discrete.height, "mm"), "native", valueOnly = T)
+    data$ymax <- data$y + grid::convertHeight(unit(data$discrete.height, "mm"), "native", valueOnly = T)
+  }
 
   # Padding around text
   paddingx <- grid::convertWidth(x$padding.x, "native", valueOnly = TRUE)
@@ -254,13 +261,14 @@ makeContent.shrinktexttree <- function(x) {
     # This is a very crude algorithm...some time later should come back and make
     # it more efficient
     while (labelw(tg) > xdim | labelh(tg) > ydim) {
-      tg$gp$fontsize <- tg$gp$fontsize * 0.99
+      tg$gp$fontsize <- tg$gp$fontsize - 0.1
+      if (tg$gp$fontsize < x$min.size) { return() }
     }
 
     # If the label is too small and fill.text is true, expand it until it fits
     if (x$fill.text) {
       while (labelw(tg) < xdim & labelh(tg) < ydim) {
-        tg$gp$fontsize <- tg$gp$fontsize * 1.01
+        tg$gp$fontsize <- tg$gp$fontsize + 0.1
       }
     }
 
