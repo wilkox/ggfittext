@@ -128,7 +128,7 @@ GeomFitText <- ggproto(
       place = place,
       min.size = min.size,
       fill.text = fill.text,
-      cl = "shrinktexttree"
+      cl = "fittexttree"
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
     gt
@@ -136,11 +136,11 @@ GeomFitText <- ggproto(
   }
 )
 
-#' grid::makeContent function for the grobTree of shrinkTextTree objects
+#' grid::makeContent function for the grobTree of fitTextTree objects
 #' @param x A grid grobTree.
 #' @export
 #' @noRd
-makeContent.shrinktexttree <- function(x) {
+makeContent.fittexttree <- function(x) {
 
   data <- x$data
 
