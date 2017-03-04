@@ -9,8 +9,13 @@
 #'
 #' Except where noted, these geoms should behave like \code{geom_text}. In
 #' addition to the normal \code{geom_text} aesthetics, \code{ggfittext} geoms
-#' use xmin, xmax, ymin and ymax to specify the bounding box for the label text
-#' (x and y aesthetics, if passed, will be ignored).
+#' use ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to specify the bounding box for the
+#' label text.
+#' 
+#' If one or both axes are discrete, ‘x’ and/or ‘y’ can be used instead, and the
+#' height and/or width of the boundary box will be determined by the
+#' ‘discrete.height’ and/or ‘discrete.width’ aesthetics. These are given in
+#' millimetres and default to 4 mm.
 #'
 #' @param padding.x Amount of padding around text horizontally, as a grid ‘unit’
 #' object. Default is 1 mm.
@@ -68,7 +73,7 @@ geom_shrink_text <- function(
 GeomShrinkText <- ggproto(
   "GeomShrinkText",
   Geom,
-  required_aes = c("label", "xmin", "ymin", "xmax", "ymax"),
+  required_aes = c("label"),
   default_aes = aes(
     alpha = 1,
     angle = 0,
@@ -76,7 +81,9 @@ GeomShrinkText <- ggproto(
     family = "",
     fontface = 1,
     lineheight = 1.2,
-    size = 3.88
+    size = 3.88,
+    discrete.height = 4,
+    discrete.width = 4
   ),
   draw_key = draw_key_text,
   draw_panel = function(
@@ -90,6 +97,26 @@ GeomShrinkText <- ggproto(
   ) {
 
     data <- coord$transform(data, panel_scales)
+
+    # Check correct combination of discrete/continuous mappings for bounding box
+    if (!xor(("xmin" %in% names(data)) & ("xmax" %in% names(data)), "x" %in% names(data))) {
+      stop("geom_shrink_text needs either ‘xmin’ and ‘xmax’, or ‘x’", .call = F)
+    }
+    if (!xor(("ymin" %in% names(data)) & ("ymax" %in% names(data)), "y" %in% names(data))) {
+      stop("geom_shrink_text needs either ‘ymin’ and ‘ymax’, or ‘y’", .call = F)
+    }
+
+    # If discrete x axis, convert x to xmin and xmax
+    if ("x" %in% names(data)) {
+      data$xmin <- data$x - grid::convertWidth(unit(data$discrete.height, "mm"), "native", valueOnly = T)
+      data$xmax <- data$x + grid::convertWidth(unit(data$discrete.height, "mm"), "native", valueOnly = T)
+    }
+
+    # If discrete y axis, convert y to ymin and ymax
+    if ("y" %in% names(data)) {
+      data$ymin <- data$y - grid::convertWidth(unit(data$discrete.width, "mm"), "native", valueOnly = T)
+      data$ymax <- data$y + grid::convertWidth(unit(data$discrete.width, "mm"), "native", valueOnly = T)
+    }
 
     gt <- grid::gTree(
       data = data,
