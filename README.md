@@ -77,7 +77,7 @@ position of the boundary box and the placement of the text label within the box.
 ‘bottom’.
 
 ``` r
-ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
+qgplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
                    vehicle, fill = class)) +
   geom_rect() +
   geom_fill_text()

@@ -1,21 +1,24 @@
 #' @title Fit text to a bounding box.
 #'
-#' @description
-#' \code{geom_shrink_text} will draw the label text normally, unless it is too
-#' big for the bounding box, in which case it will shrink the text to fit the
-#' box.
+#' @details
 #'
-#' \code{geom_fill_text} will shrink or expand the label text to fill the box.
+#' \code{fill.text = FALSE} (default) will draw the label text normally, unless
+#' it is too big for the bounding box, in which case it will shrink the text to
+#' fit the box. \code{fill.text = TRUE} will shrink or expand the label text as
+#' needed to fill the box. \code{geom_shrink_text} and \code{geom_fill_text} are
+#' convenience wrappers for \code{fill.text = FALSE} and \code{fill.text = TRUE}
+#' respectively.
 #'
 #' Except where noted, these geoms should behave like \code{geom_text}. In
 #' addition to the normal \code{geom_text} aesthetics, \code{ggfittext} geoms
 #' use ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to specify the bounding box for the
 #' label text.
-#' 
-#' If one or both axes are discrete, ‘x’ and/or ‘y’ can be used instead, and the
-#' height and/or width of the boundary box will be determined by the
+#'
+#' If one or both axes are discrete, or for convenience, ‘x’ and/or ‘y’
+#' aesthetics can be provided instead to give the centre of the bounding box.
+#' The height and/or width of the boundary box will be determined by the
 #' ‘discrete.height’ and/or ‘discrete.width’ aesthetics. These are given in
-#' millimetres and default to 4 mm.
+#' millimetres, and default to 4 mm.
 #'
 #' @param padding.x Amount of padding around text horizontally, as a grid ‘unit’
 #' object. Default is 1 mm.
@@ -23,16 +26,16 @@
 #' object. Default is 0.1 lines.
 #' @param min.size Minimum font size. If specified, text that would need to be
 #' shrunk below this size to fit the bounding box will not be drawn.
-#' @param place Where to place the text within the bounding box. For
-#' \code{geom_shrink_text}, default is ‘centre’, other options are ‘topleft’,
-#' ‘top‘, etc. For \code{geom_fill_text}, default is ‘middle’, other options are
-#' ‘top’ and ‘bottom’.
+#' @param place Where to place the text within the bounding box. Default is
+#' ‘centre’, other options are ‘topleft’, ‘top’, ‘topright’, etc.
+#' @param fill.text Logical, indicating whether text should expand larger than
+#' the set size to fill the bounding box. Defaults to FALSE.
 #' @param mapping,data,stat,position,na.rm,show.legend,inherit.aes,... Standard
 #' geom arguments as for ‘geom_text’. Note that x and y aesthetics will be
 #' ignored; xmin, xmax, ymin and ymax aesthetics specifying the bounding box are
 #' required.
 #' @export
-geom_shrink_text <- function(
+geom_fit_text <- function(
   mapping = NULL,
   data = NULL,
   stat = "identity",
@@ -44,10 +47,11 @@ geom_shrink_text <- function(
   padding.y = unit(0.1, "lines"),
   place = "centre",
   min.size = NULL,
+  fill.text = F,
   ...
 ) {
   layer(
-    geom = GeomShrinkText,
+    geom = GeomFitText,
     mapping = mapping,
     data = data,
     stat = stat,
@@ -58,20 +62,21 @@ geom_shrink_text <- function(
       na.rm = na.rm,
       padding.x = padding.x,
       padding.y = padding.y,
-      min.size = min.size,
       place = place,
+      min.size = min.size,
+      fill.text = fill.text,
       ...
     )
   )
 }
 
-#' GeomShrinkText
+#' GeomFitText
 #' @rdname ggplot2-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
-GeomShrinkText <- ggproto(
-  "GeomShrinkText",
+GeomFitText <- ggproto(
+  "GeomFitText",
   Geom,
   required_aes = c("label"),
   default_aes = aes(
@@ -93,6 +98,7 @@ GeomShrinkText <- ggproto(
     padding.x = unit(1, "mm"),
     padding.y = unit(0.1, "lines"),
     min.size = NULL,
+    fill.text = F,
     place = "centre"
   ) {
 
@@ -100,10 +106,10 @@ GeomShrinkText <- ggproto(
 
     # Check correct combination of discrete/continuous mappings for bounding box
     if (!xor(("xmin" %in% names(data)) & ("xmax" %in% names(data)), "x" %in% names(data))) {
-      stop("geom_shrink_text needs either ‘xmin’ and ‘xmax’, or ‘x’", .call = F)
+      stop("geom_fit_text needs either ‘xmin’ and ‘xmax’, or ‘x’", .call = F)
     }
     if (!xor(("ymin" %in% names(data)) & ("ymax" %in% names(data)), "y" %in% names(data))) {
-      stop("geom_shrink_text needs either ‘ymin’ and ‘ymax’, or ‘y’", .call = F)
+      stop("geom_fit_text needs either ‘ymin’ and ‘ymax’, or ‘y’", .call = F)
     }
 
     # If discrete x axis, convert x to xmin and xmax
@@ -122,16 +128,16 @@ GeomShrinkText <- ggproto(
       data = data,
       padding.x = padding.x,
       padding.y = padding.y,
-      min.size = min.size,
       place = place,
+      min.size = min.size,
+      fill.text = fill.text,
       cl = "shrinktexttree"
     )
-    gt$name <- grid::grobName(gt, "geom_shrink_text")
+    gt$name <- grid::grobName(gt, "geom_fit_text")
     gt
 
   }
 )
-
 
 #' grid::makeContent function for the grobTree of shrinkTextTree objects
 #' @param x A grid grobTree.
@@ -200,14 +206,14 @@ makeContent.shrinktexttree <- function(x) {
       text$hjust <- 0
       text$vjust <- 0.5
 
-    } else if (x$place == "centre" | x$place == "center") {
+    } else if (x$place == "centre" | x$place == "center" | x$place == "middle") {
       text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- mean(c(text$ymin, text$ymax))
       text$hjust <- 0.5
       text$vjust <- 0.5
 
     } else {
-      stop("geom_shrink_text does not recognise place ‘", x$place, "’ (try something like ‘topright’ or ‘centre’)", call. = F)
+      stop("geom_fit_text does not recognise place ‘", x$place, "’ (try something like ‘topright’ or ‘centre’)", call. = F)
     }
 
     # Get x and y dimensions of bounding box
@@ -251,6 +257,13 @@ makeContent.shrinktexttree <- function(x) {
       tg$gp$fontsize <- tg$gp$fontsize * 0.99
     }
 
+    # If the label is too small and fill.text is true, expand it until it fits
+    if (x$fill.text) {
+      while (labelw(tg) < xdim & labelh(tg) < ydim) {
+        tg$gp$fontsize <- tg$gp$fontsize * 1.01
+      }
+    }
+
     # If a min size is set, don't draw if size < min size
     if (!is.null(x$min.size)) {
       if (tg$gp$fontsize < x$min.size) { return() }
@@ -262,4 +275,16 @@ makeContent.shrinktexttree <- function(x) {
 
   class(grobs) <- "gList"
   grid::setChildren(x, grobs)
+}
+
+#' @rdname geom_fit_text
+#' @export
+geom_fill_text <- function(...) {
+  geom_fit_text(fill.text = T, ...)
+}
+
+#' @rdname geom_fit_text
+#' @export
+geom_shrink_text <- function(...) {
+  geom_fit_text(fill.text = F, ...)
 }
