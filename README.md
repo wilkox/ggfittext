@@ -32,7 +32,7 @@ ggplot(flyers) +
   geom_text(aes(label = vehicle, x = x, y = y))
 ```
 
-![Text drawn with `geom_text`](vignette/geom_text.png)
+![Text drawn with `geom_text`](vignettes/geom_text.png)
 
 ggfittext provides a new geom, `geom_fit_text`, that will shrink text when
 needed to fit a bounding box:
@@ -44,7 +44,7 @@ ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
   geom_fit_text()
 ```
 
-![Text drawn with `geom_fit_text`](vignette/geom_fit_text.png)
+![Text drawn with `geom_fit_text`](vignettes/geom_fit_text.png)
 
 You can define the x position and dimension of the box with ‘xmin’ and ‘xmax’,
 or alternatively with ‘x’ and ‘width’ (width is given in millimetres). Likewise,
@@ -61,7 +61,7 @@ ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
   geom_fit_text(place = "topleft", min.size = 8)
 ```
 
-![Text drawn with `geom_fit_text` and arguments](vignette/geom_fit_text_args.png)
+![Text drawn with `geom_fit_text` and arguments](vignettes/geom_fit_text_args.png)
 
 The obvious set of placements (‘topleft’, ‘top’, ‘topright’...) are supported,
 as well as the default ‘centre’. ‘vjust’ and ‘hjust’ are set automatically.
@@ -76,4 +76,4 @@ ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
   geom_fit_text(grow = T)
 ```
 
-![Text drawn with `geom_fit_text` and arguments including `grow = T`](vignette/geom_fit_text_grow.png)
+![Text drawn with `geom_fit_text` and arguments including `grow = T`](vignettes/geom_fit_text_grow.png)
