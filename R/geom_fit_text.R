@@ -225,10 +225,6 @@ makeContent.fittexttree <- function(x) {
       stop("geom_fit_text does not recognise place ‘", x$place, "’ (try something like ‘topright’ or ‘centre’)", call. = F)
     }
 
-    # Get x and y dimensions of bounding box
-    xdim <- abs(text$xmin - text$xmax)
-    ydim <- abs(text$ymin - text$ymax)
-
     # Create textGrob
     tg <- grid::textGrob(
       label = text$label,
@@ -249,33 +245,45 @@ makeContent.fittexttree <- function(x) {
 
     # Get textGrob dimensions
     labelw <- function(tg) {
-      grid::convertWidth(grid::grobWidth(tg), "native", TRUE) + (2 * paddingx)
+      grid::convertWidth(grid::grobWidth(tg), "native", TRUE)
     }
     labelh <- function(tg) {
       grid::convertHeight(
-        grid::grobAscent(tg) + grid::grobHeight(tg) + grid::grobDescent(tg),
+        grid::grobHeight(tg) + grid::grobDescent(tg),
         "native",
         TRUE
-      ) + (2 * paddingy)
+      )
     }
 
-    # If the label doesn't fit, shrink it until it does
-    # This is a very crude algorithm...some time later should come back and make
-    # it more efficient
-    while (labelw(tg) > xdim | labelh(tg) > ydim) {
-      tg$gp$fontsize <- tg$gp$fontsize - 0.1
-      if (tg$gp$fontsize < x$min.size) { return() }
-    }
+    # Get x and y dimensions of bounding box
+    xdim <- abs(text$xmin - text$xmax) - (2 * paddingx)
+    ydim <- abs(text$ymin - text$ymax) - (2 * paddingy)
 
-    # If the label is too small and fill.text is true, expand it until it fits
-    if (x$fill.text) {
-      while (labelw(tg) < xdim & labelh(tg) < ydim) {
-        tg$gp$fontsize <- tg$gp$fontsize + 0.1
-      }
-    }
+    # Resize text to fit bounding box
+    if (
+      # Standard condition - is text too big for box?
+      (labelw(tg) > xdim | labelh(tg) > ydim) |
+      # fill.text = TRUE condition - is text too small for box?
+      (x$fill.text & labelw(tg) < xdim & labelh(tg) < ydim)
+    ) {
 
-    # If a min size is set, don't draw if size < min size
-    if (!is.null(x$min.size)) {
+      # Get the slopes of the relationships between font size and label
+      # dimensions
+      fs1 <- tg$gp$fontsize
+      lw1 <- labelw(tg)
+      lh1 <- labelh(tg)
+      tg$gp$fontsize <- tg$gp$fontsize * 2
+      slopew <- fs1 / (labelw(tg) - lw1)
+      slopeh <- fs1 / (labelh(tg) - lh1)
+
+      # Calculate the target font size required to fit text to box along each
+      # dimension
+      targetfsw <- xdim * slopew
+      targetfsh <- ydim * slopeh
+
+      # Set to smaller of target font sizes
+      tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
+
       if (tg$gp$fontsize < x$min.size) { return() }
     }
 
