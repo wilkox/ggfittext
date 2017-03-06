@@ -14,12 +14,12 @@ library(devtools)
 install_github('wilkox/ggfittext')
 ```
 
-# `geom_shrink_text`
+# Walkthrough
 
 Sometimes you want to draw some text in ggplot2 so that it doesn't spill outside
 a bounding box. For example:
 
-``` r
+```{r}
 library(ggfittext)
 flyers
 #>         vehicle xmin xmax ymin ymax     class  x    y
@@ -32,55 +32,48 @@ ggplot(flyers) +
   geom_text(aes(label = vehicle, x = x, y = y))
 ```
 
-![Some text that doesn't fit in boxes](vignettes/geom_text.png)
+![Text drawn with `geom_text`](vignette/geom_text.png)
 
-ggfittext provides two new ggplot2 geoms that help with fitting text to a box.
-To shrink text down so it doesn't overflow a bounding box, use
-`geom_shrink_text`:
+ggfittext provides a new geom, `geom_fit_text`, that will shrink text when
+needed to fit a bounding box:
 
-``` r
+```{r}
 ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
                    vehicle, fill = class)) +
   geom_rect() +
-  geom_shrink_text()
+  geom_fit_text()
 ```
 
-![`geom_shrink_text` in action](vignettes/geom_shrink_text_1.png)
+![Text drawn with `geom_fit_text`](vignette/geom_fit_text.png)
 
-Note that, unlike with `geom_text`, you don't need to provide explicit ‘x’ and
-‘y’ aesthetics to position the text label. Instead, you supply the position of
-the bounding box with ‘xmin’, ‘xmax’, ‘ymin’, ‘ymax’ and position the text
-within the box with ‘place’.
+You can define the x position and dimension of the box with ‘xmin’ and ‘xmax’,
+or alternatively with ‘x’ and ‘width’ (width is given in millimetres). Likewise,
+the y dimension and position can be defined with ‘ymin’ and ‘ymax’ or with ‘y’
+and ‘height’. This can be useful when drawing on a discrete axis.
 
 You can specify where in the bounding box to place the text, and hide text that
 would be shrunk below a minimum size:
 
-``` r
+```{r}
 ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
                    vehicle, fill = class)) +
   geom_rect() +
-  geom_shrink_text(place = "topleft", min.size = 8)
+  geom_fit_text(place = "topleft", min.size = 8)
 ```
 
-![`geom_shrink_text` with some options](vignettes/geom_shrink_text_2.png)
+![Text drawn with `geom_fit_text` and arguments](vignette/geom_fit_text_args.png)
 
 The obvious set of placements (‘topleft’, ‘top’, ‘topright’...) are supported,
 as well as the default ‘centre’. ‘vjust’ and ‘hjust’ are set automatically.
 
-# `geom_fill_text`
+With the `grow = T` argument, text will be grown as well as shrunk to fit the
+box:
 
-`geom_fill_text` will expand or shrink the text label to fix the bounding box.
-The text aspect ratio will be maintained, so usually the size of the text will
-only be maximised along one axis. As with `geom_shrink_text`, you specify the
-position of the boundary box and the placement of the text label within the box.
-`geom_fill_text` only supports three places: ‘top’, ‘middle’ (the default) and
-‘bottom’.
-
-``` r
-qgplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
+```{r}
+ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
                    vehicle, fill = class)) +
   geom_rect() +
-  geom_fill_text()
+  geom_fit_text(grow = T)
 ```
 
-![`geom_fill_text` in action](vignettes/geom_fill_text.png)
+![Text drawn with `geom_fit_text` and arguments including `grow = T`](vignette/geom_fit_text_grow.png)

@@ -2,11 +2,11 @@
 #'
 #' @details
 #'
-#' \code{fill.text = FALSE} (default) will draw the label text normally, unless
-#' it is too big for the bounding box, in which case it will shrink the text to
-#' fit the box. \code{fill.text = TRUE} will shrink or expand the label text as
-#' needed to fill the box. \code{geom_shrink_text} and \code{geom_fill_text} are
-#' convenience wrappers for \code{fill.text = FALSE} and \code{fill.text = TRUE}
+#' \code{grow = FALSE} (default) will draw the label text normally, unless it is
+#' too big for the bounding box, in which case it will shrink the text to fit
+#' the box. \code{grow = TRUE} will shrink or grow the label text as needed to
+#' fill the box. \code{geom_shrink_text} and \code{geom_grow_text} are
+#' convenience wrappers for \code{grow = FALSE} and \code{grow = TRUE}
 #' respectively.
 #'
 #' Except where noted, these geoms should behave like \code{geom_text}. In
@@ -17,8 +17,29 @@
 #' If one or both axes are discrete, or for convenience, ‘x’ and/or ‘y’
 #' aesthetics can be provided instead to give the centre of the bounding box.
 #' The height and/or width of the boundary box will be determined by the
-#' ‘discrete.height’ and/or ‘discrete.width’ aesthetics. These are given in
-#' millimetres, and default to 4 mm.
+#' ‘height’ and/or ‘width’ aesthetics. These are given in millimetres, and
+#' default to 4 mm.
+#'
+#' @section Aesthetics:
+#'
+#' \itemize{
+#'   \item label (required)
+#'   \item xmin
+#'   \item xmax
+#'   \item ymin
+#'   \item ymax
+#'   \item x
+#'   \item y
+#'   \item height (in millimetres)
+#'   \item width (in millimetres)
+#'   \item alpha
+#'   \item angle
+#'   \item colour
+#'   \item family
+#'   \item fontface
+#'   \item lineheight
+#'   \item size
+#' }
 #'
 #' @param padding.x Amount of padding around text horizontally, as a grid ‘unit’
 #' object. Default is 1 mm.
@@ -29,13 +50,13 @@
 #' drawn. Defaults to 4 pt.
 #' @param place Where to place the text within the bounding box. Default is
 #' ‘centre’, other options are ‘topleft’, ‘top’, ‘topright’, etc.
-#' @param fill.text Logical, indicating whether text should expand larger than
+#' @param grow Logical, indicating whether text should grow larger than
 #' the set size to fill the bounding box. Defaults to FALSE.
 #' @param mapping,data,stat,position,na.rm,show.legend,inherit.aes,... Standard
 #' geom arguments as for ‘geom_text’. Note that x and y aesthetics will be
 #' ignored; xmin, xmax, ymin and ymax aesthetics specifying the bounding box are
 #' required.
-#' @param discrete.height, discrete.width (Numeric, in millimetres.) If
+#' @param height, width (Numeric, in millimetres.) If
 #' ‘xmin’/‘xmax’ and/or ‘ymin’/‘ymax’ are not provided, these values will
 #' determine the dimensions of the bounding box. Default to 4 mm.
 #' @export
@@ -51,7 +72,7 @@ geom_fit_text <- function(
   padding.y = unit(0.1, "lines"),
   place = "centre",
   min.size = 4,
-  fill.text = F,
+  grow = F,
   ...
 ) {
   layer(
@@ -68,7 +89,7 @@ geom_fit_text <- function(
       padding.y = padding.y,
       place = place,
       min.size = min.size,
-      fill.text = fill.text,
+      grow = grow,
       ...
     )
   )
@@ -90,9 +111,9 @@ GeomFitText <- ggproto(
     family = "",
     fontface = 1,
     lineheight = 1.2,
-    size = 3.88,
-    discrete.height = 4,
-    discrete.width = 4,
+    size = 12,
+    height = 4,
+    width = 4,
     x = NULL,
     xmin = NULL,
     xmax = NULL,
@@ -107,18 +128,24 @@ GeomFitText <- ggproto(
     padding.x = unit(1, "mm"),
     padding.y = unit(0.1, "lines"),
     min.size = 4,
-    fill.text = F,
+    grow = F,
     place = "centre"
   ) {
 
     data <- coord$transform(data, panel_scales)
 
     # Check correct combination of discrete/continuous mappings for bounding box
-    if (!xor(("xmin" %in% names(data)) & ("xmax" %in% names(data)), "x" %in% names(data))) {
-      stop("geom_fit_text needs either ‘xmin’ and ‘xmax’, or ‘x’", .call = F)
+    if (!xor(
+      ("xmin" %in% names(data) & "xmax" %in% names(data)),
+      ("x" %in% names(data) & "width" %in% names(data))
+    )) {
+      stop("geom_fit_text needs either ‘xmin’ and ‘xmax’, or ‘x’ and ‘width’", .call = F)
     }
-    if (!xor(("ymin" %in% names(data)) & ("ymax" %in% names(data)), "y" %in% names(data))) {
-      stop("geom_fit_text needs either ‘ymin’ and ‘ymax’, or ‘y’", .call = F)
+    if (!xor(
+      "ymin" %in% names(data) & "ymax" %in% names(data),
+      "y" %in% names(data) * "height" %in% names(data)
+    )) {
+      stop("geom_fit_text needs either ‘ymin’ and ‘ymax’, or ‘y’ and ‘height’", .call = F)
     }
 
     gt <- grid::gTree(
@@ -127,7 +154,7 @@ GeomFitText <- ggproto(
       padding.y = padding.y,
       place = place,
       min.size = min.size,
-      fill.text = fill.text,
+      grow = grow,
       cl = "fittexttree"
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
@@ -144,16 +171,16 @@ makeContent.fittexttree <- function(x) {
 
   data <- x$data
 
-  # If discrete x axis, convert x to xmin and xmax
+  # If x provided instead of xmin/xmax, generate boundary box from width
   if ("x" %in% names(data)) {
-    data$xmin <- data$x - grid::convertWidth(unit(data$discrete.width, "mm"), "native", valueOnly = T)
-    data$xmax <- data$x + grid::convertWidth(unit(data$discrete.width, "mm"), "native", valueOnly = T)
+    data$xmin <- data$x - (grid::convertWidth(unit(data$width, "mm"), "native", valueOnly = T) / 2)
+    data$xmax <- data$x + (grid::convertWidth(unit(data$width, "mm"), "native", valueOnly = T) / 2)
   }
 
-  # If discrete y axis, convert y to ymin and ymax
+  # If y provided instead of ymin/ymax, generate boundary box from height
   if ("y" %in% names(data)) {
-    data$ymin <- data$y - grid::convertHeight(unit(data$discrete.height, "mm"), "native", valueOnly = T)
-    data$ymax <- data$y + grid::convertHeight(unit(data$discrete.height, "mm"), "native", valueOnly = T)
+    data$ymin <- data$y - (grid::convertHeight(unit(data$height, "mm"), "native", valueOnly = T) / 2)
+    data$ymax <- data$y + (grid::convertHeight(unit(data$height, "mm"), "native", valueOnly = T) / 2)
   }
 
   # Padding around text
@@ -249,7 +276,7 @@ makeContent.fittexttree <- function(x) {
     }
     labelh <- function(tg) {
       grid::convertHeight(
-        grid::grobHeight(tg) + grid::grobDescent(tg),
+        grid::grobHeight(tg) + grid::grobDescent(tg) + grid::grobAscent(tg),
         "native",
         TRUE
       )
@@ -263,8 +290,8 @@ makeContent.fittexttree <- function(x) {
     if (
       # Standard condition - is text too big for box?
       (labelw(tg) > xdim | labelh(tg) > ydim) |
-      # fill.text = TRUE condition - is text too small for box?
-      (x$fill.text & labelw(tg) < xdim & labelh(tg) < ydim)
+      # grow = TRUE condition - is text too small for box?
+      (x$grow & labelw(tg) < xdim & labelh(tg) < ydim)
     ) {
 
       # Get the slopes of the relationships between font size and label
@@ -284,8 +311,10 @@ makeContent.fittexttree <- function(x) {
       # Set to smaller of target font sizes
       tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
 
-      if (tg$gp$fontsize < x$min.size) { return() }
     }
+
+    # Hide if below minimum font size
+    if (tg$gp$fontsize < x$min.size) { return() }
 
     # Return the textGrob
     tg
@@ -297,12 +326,12 @@ makeContent.fittexttree <- function(x) {
 
 #' @rdname geom_fit_text
 #' @export
-geom_fill_text <- function(...) {
-  geom_fit_text(fill.text = T, ...)
+geom_grow_text <- function(...) {
+  geom_fit_text(grow = T, ...)
 }
 
 #' @rdname geom_fit_text
 #' @export
 geom_shrink_text <- function(...) {
-  geom_fit_text(fill.text = F, ...)
+  geom_fit_text(grow = F, ...)
 }

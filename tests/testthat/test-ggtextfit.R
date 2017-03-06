@@ -25,11 +25,11 @@ test_that("missing aesthetics and bad options don't work", {
 
 })
 
-context("geom_fill_text")
+context("geom_grow_text")
 
 test_that("simple plots and options work", {
   expect_error( {
-    ggplot(testdata, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = vehicle, colour = class)) + geom_fill_text(padding.x = unit(1, "lines"), padding.y = unit(3, "mm"), min.size = 2, place = "bottom")
+    ggplot(testdata, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = vehicle, colour = class)) + geom_grow_text(padding.x = unit(1, "lines"), padding.y = unit(3, "mm"), min.size = 2, place = "bottom")
   } , NA)
 
 })
@@ -37,7 +37,7 @@ test_that("simple plots and options work", {
 test_that("missing aesthetics and bad options don't work", {
   expect_error( {
     p <- ggplot(testdata, aes(x = xmin, y = ymax, label = vehicle, colour = class))
-    p <- p + geom_fill_text(padding.x = 12, min.size = "nottoobigplease", place = "near the top")
+    p <- p + geom_grow_text(padding.x = 12, min.size = "nottoobigplease", place = "near the top")
     print(p)
   })
 
