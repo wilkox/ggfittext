@@ -1,3 +1,10 @@
+# v0.3
+
+## Major changes
+- Much faster text resizing algorithm
+- Rename arguments: ‘discrete.width’ and ‘discrete.height’ to ‘width’ and
+  ‘height’; ‘fill.text’ to ‘grow’
+
 # v0.2
 
 ## Major changes
