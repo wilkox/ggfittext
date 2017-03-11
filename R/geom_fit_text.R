@@ -309,7 +309,6 @@ makeContent.fittexttree <- function(x) {
         best_aspect_ratio <- Inf
         best_width <- stringi::stri_length(tg$label)
         label <- unlist(stri_split(tg$label, regex = "\n"))
-        print(label)
         stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
         for (w in (stringwidth - 1):1) {
 
@@ -327,15 +326,18 @@ makeContent.fittexttree <- function(x) {
             best_width <- w
           }
 
-          # If the text now fits the bounding box, good to return
-          if (labelw(tg) < xdim & labelh(tg) < ydim) {
+          # If the text now fits the bounding box (and we are not trying to grow
+          # the text), good to return
+          if (labelw(tg) < xdim & labelh(tg) < ydim & !x$grow) {
             return(tg)
           }
         }
 
         # If all reflow widths have been tried and none is smaller than the box
         # (i.e. some shrinking is still required), pick the reflow width that
-        # produces the aspect ratio closest to that of the bounding box
+        # produces the aspect ratio closest to that of the bounding box. In the
+        # condition that we are trying to grow the text, this will also ensure
+        # the text is grown with the best aspect ratio.
         tg$label <- paste(
           stringi::stri_wrap(label, best_width, normalize = F),
           collapse = "\n"
