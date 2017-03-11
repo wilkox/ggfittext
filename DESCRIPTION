@@ -9,5 +9,6 @@ Depends:
 License: GPL-2
 LazyData: true
 Imports:
-    grid
+    grid,
+    stringi (>= 1.1.2)
 RoxygenNote: 5.0.1

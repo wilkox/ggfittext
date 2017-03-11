@@ -73,6 +73,7 @@ geom_fit_text <- function(
   place = "centre",
   min.size = 4,
   grow = F,
+  reflow = F,
   ...
 ) {
   layer(
@@ -90,6 +91,7 @@ geom_fit_text <- function(
       place = place,
       min.size = min.size,
       grow = grow,
+      reflow = reflow,
       ...
     )
   )
@@ -129,6 +131,7 @@ GeomFitText <- ggproto(
     padding.y = unit(0.1, "lines"),
     min.size = 4,
     grow = F,
+    reflow = F,
     place = "centre"
   ) {
 
@@ -155,6 +158,7 @@ GeomFitText <- ggproto(
       place = place,
       min.size = min.size,
       grow = grow,
+      reflow = reflow,
       cl = "fittexttree"
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
@@ -270,6 +274,9 @@ makeContent.fittexttree <- function(x) {
       )
     )
 
+    # Hide if below minimum font size
+    if (tg$gp$fontsize < x$min.size) { return() }
+
     # Get textGrob dimensions
     labelw <- function(tg) {
       grid::convertWidth(grid::grobWidth(tg), "native", TRUE)
@@ -293,6 +300,47 @@ makeContent.fittexttree <- function(x) {
       # grow = TRUE condition - is text too small for box?
       (x$grow & labelw(tg) < xdim & labelh(tg) < ydim)
     ) {
+
+      # Reflow text if requested
+      if (x$reflow) {
+
+        # Try reducing the text width, one character at a time, and see if it
+        # fits the bounding box
+        best_aspect_ratio <- Inf
+        best_width <- stringi::stri_length(tg$label)
+        label <- unlist(stri_split(tg$label, regex = "\n"))
+        print(label)
+        stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
+        for (w in (stringwidth - 1):1) {
+
+          # Reflow text to this width
+          # By splitting the text on whitespace and passing normalize = F,
+          # newlines in the original text are respected
+          tg$label <- paste(stringi::stri_wrap(label, w, normalize = F), collapse = "\n")
+
+          # Calculate aspect ratio and update if this is the new best ratio
+          aspect_ratio <- labelw(tg) / labelh(tg)
+          diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
+          best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
+          if (diff_from_box_ratio < best_diff_from_box_ratio) {
+            best_aspect_ratio <- aspect_ratio
+            best_width <- w
+          }
+
+          # If the text now fits the bounding box, good to return
+          if (labelw(tg) < xdim & labelh(tg) < ydim) {
+            return(tg)
+          }
+        }
+
+        # If all reflow widths have been tried and none is smaller than the box
+        # (i.e. some shrinking is still required), pick the reflow width that
+        # produces the aspect ratio closest to that of the bounding box
+        tg$label <- paste(
+          stringi::stri_wrap(label, best_width, normalize = F),
+          collapse = "\n"
+        )
+      }
 
       # Get the slopes of the relationships between font size and label
       # dimensions
