@@ -69,8 +69,8 @@ reflowed until it does. If no amount of reflowing will make the text fit, the
 reflow that best matches the aspect ratio of the bounding box will be
 selected, and the text will then be shrunk as normal. When \code{grow =
 TRUE}, the text will be reflowed to best match the aspect ratio of the
-bounding box, then grown as normal. Newline tokens (‘\\n’) in the text will
-be respected when reflowing.
+bounding box, then grown as normal. Existing line breaks (‘\\n’) in the text
+will be respected when reflowing.
 }
 \section{Aesthetics}{
 
