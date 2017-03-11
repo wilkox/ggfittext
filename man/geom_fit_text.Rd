@@ -9,7 +9,7 @@
 geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, padding.x = unit(1, "mm"), padding.y = unit(0.1,
-  "lines"), place = "centre", min.size = 4, grow = F, ...)
+  "lines"), place = "centre", min.size = 4, grow = F, reflow = F, ...)
 
 geom_grow_text(...)
 
@@ -35,13 +35,27 @@ would need to be shrunk below this size to fit the bounding box will not be
 drawn. Defaults to 4 pt.}
 
 \item{grow}{Logical, indicating whether text should grow larger than
-the set size to fill the bounding box. Defaults to FALSE.}
+the set size to fill the bounding box. Defaults to FALSE. See Details.}
+
+\item{reflow}{Logical, indicating whether text should be reflowed (wrapped)
+to better fit the bounding box. See Details.}
 
 \item{height, }{width (Numeric, in millimetres.) If
 ‘xmin’/‘xmax’ and/or ‘ymin’/‘ymax’ are not provided, these values will
 determine the dimensions of the bounding box. Default to 4 mm.}
 }
 \details{
+Except where noted, these geoms should behave like \code{geom_text}. In
+addition to the normal \code{geom_text} aesthetics, \code{ggfittext} geoms
+use ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to specify the bounding box for the
+label text.
+
+If one or both axes are discrete, or for convenience, ‘x’ and/or ‘y’
+aesthetics can be provided instead of ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to
+give the centre of the bounding box. The height and/or width of the boundary
+box will be determined by the ‘height’ and/or ‘width’ aesthetics. These are
+given in millimetres, and default to 4 mm.
+
 \code{grow = FALSE} (default) will draw the label text normally, unless it is
 too big for the bounding box, in which case it will shrink the text to fit
 the box. \code{grow = TRUE} will shrink or grow the label text as needed to
@@ -49,16 +63,14 @@ fill the box. \code{geom_shrink_text} and \code{geom_grow_text} are
 convenience wrappers for \code{grow = FALSE} and \code{grow = TRUE}
 respectively.
 
-Except where noted, these geoms should behave like \code{geom_text}. In
-addition to the normal \code{geom_text} aesthetics, \code{ggfittext} geoms
-use ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to specify the bounding box for the
-label text.
-
-If one or both axes are discrete, or for convenience, ‘x’ and/or ‘y’
-aesthetics can be provided instead to give the centre of the bounding box.
-The height and/or width of the boundary box will be determined by the
-‘height’ and/or ‘width’ aesthetics. These are given in millimetres, and
-default to 4 mm.
+\code{reflow = TRUE} will cause the text to be reflowed (wrapped). When
+\code{grow = FALSE} (default), text that doesn't fit the bounding box will be
+reflowed until it does. If no amount of reflowing will make the text fit, the
+reflow that best matches the aspect ratio of the bounding box will be
+selected, and the text will then be shrunk as normal. When \code{grow =
+TRUE}, the text will be reflowed to best match the aspect ratio of the
+bounding box, then grown as normal. Newline tokens (‘\\n’) in the text will
+be respected when reflowing.
 }
 \section{Aesthetics}{
 

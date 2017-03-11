@@ -2,6 +2,17 @@
 #'
 #' @details
 #'
+#' Except where noted, these geoms should behave like \code{geom_text}. In
+#' addition to the normal \code{geom_text} aesthetics, \code{ggfittext} geoms
+#' use ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to specify the bounding box for the
+#' label text.
+#'
+#' If one or both axes are discrete, or for convenience, ‘x’ and/or ‘y’
+#' aesthetics can be provided instead of ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to
+#' give the centre of the bounding box. The height and/or width of the boundary
+#' box will be determined by the ‘height’ and/or ‘width’ aesthetics. These are
+#' given in millimetres, and default to 4 mm.
+#'
 #' \code{grow = FALSE} (default) will draw the label text normally, unless it is
 #' too big for the bounding box, in which case it will shrink the text to fit
 #' the box. \code{grow = TRUE} will shrink or grow the label text as needed to
@@ -9,16 +20,14 @@
 #' convenience wrappers for \code{grow = FALSE} and \code{grow = TRUE}
 #' respectively.
 #'
-#' Except where noted, these geoms should behave like \code{geom_text}. In
-#' addition to the normal \code{geom_text} aesthetics, \code{ggfittext} geoms
-#' use ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to specify the bounding box for the
-#' label text.
-#'
-#' If one or both axes are discrete, or for convenience, ‘x’ and/or ‘y’
-#' aesthetics can be provided instead to give the centre of the bounding box.
-#' The height and/or width of the boundary box will be determined by the
-#' ‘height’ and/or ‘width’ aesthetics. These are given in millimetres, and
-#' default to 4 mm.
+#' \code{reflow = TRUE} will cause the text to be reflowed (wrapped). When
+#' \code{grow = FALSE} (default), text that doesn't fit the bounding box will be
+#' reflowed until it does. If no amount of reflowing will make the text fit, the
+#' reflow that best matches the aspect ratio of the bounding box will be
+#' selected, and the text will then be shrunk as normal. When \code{grow =
+#' TRUE}, the text will be reflowed to best match the aspect ratio of the
+#' bounding box, then grown as normal. Newline tokens (‘\\n’) in the text will
+#' be respected when reflowing.
 #'
 #' @section Aesthetics:
 #'
@@ -51,7 +60,7 @@
 #' @param place Where to place the text within the bounding box. Default is
 #' ‘centre’, other options are ‘topleft’, ‘top’, ‘topright’, etc.
 #' @param grow Logical, indicating whether text should grow larger than
-#' the set size to fill the bounding box. Defaults to FALSE.
+#' the set size to fill the bounding box. Defaults to FALSE. See Details.
 #' @param mapping,data,stat,position,na.rm,show.legend,inherit.aes,... Standard
 #' geom arguments as for ‘geom_text’. Note that x and y aesthetics will be
 #' ignored; xmin, xmax, ymin and ymax aesthetics specifying the bounding box are
@@ -59,6 +68,9 @@
 #' @param height, width (Numeric, in millimetres.) If
 #' ‘xmin’/‘xmax’ and/or ‘ymin’/‘ymax’ are not provided, these values will
 #' determine the dimensions of the bounding box. Default to 4 mm.
+#' @param reflow Logical, indicating whether text should be reflowed (wrapped)
+#' to better fit the bounding box. See Details.
+#' 
 #' @export
 geom_fit_text <- function(
   mapping = NULL,
