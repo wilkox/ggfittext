@@ -26,8 +26,8 @@
 #' reflow that best matches the aspect ratio of the bounding box will be
 #' selected, and the text will then be shrunk as normal. When \code{grow =
 #' TRUE}, the text will be reflowed to best match the aspect ratio of the
-#' bounding box, then grown as normal. Newline tokens (‘\\n’) in the text will
-#' be respected when reflowing.
+#' bounding box, then grown as normal. Existing line breaks (‘\\n’) in the text
+#' will be respected when reflowing.
 #'
 #' @section Aesthetics:
 #'
@@ -124,7 +124,7 @@ GeomFitText <- ggproto(
     colour = "black",
     family = "",
     fontface = 1,
-    lineheight = 1.2,
+    lineheight = 1.1,
     size = 12,
     height = 4,
     width = 4,
@@ -295,7 +295,7 @@ makeContent.fittexttree <- function(x) {
     }
     labelh <- function(tg) {
       grid::convertHeight(
-        grid::grobHeight(tg) + grid::grobDescent(tg) + grid::grobAscent(tg),
+        grid::grobHeight(tg) + (2 * grid::grobDescent(tg)),
         "native",
         TRUE
       )
@@ -320,13 +320,13 @@ makeContent.fittexttree <- function(x) {
         # fits the bounding box
         best_aspect_ratio <- Inf
         best_width <- stringi::stri_length(tg$label)
-        label <- unlist(stri_split(tg$label, regex = "\n"))
+        label <- unlist(stringi::stri_split(tg$label, regex = "\n"))
         stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
         for (w in (stringwidth - 1):1) {
 
           # Reflow text to this width
           # By splitting the text on whitespace and passing normalize = F,
-          # newlines in the original text are respected
+          # line breaks in the original text are respected
           tg$label <- paste(stringi::stri_wrap(label, w, normalize = F), collapse = "\n")
 
           # Calculate aspect ratio and update if this is the new best ratio
@@ -339,7 +339,7 @@ makeContent.fittexttree <- function(x) {
           }
 
           # If the text now fits the bounding box (and we are not trying to grow
-          # the text), good to return
+          # the text), good to stop and return the grob
           if (labelw(tg) < xdim & labelh(tg) < ydim & !x$grow) {
             return(tg)
           }
