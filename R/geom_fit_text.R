@@ -124,7 +124,7 @@ GeomFitText <- ggproto(
     colour = "black",
     family = "",
     fontface = 1,
-    lineheight = 1.1,
+    lineheight = 0.9,
     size = 12,
     height = 4,
     width = 4,

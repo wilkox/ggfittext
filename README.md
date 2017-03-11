@@ -28,19 +28,15 @@ Sometimes you want to draw some text in ggplot2 so that it doesn't spill outside
 
 ``` r
 library(ggfittext)
-kable(flyers)
-```
-
-| vehicle       | class     |  xmin|  xmax|  ymin|  ymax|
-|:--------------|:----------|-----:|-----:|-----:|-----:|
-| cessna        | plane     |    45|    55|     5|    25|
-| jumbo jet     | plane     |    40|    60|    35|    55|
-| space shuttle | spaceship |    25|    75|    65|    85|
-| dyson sphere  | spaceship |    10|    90|    95|   115|
-
-``` r
+flyers <- data.frame(
+  vehicle = c("cessna", "jumbo jet", "space shuttle", "dyson sphere"),
+  xmin = c(45, 40, 25, 10),
+  xmax = c(55, 60, 75, 90),
+  ymin = c(5, 35, 65, 95),
+  ymax = c(25, 55, 85, 115)
+)
 ggplot(flyers) +
-  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = class)) +
+  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)) +
   geom_text(aes(label = vehicle, x = (xmin + xmax) / 2, y = (ymin + ymax) / 2))
 ```
 
@@ -49,8 +45,8 @@ ggplot(flyers) +
 ggfittext provides a geom called `geom_fit_text` that will shrink text (when needed) to fit a bounding box.
 
 ``` r
-ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
-                   vehicle, fill = class)) +
+ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
+                   label = vehicle)) +
   geom_rect() +
   geom_fit_text()
 ```
@@ -62,8 +58,8 @@ You can define the box with ‘xmin’ and ‘xmax’ aesthetics, or alternative
 You can specify where in the bounding box to place the text with `place`, and a minimum size for the text with `min.size`. (Any text that would need to be smaller than `min.size` to fit the box will be hidden.)
 
 ``` r
-ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
-                   vehicle, fill = class)) +
+ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
+                   label = vehicle)) +
   geom_rect() +
   geom_fit_text(place = "topleft", min.size = 8)
 ```
@@ -75,13 +71,13 @@ Text can be placed in any corner or at the midpoint of any side (‘topleft’, 
 Growing text
 ============
 
-With the `grow = T` argument, text will be grown as well as shrunk to fit the box:
+With the `grow = TRUE` argument, text will be grown as well as shrunk to fit the box:
 
 ``` r
-ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
-                   vehicle, fill = class)) +
+ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
+                   label = vehicle)) +
   geom_rect() +
-  geom_fit_text(grow = T)
+  geom_fit_text(grow = TRUE)
 ```
 
 ![](README-geom_fit_text_3-1.png)
@@ -89,25 +85,29 @@ ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
 Reflowing text
 ==============
 
-The `reflow = T` argument causes text to be reflowed (wrapped) as needed to fit the bounding box. Reflowing is preferred to shrinking; that is, if the text can be made to fit by reflowing it without shrinking it, it will be.
+The `reflow = TRUE` argument causes text to be reflowed (wrapped) as needed to fit the bounding box. Reflowing is preferred to shrinking; that is, if the text can be made to fit by reflowing it without shrinking it, it will be reflowed only.
 
 ``` r
 poem <- data.frame(
-  text = rep("Whose text this is I think I know.\nHe would prefer it to reflow",
-             3),
+  text = rep(
+    "Whose text this is I think I know.\nHe would prefer it to reflow",
+    3
+  ),
   xmin = rep(10, 3),
   xmax = rep(90, 3),
   ymin = rep(10, 3),
   ymax = rep(90, 3),
   fit = c("geom_text", "no reflow", "reflow")
 )
-ggplot(poem, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
-                 text)) +
+ggplot(poem, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
+                 label = text)) +
   geom_rect() +
-  geom_text(data = subset(poem, fit == "geom_text"), aes(x = (xmin + xmax) / 2,
-                                                         y = (ymin + ymax) / 2)) +
+  geom_text(
+    data = subset(poem, fit == "geom_text"),
+    aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)
+  ) +
   geom_fit_text(data = subset(poem, fit == "no reflow"), min.size = 0) +
-  geom_fit_text(data = subset(poem, fit == "reflow"), reflow = T, min.size = 0) +
+  geom_fit_text(data = subset(poem, fit == "reflow"), reflow = TRUE, min.size = 0) +
   lims(x = c(0, 100), y = c(0, 100)) +
   labs(x = "", y = "") +
   facet_wrap(~ fit)
@@ -117,7 +117,7 @@ ggplot(poem, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
 
 Note that existing line breaks in the text are respected.
 
-If both `reflow = T` and `grow = T` are passed, the text will be reflowed to a form that best matches the aspect ratio of the bounding box, then grown to fit the box.
+If both `reflow = TRUE` and `grow = TRUE` are passed, the text will be reflowed to a form that best matches the aspect ratio of the bounding box, then grown to fit the box.
 
 ``` r
 film <- data.frame(
@@ -128,13 +128,19 @@ film <- data.frame(
   ymax = rep(100, 3),
   fit = c("geom_text", "grow, no reflow", "grow and reflow")
 )
-ggplot(film, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
-                 text)) +
+ggplot(film, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
+                 label = text)) +
   geom_rect() +
-  geom_text(data = subset(film, fit == "geom_text"), aes(x = (xmin + xmax) / 2,
-                                                         y = (ymin + ymax) / 2)) +
-  geom_fit_text(data = subset(film, fit == "grow, no reflow"), grow = T) +
-  geom_fit_text(data = subset(film, fit == "grow and reflow"), grow = T, reflow = T) +
+  geom_text(
+    data = subset(film, fit == "geom_text"),
+    aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)
+  ) +
+  geom_fit_text(data = subset(film, fit == "grow, no reflow"), grow = TRUE) +
+  geom_fit_text(
+    data = subset(film, fit == "grow and reflow"),
+    grow = TRUE,
+    reflow = TRUE
+  ) +
   lims(x = c(0, 100), y = c(0, 100)) +
   labs(x = "", y = "") +
   facet_wrap(~ fit, ncol = 1)
