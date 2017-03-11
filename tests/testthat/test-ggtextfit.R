@@ -13,7 +13,9 @@ test_that("simple plots and options work", {
   expect_error( {
     ggplot(testdata, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = vehicle, colour = class)) + geom_shrink_text(padding.x = unit(1, "lines"), padding.y = unit(3, "mm"), min.size = 2, place = "topright")
   } , NA)
-
+  expect_error( {
+    ggplot(testdata, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = vehicle, colour = class)) + geom_shrink_text(padding.x = unit(1, "lines"), padding.y = unit(3, "mm"), min.size = 2, place = "topright", reflow = T)
+  } , NA)
 })
 
 test_that("missing aesthetics and bad options don't work", {
@@ -31,7 +33,9 @@ test_that("simple plots and options work", {
   expect_error( {
     ggplot(testdata, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = vehicle, colour = class)) + geom_grow_text(padding.x = unit(1, "lines"), padding.y = unit(3, "mm"), min.size = 2, place = "bottom")
   } , NA)
-
+  expect_error( {
+    ggplot(testdata, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = vehicle, colour = class)) + geom_grow_text(padding.x = unit(1, "lines"), padding.y = unit(3, "mm"), min.size = 2, place = "bottom", reflow = T)
+  } , NA)
 })
 
 test_that("missing aesthetics and bad options don't work", {
