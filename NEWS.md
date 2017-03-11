@@ -1,3 +1,11 @@
+# v0.4
+
+## Major changes
+- Add ‘reflow’ option to `geom_fit_text`.
+
+## Bug fixes
+- Fix height calculation on text with ascenders/descenders.
+
 # v0.3
 
 ## Major changes
