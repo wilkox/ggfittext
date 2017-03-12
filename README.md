@@ -24,44 +24,50 @@ install_github('wilkox/ggfittext')
 Fitting text to a box
 =====================
 
-Sometimes you want to draw some text in ggplot2 so that it doesn't spill outside a bounding box. For example, this doesn't look very good:
+Sometimes you want to draw some text in ggplot2 so that it doesn't spill outside a bounding box. ggfittext provides a geom called `geom_fit_text` that will shrink text (when needed) to fit a bounding box.
 
 ``` r
 library(ggfittext)
 flyers <- data.frame(
-  vehicle = c("cessna", "jumbo jet", "space shuttle", "dyson sphere"),
-  xmin = c(45, 40, 25, 10),
-  xmax = c(55, 60, 75, 90),
-  ymin = c(5, 35, 65, 95),
-  ymax = c(25, 55, 85, 115)
+  vehicle = rep(c("kite", "jumbo jet", "space shuttle", "dyson sphere"), 2),
+  xmin = rep(c(52.5, 45, 30, 0), 2),
+  xmax = rep(c(67.5, 75, 90, 120), 2),
+  ymin = rep(c(0, 15, 35, 60), 2),
+  ymax = rep(c(10, 30, 55, 85), 2),
+  geom = factor(c(rep("geom_text", 4), rep("geom_fit_text", 4)),
+                levels = c("geom_text", "geom_fit_text"))
 )
-ggplot(flyers) +
-  geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)) +
-  geom_text(aes(label = vehicle, x = (xmin + xmax) / 2, y = (ymin + ymax) / 2))
+ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)) +
+  geom_rect() +
+  geom_text(
+    data = subset(flyers, geom == "geom_text"),
+    aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)
+  ) +
+  geom_fit_text(data = subset(flyers, geom == "geom_fit_text")) +
+  facet_wrap( ~ geom) +
+  labs(x = "", y = "")
 ```
 
 ![](README-doesnt_fit-1.png)
-
-ggfittext provides a geom called `geom_fit_text` that will shrink text (when needed) to fit a bounding box.
-
-``` r
-ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
-                   label = vehicle)) +
-  geom_rect() +
-  geom_fit_text()
-```
-
-![](README-geom_fit_text-1.png)
 
 You can define the box with ‘xmin’ and ‘xmax’ aesthetics, or alternatively with ‘x’ and ‘width’ (width is given in millimetres). Likewise, you can use either ‘ymin’ and ‘ymax’ or ‘y’ and ‘height’. The ‘width’ and ‘height’ aesthetics can be useful when drawing on a discrete axis.
 
 You can specify where in the bounding box to place the text with `place`, and a minimum size for the text with `min.size`. (Any text that would need to be smaller than `min.size` to fit the box will be hidden.)
 
 ``` r
-ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
-                   label = vehicle)) +
+ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)) +
   geom_rect() +
-  geom_fit_text(place = "topleft", min.size = 8)
+  geom_text(
+    data = subset(flyers, geom == "geom_text"),
+    aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)
+  ) +
+  geom_fit_text(
+    data = subset(flyers, geom == "geom_fit_text"),
+    place = "top",
+    min.size = 6
+  ) +
+  facet_wrap( ~ geom) +
+  labs(x = "", y = "")
 ```
 
 ![](README-geom_fit_text_2-1.png)
@@ -74,10 +80,18 @@ Growing text
 With the `grow = TRUE` argument, text will be grown as well as shrunk to fit the box:
 
 ``` r
-ggplot(flyers, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
-                   label = vehicle)) +
+ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)) +
   geom_rect() +
-  geom_fit_text(grow = TRUE)
+  geom_text(
+    data = subset(flyers, geom == "geom_text"),
+    aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)
+  ) +
+  geom_fit_text(
+    data = subset(flyers, geom == "geom_fit_text"),
+    grow = T
+  ) +
+  facet_wrap( ~ geom, ncol = 1) +
+  labs(x = "", y = "")
 ```
 
 ![](README-geom_fit_text_3-1.png)
@@ -90,14 +104,14 @@ The `reflow = TRUE` argument causes text to be reflowed (wrapped) as needed to f
 ``` r
 poem <- data.frame(
   text = rep(
-    "Whose text this is I think I know.\nHe would prefer it to reflow",
+    "Whose words these are I think I know.\nHe would prefer that they reflow",
     3
   ),
   xmin = rep(10, 3),
   xmax = rep(90, 3),
   ymin = rep(10, 3),
   ymax = rep(90, 3),
-  fit = c("geom_text", "no reflow", "reflow")
+  fit = c("geom_text", "without reflow", "with reflow")
 )
 ggplot(poem, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
                  label = text)) +
@@ -106,8 +120,8 @@ ggplot(poem, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
     data = subset(poem, fit == "geom_text"),
     aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)
   ) +
-  geom_fit_text(data = subset(poem, fit == "no reflow"), min.size = 0) +
-  geom_fit_text(data = subset(poem, fit == "reflow"), reflow = TRUE, min.size = 0) +
+  geom_fit_text(data = subset(poem, fit == "without reflow"), min.size = 0) +
+  geom_fit_text(data = subset(poem, fit == "with reflow"), reflow = TRUE, min.size = 0) +
   lims(x = c(0, 100), y = c(0, 100)) +
   labs(x = "", y = "") +
   facet_wrap(~ fit)
@@ -126,7 +140,7 @@ film <- data.frame(
   xmax = rep(70, 3),
   ymin = rep(0, 3),
   ymax = rep(100, 3),
-  fit = c("geom_text", "grow, no reflow", "grow and reflow")
+  fit = c("geom_text", "grow without reflow", "grow with reflow")
 )
 ggplot(film, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
                  label = text)) +
@@ -135,9 +149,9 @@ ggplot(film, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
     data = subset(film, fit == "geom_text"),
     aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)
   ) +
-  geom_fit_text(data = subset(film, fit == "grow, no reflow"), grow = TRUE) +
+  geom_fit_text(data = subset(film, fit == "grow without reflow"), grow = TRUE) +
   geom_fit_text(
-    data = subset(film, fit == "grow and reflow"),
+    data = subset(film, fit == "grow with reflow"),
     grow = TRUE,
     reflow = TRUE
   ) +
