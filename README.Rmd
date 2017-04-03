@@ -7,13 +7,32 @@ output:
     toc: true
 ---
 
-```{r, echo = FALSE}
+**ggfittext provides ggplot2 geoms for fitting text into a bounding box**
+
+```{r echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "README-"
 )
 ```
+
+```{r hero, echo = FALSE, message = FALSE}
+yeats <- data.frame(
+  xmin = c(0, 4, 6, 4, 4, 5, 5.5, 5,   5,    5.25, 5.25),
+  xmax = c(4, 8, 8, 6, 5, 6, 6,   5.5, 5.25, 5.5,  5.5),
+  ymin = c(0, 4, 0, 0, 2, 3, 2,   2,   2.5,  2.75, 2.5),
+  ymax = c(8, 8, 4, 2, 4, 4, 3,   2.5, 3,    3,    2.75),
+  label = c("Turning", "and", "turning", "in", "the", "widening", "gyre", "the",
+            "falcon", "cannot", "hear")
+)
+library(ggfittext)
+ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
+                  label)) +
+  geom_rect(colour = "black") +
+  geom_fit_text(grow = T, min.size = 0)
+```
+
 # Installation
 
 Install ggplot2 and devtools if you don't have them already.
