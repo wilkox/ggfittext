@@ -154,13 +154,13 @@ GeomFitText <- ggproto(
       ("xmin" %in% names(data) & "xmax" %in% names(data)),
       ("x" %in% names(data) & "width" %in% names(data))
     )) {
-      stop("geom_fit_text needs either ‘xmin’ and ‘xmax’, or ‘x’ and ‘width’", .call = F)
+      stop("geom_fit_text needs either 'xmin' and 'xmax', or 'x' and 'width'", .call = F)
     }
     if (!xor(
       "ymin" %in% names(data) & "ymax" %in% names(data),
       "y" %in% names(data) * "height" %in% names(data)
     )) {
-      stop("geom_fit_text needs either ‘ymin’ and ‘ymax’, or ‘y’ and ‘height’", .call = F)
+      stop("geom_fit_text needs either 'ymin' and 'ymax', or 'y' and 'height'", .call = F)
     }
 
     gt <- grid::gTree(
@@ -265,7 +265,7 @@ makeContent.fittexttree <- function(x) {
       text$vjust <- 0.5
 
     } else {
-      stop("geom_fit_text does not recognise place ‘", x$place, "’ (try something like ‘topright’ or ‘centre’)", call. = F)
+      stop("geom_fit_text does not recognise place '", x$place, "' (try something like 'topright' or 'centre')", call. = F)
     }
 
     # Create textGrob
