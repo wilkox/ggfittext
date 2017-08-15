@@ -1,3 +1,8 @@
+# v0.4.1
+
+## Bug fixes
+- Fix wide characters causing problems in non-UTF-8 locales.
+
 # v0.4
 
 ## Major changes
