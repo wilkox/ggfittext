@@ -4,6 +4,8 @@
 -   [Growing text](#growing-text)
 -   [Reflowing text](#reflowing-text)
 
+[![Travis-CI Build Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
+
 **ggfittext provides ggplot2 geoms for fitting text into a bounding box**
 
 ![](README-hero-1.png)

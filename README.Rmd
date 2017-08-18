@@ -7,6 +7,8 @@ output:
     toc: true
 ---
 
+[![Travis-CI Build Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
+
 **ggfittext provides ggplot2 geoms for fitting text into a bounding box**
 
 ```{r echo = FALSE}
