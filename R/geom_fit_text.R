@@ -70,7 +70,7 @@
 #' determine the dimensions of the bounding box. Default to 4 mm.
 #' @param reflow Logical, indicating whether text should be reflowed (wrapped)
 #' to better fit the bounding box. See Details.
-#' 
+#'
 #' @export
 geom_fit_text <- function(
   mapping = NULL,
@@ -278,7 +278,7 @@ makeContent.fittexttree <- function(x) {
       vjust = text$vjust,
       rot = text$angle,
       gp = grid::gpar(
-        col = alpha(text$colour, text$alpha),
+        col = ggplot2::alpha(text$colour, text$alpha),
         fontsize = text$size,
         fontfamily = text$family,
         fontface = text$fontface,
