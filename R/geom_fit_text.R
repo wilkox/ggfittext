@@ -4,13 +4,13 @@
 #'
 #' Except where noted, these geoms should behave like \code{geom_text}. In
 #' addition to the normal \code{geom_text} aesthetics, \code{ggfittext} geoms
-#' use ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to specify the bounding box for the
+#' use 'xmin', 'xmax', 'ymin' and 'ymax' to specify the bounding box for the
 #' label text.
 #'
-#' If one or both axes are discrete, or for convenience, ‘x’ and/or ‘y’
-#' aesthetics can be provided instead of ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to
+#' If one or both axes are discrete, or for convenience, 'x' and/or 'y'
+#' aesthetics can be provided instead of 'xmin', 'xmax', 'ymin' and 'ymax' to
 #' give the centre of the bounding box. The height and/or width of the boundary
-#' box will be determined by the ‘height’ and/or ‘width’ aesthetics. These are
+#' box will be determined by the 'height' and/or 'width' aesthetics. These are
 #' given in millimetres, and default to 4 mm.
 #'
 #' \code{grow = FALSE} (default) will draw the label text normally, unless it is
@@ -26,7 +26,7 @@
 #' reflow that best matches the aspect ratio of the bounding box will be
 #' selected, and the text will then be shrunk as normal. When \code{grow =
 #' TRUE}, the text will be reflowed to best match the aspect ratio of the
-#' bounding box, then grown as normal. Existing line breaks (‘\\n’) in the text
+#' bounding box, then grown as normal. Existing line breaks ('\\n') in the text
 #' will be respected when reflowing.
 #'
 #' @section Aesthetics:
@@ -50,23 +50,23 @@
 #'   \item size
 #' }
 #'
-#' @param padding.x Amount of padding around text horizontally, as a grid ‘unit’
+#' @param padding.x Amount of padding around text horizontally, as a grid 'unit'
 #' object. Default is 1 mm.
-#' @param padding.y Amount of padding around text vertically, as a grid ‘unit’
+#' @param padding.y Amount of padding around text vertically, as a grid 'unit'
 #' object. Default is 0.1 lines.
 #' @param min.size Minimum font size, in points. If specified, text that
 #' would need to be shrunk below this size to fit the bounding box will not be
 #' drawn. Defaults to 4 pt.
 #' @param place Where to place the text within the bounding box. Default is
-#' ‘centre’, other options are ‘topleft’, ‘top’, ‘topright’, etc.
+#' 'centre', other options are 'topleft', 'top', 'topright', etc.
 #' @param grow Logical, indicating whether text should grow larger than
 #' the set size to fill the bounding box. Defaults to FALSE. See Details.
 #' @param mapping,data,stat,position,na.rm,show.legend,inherit.aes,... Standard
-#' geom arguments as for ‘geom_text’. Note that x and y aesthetics will be
+#' geom arguments as for 'geom_text'. Note that x and y aesthetics will be
 #' ignored; xmin, xmax, ymin and ymax aesthetics specifying the bounding box are
 #' required.
 #' @param height, width (Numeric, in millimetres.) If
-#' ‘xmin’/‘xmax’ and/or ‘ymin’/‘ymax’ are not provided, these values will
+#' 'xmin'/'xmax' and/or 'ymin'/'ymax' are not provided, these values will
 #' determine the dimensions of the bounding box. Default to 4 mm.
 #' @param reflow Logical, indicating whether text should be reflowed (wrapped)
 #' to better fit the bounding box. See Details.
@@ -113,7 +113,6 @@ geom_fit_text <- function(
 #' @rdname ggplot2-ggproto
 #' @format NULL
 #' @usage NULL
-#' @export
 GeomFitText <- ggproto(
   "GeomFitText",
   Geom,
@@ -154,13 +153,19 @@ GeomFitText <- ggproto(
       ("xmin" %in% names(data) & "xmax" %in% names(data)),
       ("x" %in% names(data) & "width" %in% names(data))
     )) {
-      stop("geom_fit_text needs either 'xmin' and 'xmax', or 'x' and 'width'", .call = F)
+      stop(
+        "geom_fit_text needs either 'xmin' and 'xmax', or 'x' and 'width'",
+        .call = F
+      )
     }
     if (!xor(
       "ymin" %in% names(data) & "ymax" %in% names(data),
       "y" %in% names(data) * "height" %in% names(data)
     )) {
-      stop("geom_fit_text needs either 'ymin' and 'ymax', or 'y' and 'height'", .call = F)
+      stop(
+        "geom_fit_text needs either 'ymin' and 'ymax', or 'y' and 'height'",
+        .call = F
+      )
     }
 
     gt <- grid::gTree(
@@ -181,7 +186,6 @@ GeomFitText <- ggproto(
 
 #' grid::makeContent function for the grobTree of fitTextTree objects
 #' @param x A grid grobTree.
-#' @export
 #' @noRd
 makeContent.fittexttree <- function(x) {
 
@@ -189,14 +193,22 @@ makeContent.fittexttree <- function(x) {
 
   # If x provided instead of xmin/xmax, generate boundary box from width
   if ("x" %in% names(data)) {
-    data$xmin <- data$x - (grid::convertWidth(unit(data$width, "mm"), "native", valueOnly = T) / 2)
-    data$xmax <- data$x + (grid::convertWidth(unit(data$width, "mm"), "native", valueOnly = T) / 2)
+    data$xmin <- data$x - (
+      grid::convertWidth(unit(data$width, "mm"), "native", valueOnly = T) / 2
+    )
+    data$xmax <- data$x + (
+      grid::convertWidth(unit(data$width, "mm"), "native", valueOnly = T) / 2
+    )
   }
 
   # If y provided instead of ymin/ymax, generate boundary box from height
   if ("y" %in% names(data)) {
-    data$ymin <- data$y - (grid::convertHeight(unit(data$height, "mm"), "native", valueOnly = T) / 2)
-    data$ymax <- data$y + (grid::convertHeight(unit(data$height, "mm"), "native", valueOnly = T) / 2)
+    data$ymin <- data$y - (
+      grid::convertHeight(unit(data$height, "mm"), "native", valueOnly = T) / 2
+    )
+    data$ymax <- data$y + (
+      grid::convertHeight(unit(data$height, "mm"), "native", valueOnly = T) / 2
+    )
   }
 
   # Padding around text
@@ -265,7 +277,12 @@ makeContent.fittexttree <- function(x) {
       text$vjust <- 0.5
 
     } else {
-      stop("geom_fit_text does not recognise place '", x$place, "' (try something like 'topright' or 'centre')", call. = F)
+      stop(
+        "geom_fit_text does not recognise place '",
+        x$place,
+        "' (try something like 'topright' or 'centre')",
+        call. = F
+      )
     }
 
     # Create textGrob
@@ -327,7 +344,10 @@ makeContent.fittexttree <- function(x) {
           # Reflow text to this width
           # By splitting the text on whitespace and passing normalize = F,
           # line breaks in the original text are respected
-          tg$label <- paste(stringi::stri_wrap(label, w, normalize = F), collapse = "\n")
+          tg$label <- paste(
+            stringi::stri_wrap(label, w, normalize = F),
+            collapse = "\n"
+          )
 
           # Calculate aspect ratio and update if this is the new best ratio
           aspect_ratio <- labelw(tg) / labelh(tg)
