@@ -1,14 +1,16 @@
 Package: ggfittext
+Title: Fit Text Inside A Box
 Version: 0.4.1
 Authors@R: person("David", "Wilkins", email = "david@wilkox.org",
-  role = c("aut", "cre"))
-Description: ggplot2 geoms to fit text into bounding boxes.
+                  role = c("aut", "cre"))
+Description: Provides ggplot2 geoms to fit text into a box by growing, shrinking
+    or wrapping the text.
 Depends:
-    R (>= 3.3.2),
-    ggplot2 (>= 2.2.1)
+    R (>= 3.3.2)
 License: GPL-2
 LazyData: true
 Imports:
     grid,
-    stringi (>= 1.1.2)
+    stringi (>= 1.1.2),
+    ggplot2 (>= 2.2.1)
 RoxygenNote: 5.0.1

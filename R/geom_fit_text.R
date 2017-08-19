@@ -1,4 +1,4 @@
-#' @title Fit text to a bounding box.
+#' @title A ggplot2 geom to fit text inside a rectangle
 #'
 #' @details
 #'
@@ -80,15 +80,15 @@ geom_fit_text <- function(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  padding.x = unit(1, "mm"),
-  padding.y = unit(0.1, "lines"),
+  padding.x = grid::unit(1, "mm"),
+  padding.y = grid::unit(0.1, "lines"),
   place = "centre",
   min.size = 4,
   grow = F,
   reflow = F,
   ...
 ) {
-  layer(
+  ggplot2::layer(
     geom = GeomFitText,
     mapping = mapping,
     data = data,
@@ -113,11 +113,11 @@ geom_fit_text <- function(
 #' @rdname ggplot2-ggproto
 #' @format NULL
 #' @usage NULL
-GeomFitText <- ggproto(
+GeomFitText <- ggplot2::ggproto(
   "GeomFitText",
-  Geom,
+  ggplot2::Geom,
   required_aes = c("label"),
-  default_aes = aes(
+  default_aes = ggplot2::aes(
     alpha = 1,
     angle = 0,
     colour = "black",
@@ -133,13 +133,13 @@ GeomFitText <- ggproto(
     ymin = NULL,
     ymax = NULL
   ),
-  draw_key = draw_key_text,
+  draw_key = ggplot2::draw_key_text,
   draw_panel = function(
     data,
     panel_scales,
     coord,
-    padding.x = unit(1, "mm"),
-    padding.y = unit(0.1, "lines"),
+    padding.x = grid::unit(1, "mm"),
+    padding.y = grid::unit(0.1, "lines"),
     min.size = 4,
     grow = F,
     reflow = F,
@@ -194,20 +194,20 @@ makeContent.fittexttree <- function(x) {
   # If x provided instead of xmin/xmax, generate boundary box from width
   if ("x" %in% names(data)) {
     data$xmin <- data$x - (
-      grid::convertWidth(unit(data$width, "mm"), "native", valueOnly = T) / 2
+      grid::convertWidth(grid::unit(data$width, "mm"), "native", valueOnly = T) / 2
     )
     data$xmax <- data$x + (
-      grid::convertWidth(unit(data$width, "mm"), "native", valueOnly = T) / 2
+      grid::convertWidth(grid::unit(data$width, "mm"), "native", valueOnly = T) / 2
     )
   }
 
   # If y provided instead of ymin/ymax, generate boundary box from height
   if ("y" %in% names(data)) {
     data$ymin <- data$y - (
-      grid::convertHeight(unit(data$height, "mm"), "native", valueOnly = T) / 2
+      grid::convertHeight(grid::unit(data$height, "mm"), "native", valueOnly = T) / 2
     )
     data$ymax <- data$y + (
-      grid::convertHeight(unit(data$height, "mm"), "native", valueOnly = T) / 2
+      grid::convertHeight(grid::unit(data$height, "mm"), "native", valueOnly = T) / 2
     )
   }
 
