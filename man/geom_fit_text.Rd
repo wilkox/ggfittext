@@ -2,89 +2,76 @@
 % Please edit documentation in R/geom_fit_text.R
 \name{geom_fit_text}
 \alias{geom_fit_text}
-\alias{geom_grow_text}
-\alias{geom_shrink_text}
-\title{Fit text to a bounding box.}
+\title{A ggplot2 geom to fit text inside a box}
 \usage{
 geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, padding.x = unit(1, "mm"), padding.y = unit(0.1,
-  "lines"), place = "centre", min.size = 4, grow = F, reflow = F, ...)
-
-geom_grow_text(...)
-
-geom_shrink_text(...)
+  inherit.aes = TRUE, padding.x = grid::unit(1, "mm"),
+  padding.y = grid::unit(0.1, "lines"), place = "centre", min.size = 4,
+  grow = F, reflow = F, ...)
 }
 \arguments{
-\item{mapping, data, stat, position, na.rm, show.legend, inherit.aes, ...}{Standard
-geom arguments as for ‘geom_text’. Note that x and y aesthetics will be
-ignored; xmin, xmax, ymin and ymax aesthetics specifying the bounding box are
-required.}
+\item{mapping}{\code{ggplot2::aes()} object as standard in ggplot2. Note that
+aesthetics specifying the box must be provided. See Details.}
 
-\item{padding.x}{Amount of padding around text horizontally, as a grid ‘unit’
-object. Default is 1 mm.}
+\item{data, stat, position, na.rm, show.legend, inherit.aes, ...}{Standard geom
+arguments as for \code{ggplot2::geom_text()}.}
 
-\item{padding.y}{Amount of padding around text vertically, as a grid ‘unit’
-object. Default is 0.1 lines.}
+\item{padding.x, padding.y}{Amount of horizontal and vertical padding around
+the text, expressed as \code{grid::unit()} objects. Default to 1 mm and 0.1
+lines respectively.}
 
-\item{place}{Where to place the text within the bounding box. Default is
-‘centre’, other options are ‘topleft’, ‘top’, ‘topright’, etc.}
+\item{place}{Where inside the box to place the text. Default is 'centre';
+other options are 'topleft', 'top', 'topright', etc.}
 
-\item{min.size}{Minimum font size, in points. If specified, text that
-would need to be shrunk below this size to fit the bounding box will not be
-drawn. Defaults to 4 pt.}
+\item{min.size}{Minimum font size, in points. If provided, text that would
+need to be shrunk below this size to fit the box will not be drawn. Defaults
+to 4 pt.}
 
-\item{grow}{Logical, indicating whether text should grow larger than
-the set size to fill the bounding box. Defaults to FALSE. See Details.}
+\item{grow}{If 'TRUE', text will be grown as well as shrunk to fill the box.
+See Details.}
 
-\item{reflow}{Logical, indicating whether text should be reflowed (wrapped)
-to better fit the bounding box. See Details.}
-
-\item{height, }{width (Numeric, in millimetres.) If
-‘xmin’/‘xmax’ and/or ‘ymin’/‘ymax’ are not provided, these values will
-determine the dimensions of the bounding box. Default to 4 mm.}
+\item{reflow}{If 'TRUE', text will be reflowed (wrapped) to better fit the
+box. See Details.}
+}
+\description{
+\code{geom_fit_text} shrinks, grows or wraps text to fit inside a defined
+rectangular area.
 }
 \details{
-Except where noted, these geoms should behave like \code{geom_text}. In
-addition to the normal \code{geom_text} aesthetics, \code{ggfittext} geoms
-use ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to specify the bounding box for the
-label text.
+Except where noted, \code{geom_fit_text} behaves more or less like
+\code{ggplot2::geom_text}.
 
-If one or both axes are discrete, or for convenience, ‘x’ and/or ‘y’
-aesthetics can be provided instead of ‘xmin’, ‘xmax’, ‘ymin’ and ‘ymax’ to
-give the centre of the bounding box. The height and/or width of the boundary
-box will be determined by the ‘height’ and/or ‘width’ aesthetics. These are
-given in millimetres, and default to 4 mm.
+In addition to the normal \code{geom_text} aesthetics, \code{geom_fit_text}
+requires you to specify the box in which you wish to fit the text, usually
+with 'xmin', 'xmax', 'ymin' and 'ymax' aesthetics. Alternatively, you can
+specify the centre of the box with 'x' and/or 'y', and the height and/or
+width of the box with 'height' and/or 'width'. This can be useful when one or
+both axes are discrete. 'height' and 'width' are expressed in millimetres;
+they both default to 4 mm.
 
-\code{grow = FALSE} (default) will draw the label text normally, unless it is
-too big for the bounding box, in which case it will shrink the text to fit
-the box. \code{grow = TRUE} will shrink or grow the label text as needed to
-fill the box. \code{geom_shrink_text} and \code{geom_grow_text} are
-convenience wrappers for \code{grow = FALSE} and \code{grow = TRUE}
-respectively.
+By default, the text will be drawn as if with \code{geom_text}, unless it is
+too big for the box, in which case it will be shrunk to fit the box. With
+\code{grow = TRUE}, the text will be made to fill the box completely whether
+that requires shrinking or growing.
 
-\code{reflow = TRUE} will cause the text to be reflowed (wrapped). When
-\code{grow = FALSE} (default), text that doesn't fit the bounding box will be
-reflowed until it does. If no amount of reflowing will make the text fit, the
-reflow that best matches the aspect ratio of the bounding box will be
-selected, and the text will then be shrunk as normal. When \code{grow =
-TRUE}, the text will be reflowed to best match the aspect ratio of the
-bounding box, then grown as normal. Existing line breaks (‘\\n’) in the text
-will be respected when reflowing.
+\code{reflow = TRUE} will cause the text to be reflowed (wrapped) to better
+fit in the box. When \code{grow = FALSE} (default), text that fits the box
+will be drawn as if with \code{geom_text}; text that doesn't fit the box will
+be reflowed until it does. If the text cannot be made to fit by reflowing
+alone, it will be reflowed to match the aspect ratio of the box as closely as
+possible, then be shrunk to fit the box. When \code{grow = TRUE}, the text
+will be reflowed to best match the aspect ratio of the box, then made to fill
+the box completely whether that requires growing or shrinking. Existing line
+breaks ('\\n') in the text will be respected when reflowing.
 }
 \section{Aesthetics}{
 
 
 \itemize{
   \item label (required)
-  \item xmin
-  \item xmax
-  \item ymin
-  \item ymax
-  \item x
-  \item y
-  \item height (in millimetres)
-  \item width (in millimetres)
+  \item xmin, xmax OR x, width (required)
+  \item ymin, ymax OR y, height (required)
   \item alpha
   \item angle
   \item colour
