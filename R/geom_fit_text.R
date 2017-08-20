@@ -170,12 +170,10 @@ GeomFitText <- ggplot2::ggproto(
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
     gt
-
   }
 )
 
-#' grid::makeContent function for the grobTree of fitTextTree objects
-#' @noRd
+#' @importFrom grid makeContent
 #' @export
 makeContent.fittexttree <- function(x) {
 
