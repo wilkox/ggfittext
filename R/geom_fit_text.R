@@ -176,6 +176,7 @@ GeomFitText <- ggplot2::ggproto(
 
 #' grid::makeContent function for the grobTree of fitTextTree objects
 #' @noRd
+#' @export
 makeContent.fittexttree <- function(x) {
 
   data <- x$data

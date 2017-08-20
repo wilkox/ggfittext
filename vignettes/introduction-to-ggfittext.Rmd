@@ -158,7 +158,7 @@ ggplot(film, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
 
 # Example: a heatmap
 
-```{r heatmap, fig.width = 8}
+```{r heatmap, fig.width = 7}
 tournament <- data.frame(
   teamA = rep(c("Radon Canyon Raiders", "Desert Bluffs Destroyers",
                 "Old Town Orphans"), 3),
@@ -175,6 +175,6 @@ tournament <- data.frame(
 ggplot(tournament, aes(x = teamA, y = teamB, fill = game_time_mins,
                        label = venue)) +
   geom_tile() +
-  geom_fit_text(width = 35, height = 15, min.size = 0, reflow = T, grow = T,
+  geom_fit_text(width = 30, height = 15, min.size = 0, reflow = T, grow = T,
                 colour = "white")
 ```
