@@ -37,18 +37,16 @@ ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
 
 # Installation
 
-Install ggplot2 and devtools if you don't have them already.
+Install the release version of ggfittext from CRAN:
 
 ```{r eval = FALSE}
-install.packages("ggplot2")
-install.packages("devtools")
+install.packages("ggfittext")
 ```
 
-Install ggfittext from github.
+If you want the development version, install it from GitHub:
 
 ```{r eval = FALSE}
-library(devtools)
-install_github('wilkox/ggfittext')
+devtools::install_github('wilkox/ggfittext')
 ```
 
 # Fitting text inside a box

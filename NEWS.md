@@ -1,3 +1,8 @@
+# v0.4.2
+
+## Minor changes
+- Release version for CRAN submission.
+
 # v0.4.1.9001
 
 ## Bug fixes

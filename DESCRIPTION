@@ -1,6 +1,6 @@
 Package: ggfittext
 Title: Fit Text Inside a Box
-Version: 0.4.1.9001
+Version: 0.4.2
 Authors@R: person("David", "Wilkins", email = "david@wilkox.org",
                   role = c("aut", "cre"))
 Description: Provides ggplot2 geoms to fit text into a box by growing, shrinking
