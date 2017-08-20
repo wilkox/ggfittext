@@ -1,5 +1,5 @@
 
-[![Travis-CI Build Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
+[![Travis-CI Build Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
 
 **ggfittext provides a ggplot2 geom for fitting text inside a box**
 
