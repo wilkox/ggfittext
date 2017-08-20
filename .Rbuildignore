@@ -1,3 +1,4 @@
 ^\.travis\.yml$
 ^README\.Rmd$
+^README.html$
 ^NEWS\.md$
