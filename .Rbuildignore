@@ -1,4 +1,5 @@
 ^\.travis\.yml$
 ^README\.Rmd$
 ^README.html$
+^README-.*\.png$
 ^NEWS\.md$

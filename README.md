@@ -3,7 +3,7 @@
 
 **ggfittext provides a ggplot2 geom for fitting text inside a box**
 
-![](README-hero-1.png)
+![](man/figures/README-hero-1.png)
 
 Installation
 ============
@@ -53,7 +53,7 @@ ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
   labs(x = "", y = "")
 ```
 
-![](README-doesnt_fit-1.png)
+![](man/figures/README-doesnt_fit-1.png)
 
 You can define the width of the box with either ‘xmin’ and ‘xmax’ aesthetics, or alternatively with ‘x’ (for the horizontal centre of the box) and ‘width’ (in millimetres). Likewise, you can use either ‘ymin’ and ‘ymax’ or ‘y’ and ‘height’. The ‘x/width’ and ‘y/height’ aesthetics can be useful when using a discrete axis.
 
@@ -71,7 +71,7 @@ ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
   labs(x = "", y = "")
 ```
 
-![](README-geom_fit_text_2-1.png)
+![](man/figures/README-geom_fit_text_2-1.png)
 
 Text can be placed in any corner (‘topleft’, ‘topright’, …) or at the midpoint of any side (‘bottom’, ‘left’, …), as well as the default ‘centre’.
 
@@ -91,7 +91,7 @@ ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
   labs(x = "", y = "")
 ```
 
-![](README-geom_fit_text_3-1.png)
+![](man/figures/README-geom_fit_text_3-1.png)
 
 Reflowing text
 ==============
@@ -126,7 +126,7 @@ ggplot(poem, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
   facet_wrap(~ fit)
 ```
 
-![](README-reflow-1.png)
+![](man/figures/README-reflow-1.png)
 
 Note that existing line breaks in the text are respected.
 
@@ -160,7 +160,7 @@ ggplot(film, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
   facet_wrap(~ fit, ncol = 1)
 ```
 
-![](README-reflow_and_grow-1.png)
+![](man/figures/README-reflow_and_grow-1.png)
 
 Example: a heatmap
 ==================
@@ -186,4 +186,4 @@ ggplot(tournament, aes(x = teamA, y = teamB, fill = game_time_mins,
                 colour = "white")
 ```
 
-![](README-heatmap-1.png)
+![](man/figures/README-heatmap-1.png)
