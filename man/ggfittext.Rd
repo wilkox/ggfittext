@@ -8,4 +8,3 @@
 \description{
 This package provides only one function, \code{geom_fit_text}.
 }
-

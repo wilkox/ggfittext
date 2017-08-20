@@ -13,7 +13,7 @@ Imports:
     grid (>= 3.4.1),
     stringi (>= 1.1.2),
     ggplot2 (>= 2.2.1)
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 URL: https://github.com/wilkox/ggfittext
 BugReports: https://github.com/wilkox/ggfittext/issues
 Suggests: knitr,
