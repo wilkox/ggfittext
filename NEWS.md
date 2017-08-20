@@ -1,3 +1,14 @@
+# v0.4.1.9001
+
+## Bug fixes
+- Tidy up some namespace issues (thanks to @JohnsonHsieh)
+- Rewrite documentation
+- Add example to README, edit and produce vignette
+- Misc. minor fixes to pass R CMD check
+
+## Minor changes
+- Deprecate `geom_shrink_text()` and `geom_grow_text()`
+
 # v0.4.1
 
 ## Bug fixes
