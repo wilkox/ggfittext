@@ -1,55 +1,13 @@
 ---
-output: 
-  rmarkdown::github_document:
-    html_preview: true
-    fig_width: 4
-    fig_height: 4
+title: "Introduction to ggfittext"
+author: "David Wilkins"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to ggfittext}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
-
-```{r echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "README-"
-)
-```
-
-[![Travis-CI Build Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
-
-**ggfittext provides a ggplot2 geom for fitting text inside a box**
-
-```{r hero, echo = FALSE, message = FALSE}
-yeats <- data.frame(
-  xmin = c(0, 4, 6, 4, 4, 5, 5.5, 5,   5,    5.25, 5.25),
-  xmax = c(4, 8, 8, 6, 5, 6, 6,   5.5, 5.25, 5.5,  5.5),
-  ymin = c(0, 4, 0, 0, 2, 3, 2,   2,   2.5,  2.75, 2.5),
-  ymax = c(8, 8, 4, 2, 4, 4, 3,   2.5, 3,    3,    2.75),
-  label = c("Turning", "and", "turning", "in", "the", "widening", "gyre", "the",
-            "falcon", "cannot", "hear")
-)
-library(ggplot2)
-library(ggfittext)
-ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
-                  label)) +
-  geom_rect(colour = "black") +
-  geom_fit_text(grow = T, min.size = 0)
-```
-
-# Installation
-
-Install ggplot2 and devtools if you don't have them already.
-
-```{r eval = FALSE}
-install.packages("ggplot2")
-install.packages("devtools")
-```
-
-Install ggfittext from github.
-
-```{r eval = FALSE}
-library(devtools)
-install_github('wilkox/ggfittext')
-```
 
 # Fitting text inside a box
 
@@ -217,6 +175,6 @@ tournament <- data.frame(
 ggplot(tournament, aes(x = teamA, y = teamB, fill = game_time_mins,
                        label = venue)) +
   geom_tile() +
-  geom_fit_text(width = 35, height = 25, min.size = 0, reflow = T, grow = T,
+  geom_fit_text(width = 35, height = 15, min.size = 0, reflow = T, grow = T,
                 colour = "white")
 ```
