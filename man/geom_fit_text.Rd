@@ -82,3 +82,11 @@ breaks ('\\n') in the text will be respected when reflowing.
 }
 }
 
+\examples{
+
+ggplot2::ggplot(ggplot2::presidential, ggplot2::aes(ymin = start, ymax = end,
+    label = name, fill = party, xmin = 0, xmax = 1)) +
+  ggplot2::geom_rect(colour = 'black') +
+  geom_fit_text(grow = TRUE)
+
+}

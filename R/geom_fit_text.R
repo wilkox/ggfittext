@@ -63,6 +63,13 @@
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
 #' arguments as for \code{ggplot2::geom_text()}.
 #'
+#' @examples
+#'
+#' ggplot2::ggplot(ggplot2::presidential, ggplot2::aes(ymin = start, ymax = end,
+#'     label = name, fill = party, xmin = 0, xmax = 1)) +
+#'   ggplot2::geom_rect(colour = 'black') +
+#'   geom_fit_text(grow = TRUE)
+#'
 #' @export
 geom_fit_text <- function(
   mapping = NULL,
