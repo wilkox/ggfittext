@@ -2,5 +2,4 @@
 ^README\.Rmd$
 ^README.html$
 ^README-.*\.png$
-^NEWS\.md$
 ^cran-comments.md$
