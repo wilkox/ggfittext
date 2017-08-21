@@ -2,6 +2,8 @@
 
 This is a resubmission. In this version I have:
 
+* Mentioned 'ggplot2' in the package title.
+
 * Surrounded all software names with 'single quotes'.
 
 * Added an example to the `geom_fit_text` documentation.
