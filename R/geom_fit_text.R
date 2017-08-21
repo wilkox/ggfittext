@@ -1,4 +1,4 @@
-#' A ggplot2 geom to fit text inside a box
+#' A 'ggplot2' geom to fit text inside a box
 #'
 #' \code{geom_fit_text} shrinks, grows or wraps text to fit inside a defined
 #' rectangular area.
@@ -58,8 +58,8 @@
 #' See Details.
 #' @param reflow If 'TRUE', text will be reflowed (wrapped) to better fit the
 #' box. See Details.
-#' @param mapping \code{ggplot2::aes()} object as standard in ggplot2. Note that
-#' aesthetics specifying the box must be provided. See Details.
+#' @param mapping \code{ggplot2::aes()} object as standard in 'ggplot2'. Note
+#' that aesthetics specifying the box must be provided. See Details.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
 #' arguments as for \code{ggplot2::geom_text()}.
 #'

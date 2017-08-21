@@ -1,14 +1,14 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
 
-**ggfittext provides a ggplot2 geom for fitting text inside a box**
+**'ggfittext' provides a 'ggplot2' geom for fitting text inside a box**
 
 ![](man/figures/README-hero-1.png)
 
 Installation
 ============
 
-Install the release version of ggfittext from CRAN:
+Install the release version of 'ggfittext' from CRAN:
 
 ``` r
 install.packages("ggfittext")
@@ -23,9 +23,9 @@ devtools::install_github('wilkox/ggfittext')
 Fitting text inside a box
 =========================
 
-Sometimes you want to draw some text in a ggplot2 plot so that it fits inside a defined area. For example, you might want to label tiles in a heat map without letting the labels spill over into other tiles; or you might want to constrain some point labels to imaginary boxes so they don't get too big. It's possible to achieve this by manually fiddling with the text size, but this is both tedious and un-reproducible.
+Sometimes you want to draw some text in a 'ggplot2' plot so that it fits inside a defined area. For example, you might want to label tiles in a heat map without letting the labels spill over into other tiles; or you might want to constrain some point labels to imaginary boxes so they don't get too big. It's possible to achieve this by manually fiddling with the text size, but this is both tedious and un-reproducible.
 
-ggfittext provides a special geom called `geom_fit_text()` that automates fitting text inside a box. It works more or less like `ggplot2::geom_text()`, but provides some additional aesthetics and options that let you specify the box in which the text is to fit and how to make it fit.
+'ggfittext' provides a special geom called `geom_fit_text()` that automates fitting text inside a box. It works more or less like `ggplot2::geom_text()`, but provides some additional aesthetics and options that let you specify the box in which the text is to fit and how to make it fit.
 
 ``` r
 library(ggplot2)

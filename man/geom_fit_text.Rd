@@ -2,7 +2,7 @@
 % Please edit documentation in R/geom_fit_text.R
 \name{geom_fit_text}
 \alias{geom_fit_text}
-\title{A ggplot2 geom to fit text inside a box}
+\title{A 'ggplot2' geom to fit text inside a box}
 \usage{
 geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
@@ -11,8 +11,8 @@ geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   grow = F, reflow = F, ...)
 }
 \arguments{
-\item{mapping}{\code{ggplot2::aes()} object as standard in ggplot2. Note that
-aesthetics specifying the box must be provided. See Details.}
+\item{mapping}{\code{ggplot2::aes()} object as standard in 'ggplot2'. Note
+that aesthetics specifying the box must be provided. See Details.}
 
 \item{data, stat, position, na.rm, show.legend, inherit.aes, ...}{Standard geom
 arguments as for \code{ggplot2::geom_text()}.}
