@@ -6,7 +6,7 @@
 
 # R CMD check results
 
-There were ERRORs, WARNINGs or NOTEs.
+There were no ERRORs, WARNINGs or NOTEs.
 
 # Downstream dependencies
 
