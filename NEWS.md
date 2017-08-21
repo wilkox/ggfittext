@@ -1,3 +1,9 @@
+# v0.4.3
+
+## Minor changes
+- Style change for CRAN submission.
+- Add example to `geom_fit_text()` documentation.
+
 # v0.4.2
 
 ## Minor changes

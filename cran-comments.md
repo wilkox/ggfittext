@@ -1,3 +1,11 @@
+## Resubmission
+
+This is a resubmission. In this version I have:
+
+* Surrounded all software names with 'single quotes'.
+
+* Added an example to the `geom_fit_text` documentation.
+
 # Test environments
 
 * local OS X install, R 3.4.1
