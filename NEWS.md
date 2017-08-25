@@ -1,3 +1,9 @@
+# v0.4.3.9001
+
+## Bug fixes
+
+- Remove README.html so README renders correctly on GitHub
+
 # v0.4.3
 
 ## Minor changes
