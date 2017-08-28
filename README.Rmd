@@ -47,7 +47,7 @@ install.packages("ggfittext")
 If you want the development version, install it from GitHub:
 
 ```{r eval = FALSE}
-devtools::install_github('wilkox/ggfittext')
+devtools::install_github("wilkox/ggfittext")
 ```
 
 # Fitting text inside a box
