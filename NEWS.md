@@ -1,3 +1,10 @@
+# v0.4.3.9002
+
+## Bug fixes
+
+- Fix typo in README.
+- Bump R version dependency to 3.4.1 to align with 'grid' version.
+
 # v0.4.3.9001
 
 ## Bug fixes
