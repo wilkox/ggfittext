@@ -1,3 +1,9 @@
+# v0.4.3.9003
+
+## Minor changes
+
+- Change R and grid dependency to 3.1
+
 # v0.4.3.9002
 
 ## Bug fixes
