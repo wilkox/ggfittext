@@ -1,20 +1,12 @@
-# v0.4.3.9003
+# v0.5.0
 
 ## Minor changes
 
 - Change R and grid dependency to 3.1
 
-# v0.4.3.9002
-
 ## Bug fixes
 
-- Fix typo in README.
-- Bump R version dependency to 3.4.1 to align with 'grid' version.
-
-# v0.4.3.9001
-
-## Bug fixes
-
+- Fix typo in README
 - Remove README.html so README renders correctly on GitHub
 
 # v0.4.3
@@ -27,8 +19,6 @@
 
 ## Minor changes
 - Release version for CRAN submission.
-
-# v0.4.1.9001
 
 ## Bug fixes
 - Tidy up some namespace issues (thanks to @JohnsonHsieh)

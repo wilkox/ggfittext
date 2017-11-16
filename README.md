@@ -1,14 +1,15 @@
 
-[![Travis-CI Build Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
+[![Travis-CI Build
+Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
 
-**'ggfittext' provides a 'ggplot2' geom for fitting text inside a box**
+**‘ggfittext’ provides a ‘ggplot2’ geom for fitting text inside a box**
 
-![](man/figures/README-hero-1.png)
+![](man/figures/README-hero-1.png)<!-- -->
 
-Installation
-============
+# Installation
 
-Install the release version of 'ggfittext' from CRAN:
+Install the release version of ‘ggfittext’ from CRAN:
 
 ``` r
 install.packages("ggfittext")
@@ -20,12 +21,20 @@ If you want the development version, install it from GitHub:
 devtools::install_github("wilkox/ggfittext")
 ```
 
-Fitting text inside a box
-=========================
+# Fitting text inside a box
 
-Sometimes you want to draw some text in a 'ggplot2' plot so that it fits inside a defined area. For example, you might want to label tiles in a heat map without letting the labels spill over into other tiles; or you might want to constrain some point labels to imaginary boxes so they don't get too big. It's possible to achieve this by manually fiddling with the text size, but this is both tedious and un-reproducible.
+Sometimes you want to draw some text in a ‘ggplot2’ plot so that it fits
+inside a defined area. For example, you might want to label tiles in a
+heat map without letting the labels spill over into other tiles; or you
+might want to constrain some point labels to imaginary boxes so they
+don’t get too big. It’s possible to achieve this by manually fiddling
+with the text size, but this is both tedious and un-reproducible.
 
-'ggfittext' provides a special geom called `geom_fit_text()` that automates fitting text inside a box. It works more or less like `ggplot2::geom_text()`, but provides some additional aesthetics and options that let you specify the box in which the text is to fit and how to make it fit.
+‘ggfittext’ provides a special geom called `geom_fit_text()` that
+automates fitting text inside a box. It works more or less like
+`ggplot2::geom_text()`, but provides some additional aesthetics and
+options that let you specify the box in which the text is to fit and how
+to make it fit.
 
 ``` r
 library(ggplot2)
@@ -51,11 +60,19 @@ ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
   labs(x = "", y = "")
 ```
 
-![](man/figures/README-doesnt_fit-1.png)
+![](man/figures/README-doesnt_fit-1.png)<!-- -->
 
-You can define the width of the box with either ‘xmin’ and ‘xmax’ aesthetics, or alternatively with ‘x’ (for the horizontal centre of the box) and ‘width’ (in millimetres). Likewise, you can use either ‘ymin’ and ‘ymax’ or ‘y’ and ‘height’. The ‘x/width’ and ‘y/height’ aesthetics can be useful when using a discrete axis.
+You can define the width of the box with either ‘xmin’ and ‘xmax’
+aesthetics, or alternatively with ‘x’ (for the horizontal centre of the
+box) and ‘width’ (in millimetres). Likewise, you can use either ‘ymin’
+and ‘ymax’ or ‘y’ and ‘height’. The ‘x/width’ and ‘y/height’ aesthetics
+can be useful when using a discrete axis.
 
-You can specify where in the box to place the text with the `place` argument, and a minimum point size for the text with the `min.size` argument. (Any text that would need to be smaller than `min.size` to fit the box will be hidden.)
+You can specify where in the box to place the text with the `place`
+argument, and a minimum point size for the text with the `min.size`
+argument. (Any text that would need to be smaller than `min.size` to fit
+the box will be
+hidden.)
 
 ``` r
 ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
@@ -69,14 +86,17 @@ ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
   labs(x = "", y = "")
 ```
 
-![](man/figures/README-geom_fit_text_2-1.png)
+![](man/figures/README-geom_fit_text_2-1.png)<!-- -->
 
-Text can be placed in any corner (‘topleft’, ‘topright’, …) or at the midpoint of any side (‘bottom’, ‘left’, …), as well as the default ‘centre’.
+Text can be placed in any corner (‘topleft’, ‘topright’, …) or at the
+midpoint of any side (‘bottom’, ‘left’, …), as well as the default
+‘centre’.
 
-Growing text
-============
+# Growing text
 
-With the `grow = TRUE` argument, text will be made to fill the box completely, whether that requires growing or shrinking it.
+With the `grow = TRUE` argument, text will be made to fill the box
+completely, whether that requires growing or shrinking
+it.
 
 ``` r
 ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin, 
@@ -89,12 +109,14 @@ ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
   labs(x = "", y = "")
 ```
 
-![](man/figures/README-geom_fit_text_3-1.png)
+![](man/figures/README-geom_fit_text_3-1.png)<!-- -->
 
-Reflowing text
-==============
+# Reflowing text
 
-With the `reflow = TRUE` argument, text will be reflowed (wrapped) as needed to fit the box. Reflowing is preferred to shrinking; that is, if the text can be made to fit by reflowing it without shrinking it, it will be reflowed only.
+With the `reflow = TRUE` argument, text will be reflowed (wrapped) as
+needed to fit the box. Reflowing is preferred to shrinking; that is, if
+the text can be made to fit by reflowing it without shrinking it, it
+will be reflowed only.
 
 ``` r
 poem <- data.frame(
@@ -124,11 +146,13 @@ ggplot(poem, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
   facet_wrap(~ fit)
 ```
 
-![](man/figures/README-reflow-1.png)
+![](man/figures/README-reflow-1.png)<!-- -->
 
 Note that existing line breaks in the text are respected.
 
-With both `reflow = TRUE` and `grow = TRUE`, the text will be reflowed to a form that best matches the aspect ratio of the box, then made to fill the box whether that requires shrinking it or growing it.
+With both `reflow = TRUE` and `grow = TRUE`, the text will be reflowed
+to a form that best matches the aspect ratio of the box, then made to
+fill the box whether that requires shrinking it or growing it.
 
 ``` r
 film <- data.frame(
@@ -158,10 +182,9 @@ ggplot(film, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
   facet_wrap(~ fit, ncol = 1)
 ```
 
-![](man/figures/README-reflow_and_grow-1.png)
+![](man/figures/README-reflow_and_grow-1.png)<!-- -->
 
-Example: a heatmap
-==================
+# Example: a heatmap
 
 ``` r
 tournament <- data.frame(
@@ -184,4 +207,4 @@ ggplot(tournament, aes(x = teamA, y = teamB, fill = game_time_mins,
                 colour = "white")
 ```
 
-![](man/figures/README-heatmap-1.png)
+![](man/figures/README-heatmap-1.png)<!-- -->
