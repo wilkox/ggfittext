@@ -62,11 +62,11 @@ ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
 
 ![](man/figures/README-doesnt_fit-1.png)<!-- -->
 
-You can define the width of the box with either ‘xmin’ and ‘xmax’
-aesthetics, or alternatively with ‘x’ (for the horizontal centre of the
-box) and ‘width’ (in millimetres). Likewise, you can use either ‘ymin’
-and ‘ymax’ or ‘y’ and ‘height’. The ‘x/width’ and ‘y/height’ aesthetics
-can be useful when using a discrete axis.
+You can define the width of the box with either `xmin` and `xmax`
+aesthetics, or alternatively with `x` (for the horizontal centre of the
+box) and a `width` argument (a `grid::unit()` object, defaulting to 40
+mm). Likewise, you can use either `ymin` and `ymax` or `y` and `height`.
+The `x` and `y` aesthetics can be useful when using a discrete axis.
 
 You can specify where in the box to place the text with the `place`
 argument, and a minimum point size for the text with the `min.size`
@@ -203,8 +203,8 @@ tournament <- data.frame(
 ggplot(tournament, aes(x = teamA, y = teamB, fill = game_time_mins,
                        label = venue)) +
   geom_tile() +
-  geom_fit_text(width = 35, height = 25, min.size = 0, reflow = T, grow = T,
-                colour = "white")
+  geom_fit_text(width = grid::unit(35, "mm"), height = grid::unit(25, "mm"), 
+                min.size = 0, reflow = T, grow = T, colour = "white")
 ```
 
 ![](man/figures/README-heatmap-1.png)<!-- -->

@@ -1,3 +1,10 @@
+# v0.5.0.9001
+
+## Major changes
+
+- Change `width` and `height` from aesthetics to arguments.
+- Add support for `position = "stack"`.
+
 # v0.5.0
 
 ## Minor changes

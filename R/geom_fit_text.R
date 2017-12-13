@@ -12,9 +12,9 @@
 #' requires you to specify the box in which you wish to fit the text, usually
 #' with 'xmin', 'xmax', 'ymin' and 'ymax' aesthetics. Alternatively, you can
 #' specify the centre of the box with 'x' and/or 'y', and the height and/or
-#' width of the box with 'height' and/or 'width'. This can be useful when one or
-#' both axes are discrete. 'height' and 'width' are expressed in millimetres;
-#' they both default to 4 mm.
+#' width of the box with 'height' and/or 'width' arguments. This can be useful
+#' when one or both axes are discrete. 'height' and 'width' should be provided
+#' as `grid::unit()` objects, and both default to 40 mm.
 #'
 #' By default, the text will be drawn as if with \code{geom_text}, unless it is
 #' too big for the box, in which case it will be shrunk to fit the box. With
@@ -58,6 +58,9 @@
 #' See Details.
 #' @param reflow If 'TRUE', text will be reflowed (wrapped) to better fit the
 #' box. See Details.
+#' @param width,height When using `x` and/or `y` aesthetics, these will be used
+#' to determine the width and/or height of the box. These should be
+#' `grid::unit()` objects. Both default to 40 mm.
 #' @param mapping \code{ggplot2::aes()} object as standard in 'ggplot2'. Note
 #' that aesthetics specifying the box must be provided. See Details.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
@@ -150,9 +153,17 @@ GeomFitText <- ggplot2::ggproto(
 
     data <- coord$transform(data, panel_scales)
 
-    warning("TODO warn if old aesthetics are used")
-
-    print(data)
+    # Check that width and height are `grid::unit()` objects
+    if(! class(width) == "unit") {
+      stop("'width' should be a `grid::unit()` object",
+           .call = F
+      )
+    }
+    if(! class(height) == "unit") {
+      stop("'height' should be a `grid::unit()` object",
+           .call = F
+      )
+    }
 
     # Check that valid aesthetics have been supplied for each dimension
     if (!(
@@ -200,11 +211,10 @@ makeContent.fittexttree <- function(x) {
   # Determine which aesthetics to use for the bounding box
   # Rules: if xmin/xmax are available, use these in preference to x UNLESS
   # xmin == xmax, because this probably indicates position = "stack"; in this
-  # case, use x
+  # case, use x if it is available
 
   # If xmin/xmax are not provided, or all xmin == xmax, generate boundary box from width
-  if (!("xmin" %in% names(data)) | all(data$xmin == data$xmax)) {
-    message("using width for x")
+  if (!("xmin" %in% names(data)) | (all(data$xmin == data$xmax) & "x" %in% names(data))) {
     data$xmin <- data$x - (
       grid::convertWidth(grid::unit(x$width, "mm"), "native", valueOnly = T) / 2
     )
@@ -214,7 +224,7 @@ makeContent.fittexttree <- function(x) {
   }
 
   # If ymin/ymax are not provided, or all ymin == ymax, generate boundary box from height
-  if (!("ymin" %in% names(data)) | all(data$ymin == data$ymax)) {
+  if (!("ymin" %in% names(data)) | (all(data$ymin == data$ymax) & "y" %in% names(data))) {
     data$ymin <- data$y - (
       grid::convertHeight(grid::unit(x$height, "mm"), "native", valueOnly = T) / 2
     )

@@ -8,7 +8,8 @@ geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, padding.x = grid::unit(1, "mm"),
   padding.y = grid::unit(0.1, "lines"), place = "centre", min.size = 4,
-  grow = F, reflow = F, ...)
+  grow = F, reflow = F, width = grid::unit(40, "mm"),
+  height = grid::unit(40, "mm"), ...)
 }
 \arguments{
 \item{mapping}{\code{ggplot2::aes()} object as standard in 'ggplot2'. Note
@@ -33,6 +34,10 @@ See Details.}
 
 \item{reflow}{If 'TRUE', text will be reflowed (wrapped) to better fit the
 box. See Details.}
+
+\item{width, height}{When using `x` and/or `y` aesthetics, these will be used
+to determine the width and/or height of the box. These should be
+`grid::unit()` objects. Both default to 40 mm.}
 }
 \description{
 \code{geom_fit_text} shrinks, grows or wraps text to fit inside a defined
@@ -46,9 +51,9 @@ In addition to the normal \code{geom_text} aesthetics, \code{geom_fit_text}
 requires you to specify the box in which you wish to fit the text, usually
 with 'xmin', 'xmax', 'ymin' and 'ymax' aesthetics. Alternatively, you can
 specify the centre of the box with 'x' and/or 'y', and the height and/or
-width of the box with 'height' and/or 'width'. This can be useful when one or
-both axes are discrete. 'height' and 'width' are expressed in millimetres;
-they both default to 4 mm.
+width of the box with 'height' and/or 'width' arguments. This can be useful
+when one or both axes are discrete. 'height' and 'width' should be provided
+as `grid::unit()` objects, and both default to 40 mm.
 
 By default, the text will be drawn as if with \code{geom_text}, unless it is
 too big for the box, in which case it will be shrunk to fit the box. With
@@ -70,8 +75,8 @@ breaks ('\\n') in the text will be respected when reflowing.
 
 \itemize{
   \item label (required)
-  \item xmin, xmax OR x, width (required)
-  \item ymin, ymax OR y, height (required)
+  \item xmin, xmax OR x (required)
+  \item ymin, ymax OR y (required)
   \item alpha
   \item angle
   \item colour
