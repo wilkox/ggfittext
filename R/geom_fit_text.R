@@ -35,8 +35,8 @@
 #'
 #' \itemize{
 #'   \item label (required)
-#'   \item xmin, xmax OR x, width (required)
-#'   \item ymin, ymax OR y, height (required)
+#'   \item xmin, xmax OR x (required)
+#'   \item ymin, ymax OR y (required)
 #'   \item alpha
 #'   \item angle
 #'   \item colour
@@ -85,6 +85,8 @@ geom_fit_text <- function(
   min.size = 4,
   grow = F,
   reflow = F,
+  width = grid::unit(40, "mm"),
+  height = grid::unit(40, "mm"),
   ...
 ) {
   ggplot2::layer(
@@ -103,6 +105,8 @@ geom_fit_text <- function(
       min.size = min.size,
       grow = grow,
       reflow = reflow,
+      width = width,
+      height = height,
       ...
     )
   )
@@ -122,9 +126,8 @@ GeomFitText <- ggplot2::ggproto(
     fontface = 1,
     lineheight = 0.9,
     size = 12,
-    height = 4,
-    width = 4,
     x = NULL,
+    y = NULL,
     xmin = NULL,
     xmax = NULL,
     ymin = NULL,
@@ -140,27 +143,33 @@ GeomFitText <- ggplot2::ggproto(
     min.size = 4,
     grow = F,
     reflow = F,
+    width = grid::unit(40, "mm"),
+    height = grid::unit(40, "mm"),
     place = "centre"
   ) {
 
     data <- coord$transform(data, panel_scales)
 
-    # Check correct combination of discrete/continuous mappings for bounding box
-    if (!xor(
-      ("xmin" %in% names(data) & "xmax" %in% names(data)),
-      ("x" %in% names(data) & "width" %in% names(data))
+    warning("TODO warn if old aesthetics are used")
+
+    print(data)
+
+    # Check that valid aesthetics have been supplied for each dimension
+    if (!(
+      ("xmin" %in% names(data) & "xmax" %in% names(data)) |
+      ("x" %in% names(data))
     )) {
       stop(
-        "geom_fit_text needs either 'xmin' and 'xmax', or 'x' and 'width'",
+        "geom_fit_text needs either 'xmin' and 'xmax', or 'x'",
         .call = F
       )
     }
-    if (!xor(
-      "ymin" %in% names(data) & "ymax" %in% names(data),
-      "y" %in% names(data) * "height" %in% names(data)
+    if (!(
+      "ymin" %in% names(data) & "ymax" %in% names(data) |
+      "y" %in% names(data)
     )) {
       stop(
-        "geom_fit_text needs either 'ymin' and 'ymax', or 'y' and 'height'",
+        "geom_fit_text needs either 'ymin' and 'ymax', or 'y'",
         .call = F
       )
     }
@@ -173,6 +182,8 @@ GeomFitText <- ggplot2::ggproto(
       min.size = min.size,
       grow = grow,
       reflow = reflow,
+      width = width,
+      height = height,
       cl = "fittexttree"
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
@@ -186,23 +197,29 @@ makeContent.fittexttree <- function(x) {
 
   data <- x$data
 
-  # If x provided instead of xmin/xmax, generate boundary box from width
-  if ("x" %in% names(data)) {
+  # Determine which aesthetics to use for the bounding box
+  # Rules: if xmin/xmax are available, use these in preference to x UNLESS
+  # xmin == xmax, because this probably indicates position = "stack"; in this
+  # case, use x
+
+  # If xmin/xmax are not provided, or all xmin == xmax, generate boundary box from width
+  if (!("xmin" %in% names(data)) | all(data$xmin == data$xmax)) {
+    message("using width for x")
     data$xmin <- data$x - (
-      grid::convertWidth(grid::unit(data$width, "mm"), "native", valueOnly = T) / 2
+      grid::convertWidth(grid::unit(x$width, "mm"), "native", valueOnly = T) / 2
     )
     data$xmax <- data$x + (
-      grid::convertWidth(grid::unit(data$width, "mm"), "native", valueOnly = T) / 2
+      grid::convertWidth(grid::unit(x$width, "mm"), "native", valueOnly = T) / 2
     )
   }
 
-  # If y provided instead of ymin/ymax, generate boundary box from height
-  if ("y" %in% names(data)) {
+  # If ymin/ymax are not provided, or all ymin == ymax, generate boundary box from height
+  if (!("ymin" %in% names(data)) | all(data$ymin == data$ymax)) {
     data$ymin <- data$y - (
-      grid::convertHeight(grid::unit(data$height, "mm"), "native", valueOnly = T) / 2
+      grid::convertHeight(grid::unit(x$height, "mm"), "native", valueOnly = T) / 2
     )
     data$ymax <- data$y + (
-      grid::convertHeight(grid::unit(data$height, "mm"), "native", valueOnly = T) / 2
+      grid::convertHeight(grid::unit(x$height, "mm"), "native", valueOnly = T) / 2
     )
   }
 
