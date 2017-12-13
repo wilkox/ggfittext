@@ -1,3 +1,9 @@
+# v0.5.0.9002
+
+## Bug fixes
+
+- Fix typo in DESCRIPTION
+
 # v0.5.0.9001
 
 ## Major changes
