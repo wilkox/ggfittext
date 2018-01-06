@@ -60,7 +60,8 @@
 #' box. See Details.
 #' @param width,height When using `x` and/or `y` aesthetics, these will be used
 #' to determine the width and/or height of the box. These should be
-#' `grid::unit()` objects. Both default to 40 mm.
+#' either numeric values on the \code{x} and \code{y} scales or
+#' \code{grid::unit()} objects. Both default to 40 mm units.
 #' @param mapping \code{ggplot2::aes()} object as standard in 'ggplot2'. Note
 #' that aesthetics specifying the box must be provided. See Details.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
@@ -136,34 +137,29 @@ GeomFitText <- ggplot2::ggproto(
     ymin = NULL,
     ymax = NULL
   ),
-  draw_key = ggplot2::draw_key_text,
-  draw_panel = function(
-    data,
-    panel_scales,
-    coord,
-    padding.x = grid::unit(1, "mm"),
-    padding.y = grid::unit(0.1, "lines"),
-    min.size = 4,
-    grow = F,
-    reflow = F,
-    width = grid::unit(40, "mm"),
-    height = grid::unit(40, "mm"),
-    place = "centre"
+  setup_params = function(
+    params
   ) {
 
-    data <- coord$transform(data, panel_scales)
-
     # Check that width and height are `grid::unit()` objects
-    if(! class(width) == "unit") {
-      stop("'width' should be a `grid::unit()` object",
+    if(! class(params$width) == "unit" & !is.numeric(params$width)) {
+      stop("'width' should be numeric or a `grid::unit()` object",
            .call = F
       )
     }
-    if(! class(height) == "unit") {
-      stop("'height' should be a `grid::unit()` object",
+    if(! class(params$height) == "unit" & !is.numeric(params$height)) {
+      stop("'height' should be numeric or a `grid::unit()` object",
            .call = F
       )
     }
+
+    params
+
+  },
+  setup_data = function(
+    data,
+    params
+  ) {
 
     # Check that valid aesthetics have been supplied for each dimension
     if (!(
@@ -184,6 +180,38 @@ GeomFitText <- ggplot2::ggproto(
         .call = F
       )
     }
+
+    # If 'width' is not a unit, then interpret it as a numeric on the x scale
+    if (is.null(data$xmin) & is.null(data$xmax) & class(params$width) != "unit") {
+      data$xmin <- data$x - params$width / 2
+      data$xmax <- data$x + params$width / 2
+    }
+
+    # If 'height' is not a unit, then interpret it as a numeric on the y scale
+    if (is.null(data$ymin) & is.null(data$ymax) & class(params$height) != "unit") {
+      data$ymin <- data$y - params$height / 2
+      data$ymax <- data$y + params$height / 2
+    }
+
+    data
+
+  },
+  draw_key = ggplot2::draw_key_text,
+  draw_panel = function(
+    data,
+    panel_scales,
+    coord,
+    padding.x = grid::unit(1, "mm"),
+    padding.y = grid::unit(0.1, "lines"),
+    min.size = 4,
+    grow = F,
+    reflow = F,
+    width = grid::unit(40, "mm"),
+    height = grid::unit(40, "mm"),
+    place = "centre"
+  ) {
+
+    data <- coord$transform(data, panel_scales)
 
     gt <- grid::gTree(
       data = data,

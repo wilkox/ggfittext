@@ -37,7 +37,8 @@ box. See Details.}
 
 \item{width, height}{When using `x` and/or `y` aesthetics, these will be used
 to determine the width and/or height of the box. These should be
-`grid::unit()` objects. Both default to 40 mm.}
+either numeric values on the \code{x} and \code{y} scales or
+\code{grid::unit()} objects. Both default to 40 mm units.}
 }
 \description{
 \code{geom_fit_text} shrinks, grows or wraps text to fit inside a defined
