@@ -57,3 +57,20 @@ test_that("missing aesthetics and bad options don't work", {
   })
 
 })
+
+testdata2 <- data.frame(
+  testdata,
+  x = (testdata$xmin + testdata$xmax) / 2,
+  y = (testdata$ymin + testdata$ymax) / 2,
+  width = testdata$xmax - testdata$xmin,
+  height = testdata$ymax - testdata$ymin
+)
+
+test_that("numeric 'width' and 'height' parameters are understood", {
+  expect_error( {
+    ggplot2::ggplot(testdata2, ggplot2::aes(x = x, y = y, label = vehicle)) + ggplot2::geom_tile(width = 10, height = 20, fill = "gray") + geom_fit_text(width = 10, height = 20)
+  } , NA)
+  expect_error( {
+    ggplot2::ggplot(testdata2, ggplot2::aes(x = x, y = y, label = vehicle)) + ggplot2::geom_tile(width = 10, height = 20, fill = "gray") + geom_fit_text(width = 10, height = 20, reflow = TRUE)
+  } , NA)
+})
