@@ -1,3 +1,10 @@
+# v0.5.0.9003
+
+## Major changes
+
+- Allow `width` and `height` arguments to be provided in native units (thanks
+  to @corybrunson)
+
 # v0.5.0.9002
 
 ## Bug fixes
