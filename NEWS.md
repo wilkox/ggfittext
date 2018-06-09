@@ -1,3 +1,9 @@
+# v0.5.0.9004
+
+## Minor changes
+
+- Miscellaneous code quality improvements
+
 # v0.5.0.9003
 
 ## Major changes

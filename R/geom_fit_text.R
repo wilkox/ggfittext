@@ -87,8 +87,8 @@ geom_fit_text <- function(
   padding.y = grid::unit(0.1, "lines"),
   place = "centre",
   min.size = 4,
-  grow = F,
-  reflow = F,
+  grow = FALSE,
+  reflow = FALSE,
   width = grid::unit(40, "mm"),
   height = grid::unit(40, "mm"),
   ...
@@ -144,12 +144,12 @@ GeomFitText <- ggplot2::ggproto(
     # Check that width and height are `grid::unit()` objects
     if(! class(params$width) == "unit" & !is.numeric(params$width)) {
       stop("'width' should be numeric or a `grid::unit()` object",
-           .call = F
+           .call = FALSE
       )
     }
     if(! class(params$height) == "unit" & !is.numeric(params$height)) {
       stop("'height' should be numeric or a `grid::unit()` object",
-           .call = F
+           .call = FALSE
       )
     }
 
@@ -168,7 +168,7 @@ GeomFitText <- ggplot2::ggproto(
     )) {
       stop(
         "geom_fit_text needs either 'xmin' and 'xmax', or 'x'",
-        .call = F
+        .call = FALSE
       )
     }
     if (!(
@@ -177,18 +177,22 @@ GeomFitText <- ggplot2::ggproto(
     )) {
       stop(
         "geom_fit_text needs either 'ymin' and 'ymax', or 'y'",
-        .call = F
+        .call = FALSE
       )
     }
 
     # If 'width' is not a unit, then interpret it as a numeric on the x scale
-    if (is.null(data$xmin) & is.null(data$xmax) & class(params$width) != "unit") {
+    if (is.null(data$xmin) & 
+        is.null(data$xmax) & 
+        class(params$width) != "unit") {
       data$xmin <- data$x - params$width / 2
       data$xmax <- data$x + params$width / 2
     }
 
     # If 'height' is not a unit, then interpret it as a numeric on the y scale
-    if (is.null(data$ymin) & is.null(data$ymax) & class(params$height) != "unit") {
+    if (is.null(data$ymin) & 
+        is.null(data$ymax) & 
+        class(params$height) != "unit") {
       data$ymin <- data$y - params$height / 2
       data$ymax <- data$y + params$height / 2
     }
@@ -204,8 +208,8 @@ GeomFitText <- ggplot2::ggproto(
     padding.x = grid::unit(1, "mm"),
     padding.y = grid::unit(0.1, "lines"),
     min.size = 4,
-    grow = F,
-    reflow = F,
+    grow = FALSE,
+    reflow = FALSE,
     width = grid::unit(40, "mm"),
     height = grid::unit(40, "mm"),
     place = "centre"
@@ -241,23 +245,44 @@ makeContent.fittexttree <- function(x) {
   # xmin == xmax, because this probably indicates position = "stack"; in this
   # case, use x if it is available
 
-  # If xmin/xmax are not provided, or all xmin == xmax, generate boundary box from width
-  if (!("xmin" %in% names(data)) | (all(data$xmin == data$xmax) & "x" %in% names(data))) {
+  # If xmin/xmax are not provided, or all xmin == xmax, generate boundary box
+  # from width
+  if (!("xmin" %in% names(data)) | 
+      (all(data$xmin == data$xmax) & "x" %in% names(data))) {
     data$xmin <- data$x - (
-      grid::convertWidth(grid::unit(x$width, "mm"), "native", valueOnly = T) / 2
+      grid::convertWidth(
+        grid::unit(x$width, "mm"),
+        "native",
+        valueOnly = TRUE
+      ) / 2
     )
     data$xmax <- data$x + (
-      grid::convertWidth(grid::unit(x$width, "mm"), "native", valueOnly = T) / 2
+      grid::convertWidth(
+        grid::unit(x$width, "mm"),
+        "native",
+        valueOnly = TRUE
+      ) / 2
     )
   }
 
-  # If ymin/ymax are not provided, or all ymin == ymax, generate boundary box from height
-  if (!("ymin" %in% names(data)) | (all(data$ymin == data$ymax) & "y" %in% names(data))) {
+  # If ymin/ymax are not provided, or all ymin == ymax, generate boundary box
+  # from height
+  if (!("ymin" %in% names(data)) | 
+      (all(data$ymin == data$ymax) & 
+       "y" %in% names(data))) {
     data$ymin <- data$y - (
-      grid::convertHeight(grid::unit(x$height, "mm"), "native", valueOnly = T) / 2
+      grid::convertHeight(
+        grid::unit(x$height, "mm"),
+        "native",
+        valueOnly = TRUE
+      ) / 2
     )
     data$ymax <- data$y + (
-      grid::convertHeight(grid::unit(x$height, "mm"), "native", valueOnly = T) / 2
+      grid::convertHeight(
+        grid::unit(x$height, "mm"),
+        "native",
+        valueOnly = TRUE
+      ) / 2
     )
   }
 
@@ -266,7 +291,7 @@ makeContent.fittexttree <- function(x) {
   paddingy <- grid::convertHeight(x$padding.y, "native", valueOnly = TRUE)
 
   # Prepare grob for each text label
-  grobs <- lapply(1:nrow(data), function(i) {
+  grobs <- lapply(seq_len(nrow(data)), function(i) {
 
     # Convenience
     text <- data[i, ]
@@ -320,7 +345,9 @@ makeContent.fittexttree <- function(x) {
       text$hjust <- 0
       text$vjust <- 0.5
 
-    } else if (x$place == "centre" | x$place == "center" | x$place == "middle") {
+    } else if (x$place == "centre" | 
+               x$place == "center" | 
+               x$place == "middle") {
       text$x <- mean((c(text$xmin, text$xmax)))
       text$y <- mean(c(text$ymin, text$ymax))
       text$hjust <- 0.5
@@ -331,7 +358,7 @@ makeContent.fittexttree <- function(x) {
         "geom_fit_text does not recognise place '",
         x$place,
         "' (try something like 'topright' or 'centre')",
-        call. = F
+        call. = FALSE
       )
     }
 
@@ -395,7 +422,7 @@ makeContent.fittexttree <- function(x) {
           # By splitting the text on whitespace and passing normalize = F,
           # line breaks in the original text are respected
           tg$label <- paste(
-            stringi::stri_wrap(label, w, normalize = F),
+            stringi::stri_wrap(label, w, normalize = FALSE),
             collapse = "\n"
           )
 
@@ -421,7 +448,7 @@ makeContent.fittexttree <- function(x) {
         # condition that we are trying to grow the text, this will also ensure
         # the text is grown with the best aspect ratio.
         tg$label <- paste(
-          stringi::stri_wrap(label, best_width, normalize = F),
+          stringi::stri_wrap(label, best_width, normalize = FALSE),
           collapse = "\n"
         )
       }

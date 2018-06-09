@@ -8,7 +8,7 @@ geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, padding.x = grid::unit(1, "mm"),
   padding.y = grid::unit(0.1, "lines"), place = "centre", min.size = 4,
-  grow = F, reflow = F, width = grid::unit(40, "mm"),
+  grow = FALSE, reflow = FALSE, width = grid::unit(40, "mm"),
   height = grid::unit(40, "mm"), ...)
 }
 \arguments{
