@@ -1,28 +1,19 @@
-# v0.5.0.9004
+# v0.5.1
+
+## Major changes
+
+- Change `width` and `height` from aesthetics to arguments
+- Allow `width` and `height` arguments to be provided in native units (thanks
+  to @corybrunson)
+- Add support for `position = "stack"`
 
 ## Minor changes
 
 - Miscellaneous code quality improvements
 
-# v0.5.0.9003
-
-## Major changes
-
-- Allow `width` and `height` arguments to be provided in native units (thanks
-  to @corybrunson)
-
-# v0.5.0.9002
-
 ## Bug fixes
 
 - Fix typo in DESCRIPTION
-
-# v0.5.0.9001
-
-## Major changes
-
-- Change `width` and `height` from aesthetics to arguments.
-- Add support for `position = "stack"`.
 
 # v0.5.0
 
