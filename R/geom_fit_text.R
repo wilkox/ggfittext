@@ -135,7 +135,9 @@ GeomFitText <- ggplot2::ggproto(
     xmin = NULL,
     xmax = NULL,
     ymin = NULL,
-    ymax = NULL
+    ymax = NULL,
+    width = NULL,
+    height = NULL
   ),
   setup_params = function(
     params
@@ -160,6 +162,14 @@ GeomFitText <- ggplot2::ggproto(
     data,
     params
   ) {
+
+    # Warn about deprecated width and height aesthetics
+    if ("width" %in% names(data)) {
+      warning("`width` is now an argument, not an aesthetic")
+    }
+    if ("height" %in% names(data)) {
+      warning("`height` is now an argument, not an aesthetic")
+    }
 
     # Check that valid aesthetics have been supplied for each dimension
     if (!(
