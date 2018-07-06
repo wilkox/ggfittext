@@ -165,10 +165,10 @@ GeomFitText <- ggplot2::ggproto(
 
     # Warn about deprecated width and height aesthetics
     if ("width" %in% names(data)) {
-      warning("`width` is now an argument, not an aesthetic")
+      warning("`width` is now an argument, not an aesthetic, and will be removed in a future version")
     }
     if ("height" %in% names(data)) {
-      warning("`height` is now an argument, not an aesthetic")
+      warning("`height` is now an argument, not an aesthetic, and will be removed in a future version")
     }
 
     # Check that valid aesthetics have been supplied for each dimension
@@ -249,6 +249,17 @@ GeomFitText <- ggplot2::ggproto(
 makeContent.fittexttree <- function(x) {
 
   data <- x$data
+
+  # For backwards compatibility, if a 'width' or 'height' was provided in the
+  # data, convert to 'width' or 'height' parameters (assuming in mm) TODO this
+  # should be removed in a future version when width and height aesthetics are
+  # completely deprecated
+  if ("width" %in% names(data)) {
+    x$width <- grid::unit(data$width[1], "mm")
+  }
+  if ("height" %in% names(data)) {
+    x$height <- grid::unit(data$height[1], "mm")
+  }
 
   # Determine which aesthetics to use for the bounding box
   # Rules: if xmin/xmax are available, use these in preference to x UNLESS
