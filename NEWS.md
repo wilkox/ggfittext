@@ -1,3 +1,9 @@
+# v0.6.0.9001
+
+# Bug fixes
+
+- Fix tests that use `expect_silent()` and draw plots
+
 # v0.6.0
 
 ## Major changes

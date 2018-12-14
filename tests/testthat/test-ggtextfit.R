@@ -11,7 +11,7 @@ context("shrinking text")
 
 test_that("simple plots and options work", {
   expect_silent( {
-    ggplot2::ggplot(testdata, ggplot2::aes(
+    p <- ggplot2::ggplot(testdata, ggplot2::aes(
       xmin = xmin,
       xmax = xmax,
       ymin = ymin,
@@ -25,9 +25,10 @@ test_that("simple plots and options work", {
         min.size = 2,
         place = "topright"
       )
+    print(p)
   })
   expect_silent( {
-    ggplot2::ggplot(testdata, ggplot2::aes(
+    p <- ggplot2::ggplot(testdata, ggplot2::aes(
       xmin = xmin,
       xmax = xmax,
       ymin = ymin,
@@ -40,7 +41,9 @@ test_that("simple plots and options work", {
         padding.y = grid::unit(3, "mm"),
         min.size = 2,
         place = "topright"
-      ) })
+      ) 
+    print(p)
+  })
 })
 
 test_that("missing aesthetics and bad options don't work", {
@@ -64,7 +67,7 @@ context("growing text")
 
 test_that("simple plots and options work", {
   expect_silent( {
-    ggplot2::ggplot(testdata, ggplot2::aes(
+    p <- ggplot2::ggplot(testdata, ggplot2::aes(
       xmin = xmin,
       xmax = xmax,
       ymin = ymin,
@@ -79,9 +82,10 @@ test_that("simple plots and options work", {
         place = "bottom",
         grow = T
       )
+    print(p)
   })
   expect_silent( {
-    ggplot2::ggplot(testdata, ggplot2::aes(
+    p <- ggplot2::ggplot(testdata, ggplot2::aes(
       xmin = xmin,
       xmax = xmax,
       ymin = ymin,
@@ -96,6 +100,7 @@ test_that("simple plots and options work", {
         place = "bottom",
         grow = T
       )
+    print(p)
   })
 })
 
@@ -103,7 +108,7 @@ context("reflowing text")
 
 test_that("simple plots and options work", {
   expect_silent( {
-    ggplot2::ggplot(testdata, ggplot2::aes(
+    p <- ggplot2::ggplot(testdata, ggplot2::aes(
       xmin = xmin,
       xmax = xmax,
       ymin = ymin,
@@ -119,9 +124,10 @@ test_that("simple plots and options work", {
         grow = T,
         reflow = T
       )
+    print(p)
   })
   expect_silent( {
-    ggplot2::ggplot(testdata, ggplot2::aes(
+    p <- ggplot2::ggplot(testdata, ggplot2::aes(
       xmin = xmin,
       xmax = xmax,
       ymin = ymin,
@@ -137,6 +143,7 @@ test_that("simple plots and options work", {
         reflow = T,
         grow = T
       )
+    print(p)
   })
 })
 
@@ -167,17 +174,19 @@ testdata2 <- data.frame(
 
 test_that("numeric 'width' and 'height' parameters are understood", {
   expect_silent( {
-    ggplot2::ggplot(testdata2, ggplot2::aes(
+    p <- ggplot2::ggplot(testdata2, ggplot2::aes(
       x = x,
       y = y,
       label = vehicle
     )) + 
       ggplot2::geom_tile(width = 10, height = 20, fill = "gray") + 
       geom_fit_text(width = 10, height = 20)
+    print(p)
   })
   expect_silent( {
-    ggplot2::ggplot(testdata2, ggplot2::aes(x = x, y = y, label = vehicle)) + 
+    p <- ggplot2::ggplot(testdata2, ggplot2::aes(x = x, y = y, label = vehicle)) + 
       ggplot2::geom_tile(width = 10, height = 20, fill = "gray") + 
       geom_fit_text(width = 10, height = 20, reflow = TRUE)
+    print(p)
   })
 })
