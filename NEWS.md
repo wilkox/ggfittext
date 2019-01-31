@@ -1,3 +1,10 @@
+# v0.6.0.9002
+
+# Minor changes
+
+- Add new `formatter` argument to `geom_fit_text`
+- Add visual tests with 'vdiffr'
+
 # v0.6.0.9001
 
 # Bug fixes
