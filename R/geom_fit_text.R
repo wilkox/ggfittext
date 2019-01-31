@@ -62,6 +62,11 @@
 #' to determine the width and/or height of the box. These should be
 #' either numeric values on the \code{x} and \code{y} scales or
 #' \code{grid::unit()} objects. Both default to 40 mm units.
+#' @param formatter A function that will be applied to the text before it is
+#' drawn. This can be useful when using `geom_fit_text` in an automated
+#' context, such as with the 'gganimate' package. `formatter` will be applied
+#' serially to each element in the `label` column, so it does not need to be a
+#' vectorised function.
 #' @param mapping \code{ggplot2::aes()} object as standard in 'ggplot2'. Note
 #' that aesthetics specifying the box must be provided. See Details.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
@@ -91,6 +96,7 @@ geom_fit_text <- function(
   reflow = FALSE,
   width = grid::unit(40, "mm"),
   height = grid::unit(40, "mm"),
+  formatter = NULL,
   ...
 ) {
   ggplot2::layer(
@@ -111,6 +117,7 @@ geom_fit_text <- function(
       reflow = reflow,
       width = width,
       height = height,
+      formatter = formatter,
       ...
     )
   )
@@ -222,10 +229,30 @@ GeomFitText <- ggplot2::ggproto(
     reflow = FALSE,
     width = grid::unit(40, "mm"),
     height = grid::unit(40, "mm"),
+    formatter = NULL,
     place = "centre"
   ) {
 
     data <- coord$transform(data, panel_scales)
+
+    # If a 'formatter' was provided
+    if (! is.null(formatter)) {
+
+      # Check that 'formatter' is a function
+      if (! is.function(formatter)) {
+        stop("`formatter` must be a function")
+      }
+
+      # Apply formatter to the labels, checking that the output is a character
+      # vector of the correct length
+      formatted_labels <- sapply(data$label, formatter, USE.NAMES = FALSE)
+      if ((! length(formatted_labels) == length(data$label)) | 
+          (! is.character(formatted_labels))) {
+        stop("`formatter` must produce a character vector of same length as input")
+      }
+      data$label <- formatted_labels
+    }
+
 
     gt <- grid::gTree(
       data = data,

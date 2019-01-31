@@ -7,9 +7,10 @@
 geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, padding.x = grid::unit(1, "mm"),
-  padding.y = grid::unit(0.1, "lines"), place = "centre", min.size = 4,
-  grow = FALSE, reflow = FALSE, width = grid::unit(40, "mm"),
-  height = grid::unit(40, "mm"), ...)
+  padding.y = grid::unit(0.1, "lines"), place = "centre",
+  min.size = 4, grow = FALSE, reflow = FALSE,
+  width = grid::unit(40, "mm"), height = grid::unit(40, "mm"),
+  formatter = NULL, ...)
 }
 \arguments{
 \item{mapping}{\code{ggplot2::aes()} object as standard in 'ggplot2'. Note
@@ -39,6 +40,12 @@ box. See Details.}
 to determine the width and/or height of the box. These should be
 either numeric values on the \code{x} and \code{y} scales or
 \code{grid::unit()} objects. Both default to 40 mm units.}
+
+\item{formatter}{A function that will be applied to the text before it is
+drawn. This can be useful when using `geom_fit_text` in an automated
+context, such as with the 'gganimate' package. `formatter` will be applied
+serially to each element in the `label` column, so it does not need to be a
+vectorised function.}
 }
 \description{
 \code{geom_fit_text} shrinks, grows or wraps text to fit inside a defined

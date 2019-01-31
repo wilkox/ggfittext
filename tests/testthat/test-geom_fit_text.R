@@ -190,3 +190,26 @@ test_that("numeric 'width' and 'height' parameters are understood", {
     print(p)
   })
 })
+
+context("formatting text")
+
+test_that("a `formatter` argument is accepted", {
+  expect_silent( {
+    library(ggplot2)
+    wiki <- function(x) { paste0(x, " (citation needed)") }
+
+    yeats <- data.frame(
+      xmin = c(0, 4, 6, 4, 4, 5, 5.5, 5,   5,    5.25, 5.25),
+      xmax = c(4, 8, 8, 6, 5, 6, 6,   5.5, 5.25, 5.5,  5.5),
+      ymin = c(0, 4, 0, 0, 2, 3, 2,   2,   2.5,  2.75, 2.5),
+      ymax = c(8, 8, 4, 2, 4, 4, 3,   2.5, 3,    3,    2.75),
+      label = c("Turning", "and", "turning", "in", "the", "widening", "gyre", "the",
+                "falcon", "cannot", "hear")
+    )
+
+    ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
+                      label)) +
+      geom_rect(colour = "black") +
+      geom_fit_text(grow = T, min.size = 0, formatter = wiki)
+  } )
+} )
