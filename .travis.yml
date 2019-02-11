@@ -4,6 +4,9 @@ language: R
 sudo: false
 cache: packages
 
+env:
+- VDIFFR_RUN_TESTS="false"
+
 r:
 - 3.1
 - 3.2
@@ -13,9 +16,6 @@ r:
 
 r_packages:
 - ggplot2
-
-r_github_packages:
-- r-lib/vdiffr
 
 after_success:
   - Rscript -e 'covr::codecov()'
