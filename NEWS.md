@@ -1,95 +1,106 @@
-# v0.6.0.9002
+# ggfittext 0.6.0.9002
 
-# Minor changes
+## Minor changes
 
-- Add new `formatter` argument to `geom_fit_text`
-- Add visual tests with 'vdiffr'
+- Add new `formatter` argument to `geom_fit_text()`.
+- Add visual tests with vdiffr.
 
-# v0.6.0.9001
+# ggfittext 0.6.0.9001
 
-# Bug fixes
+## Bug fixes
 
-- Fix tests that use `expect_silent()` and draw plots
+- Fix tests that use `expect_silent()` and draw plots.
 
-# v0.6.0
+# ggfittext 0.6.0
 
 ## Major changes
 
-- Change `width` and `height` from aesthetics to arguments
+- Change `width` and `height` from aesthetics to arguments.
 - Allow `width` and `height` arguments to be provided in native units (thanks
-  to @corybrunson)
-- Add support for `position = "stack"`
+  to @corybrunson).
+- Add support for `position = "stack"`.
 
 ## Minor changes
 
-- Miscellaneous code quality improvements
+- Miscellaneous code quality improvements.
 
 ## Bug fixes
 
-- Fix typo in DESCRIPTION
+- Fix typo in DESCRIPTION.
 
-# v0.5.0
+# ggfittext 0.5.0
 
 ## Minor changes
 
-- Change R and grid dependency to 3.1
+- Change R and grid dependency to 3.1.
 
 ## Bug fixes
 
-- Fix typo in README
-- Remove README.html so README renders correctly on GitHub
+- Fix typo in README.
+- Remove README.html so README renders correctly on GitHub.
 
-# v0.4.3
+# ggfittext 0.4.3
 
 ## Minor changes
+
 - Style change for CRAN submission.
 - Add example to `geom_fit_text()` documentation.
 
-# v0.4.2
+# ggfittext 0.4.2
 
 ## Minor changes
+
 - Release version for CRAN submission.
 
 ## Bug fixes
-- Tidy up some namespace issues (thanks to @JohnsonHsieh)
-- Rewrite documentation
-- Add example to README, edit and produce vignette
-- Misc. minor fixes to pass R CMD check
+
+- Tidy up some namespace issues (thanks to @JohnsonHsieh).
+- Rewrite documentation.
+- Add example to README, edit and produce vignette.
+- Misc. minor fixes to pass R CMD check.
 
 ## Minor changes
-- Deprecate `geom_shrink_text()` and `geom_grow_text()`
 
-# v0.4.1
+- Deprecate `geom_shrink_text()` and `geom_grow_text()`.
+
+# ggfittext 0.4.1
 
 ## Bug fixes
+
 - Fix wide characters causing problems in non-UTF-8 locales.
 
-# v0.4
+# ggfittext 0.4
 
 ## Major changes
-- Add ‘reflow’ option to `geom_fit_text`.
+
+- Add 'reflow' option to `geom_fit_text`.
 
 ## Bug fixes
+
 - Fix height calculation on text with ascenders/descenders.
 
-# v0.3
+# ggfittext 0.3
 
 ## Major changes
-- Much faster text resizing algorithm
-- Rename arguments: ‘discrete.width’ and ‘discrete.height’ to ‘width’ and
-  ‘height’; ‘fill.text’ to ‘grow’
 
-# v0.2
+- Much faster text resizing algorithm.
+- Rename arguments: 'discrete.width' and 'discrete.height' to 'width' and
+  'height'; 'fill.text' to 'grow'.
+
+# ggfittext 0.2
 
 ## Major changes
-- `geom_shrink_text` and `geom_fill_text` replaced with single `geom_fit_text`
-  with `fill_text` option. (The old geoms still work, but as wrappers for
-  `geom_fit_text`).
+
+- `geom_shrink_text()` and `geom_fill_text()` replaced with single
+  `geom_fit_text()` with 'fill_text' option. (The old geoms still work, but as
+  wrappers for `geom_fit_text()`).
 - Add support for discrete axes with new `discrete.height` and `discrete.width`
   options.
 
 ## Bug fixes
+
 - Font sizes now correctly and consistently represented as point sizes.
 
-# v0.1
+# ggfittext 0.1
+
 First release!

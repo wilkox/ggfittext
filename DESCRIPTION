@@ -20,3 +20,5 @@ Suggests: knitr,
     rmarkdown,
     testthat
 VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)
+Encoding: UTF-8

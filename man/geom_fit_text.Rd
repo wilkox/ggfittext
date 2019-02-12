@@ -30,68 +30,67 @@ other options are 'topleft', 'top', 'topright', etc.}
 need to be shrunk below this size to fit the box will not be drawn. Defaults
 to 4 pt.}
 
-\item{grow}{If 'TRUE', text will be grown as well as shrunk to fill the box.
+\item{grow}{If \code{TRUE}, text will be grown as well as shrunk to fill the box.
 See Details.}
 
-\item{reflow}{If 'TRUE', text will be reflowed (wrapped) to better fit the
+\item{reflow}{If \code{TRUE}, text will be reflowed (wrapped) to better fit the
 box. See Details.}
 
-\item{width, height}{When using `x` and/or `y` aesthetics, these will be used
-to determine the width and/or height of the box. These should be
-either numeric values on the \code{x} and \code{y} scales or
-\code{grid::unit()} objects. Both default to 40 mm units.}
+\item{width, height}{When using \code{x} and/or \code{y} aesthetics, these will be used
+to determine the width and/or height of the box. These should be either
+numeric values on the \code{x} and \code{y} scales or \code{grid::unit()} objects. Both
+default to 40 mm units.}
 
 \item{formatter}{A function that will be applied to the text before it is
-drawn. This can be useful when using `geom_fit_text` in an automated
-context, such as with the 'gganimate' package. `formatter` will be applied
-serially to each element in the `label` column, so it does not need to be a
+drawn. This can be useful when using \code{geom_fit_text()} in an automated
+context, such as with the 'gganimate' package. \code{formatter} will be applied
+serially to each element in the \code{label} column, so it does not need to be a
 vectorised function.}
 }
 \description{
-\code{geom_fit_text} shrinks, grows or wraps text to fit inside a defined
+\code{geom_fit_text()} shrinks, grows or wraps text to fit inside a defined
 rectangular area.
 }
 \details{
-Except where noted, \code{geom_fit_text} behaves more or less like
-\code{ggplot2::geom_text}.
+Except where noted, \code{geom_fit_text()} behaves more or less like
+\code{ggplot2::geom_text()}.
 
-In addition to the normal \code{geom_text} aesthetics, \code{geom_fit_text}
+In addition to the normal \code{geom_text()} aesthetics, \code{geom_fit_text()}
 requires you to specify the box in which you wish to fit the text, usually
 with 'xmin', 'xmax', 'ymin' and 'ymax' aesthetics. Alternatively, you can
 specify the centre of the box with 'x' and/or 'y', and the height and/or
 width of the box with 'height' and/or 'width' arguments. This can be useful
 when one or both axes are discrete. 'height' and 'width' should be provided
-as `grid::unit()` objects, and both default to 40 mm.
+as \code{grid::unit()} objects, and both default to 40 mm.
 
-By default, the text will be drawn as if with \code{geom_text}, unless it is
+By default, the text will be drawn as if with \code{geom_text()}, unless it is
 too big for the box, in which case it will be shrunk to fit the box. With
 \code{grow = TRUE}, the text will be made to fill the box completely whether
 that requires shrinking or growing.
 
-\code{reflow = TRUE} will cause the text to be reflowed (wrapped) to better
-fit in the box. When \code{grow = FALSE} (default), text that fits the box
-will be drawn as if with \code{geom_text}; text that doesn't fit the box will
-be reflowed until it does. If the text cannot be made to fit by reflowing
-alone, it will be reflowed to match the aspect ratio of the box as closely as
-possible, then be shrunk to fit the box. When \code{grow = TRUE}, the text
-will be reflowed to best match the aspect ratio of the box, then made to fill
-the box completely whether that requires growing or shrinking. Existing line
-breaks ('\\n') in the text will be respected when reflowing.
+\code{reflow = TRUE} will cause the text to be reflowed (wrapped) to better fit
+in the box. When \code{grow = FALSE} (default), text that fits the box will be
+drawn as if with \code{geom_text()}; text that doesn't fit the box will be
+reflowed until it does. If the text cannot be made to fit by reflowing
+alone, it will be reflowed to match the aspect ratio of the box as closely
+as possible, then be shrunk to fit the box. When \code{grow = TRUE}, the text
+will be reflowed to best match the aspect ratio of the box, then made to
+fill the box completely whether that requires growing or shrinking. Existing
+line breaks in the text will be respected when reflowing.
 }
 \section{Aesthetics}{
 
-
 \itemize{
-  \item label (required)
-  \item xmin, xmax OR x (required)
-  \item ymin, ymax OR y (required)
-  \item alpha
-  \item angle
-  \item colour
-  \item family
-  \item fontface
-  \item lineheight
-  \item size
+\item label (required)
+\item xmin, xmax OR x (required)
+\item ymin, ymax OR y (required)
+\item alpha
+\item angle
+\item colour
+\item family
+\item fontface
+\item lineheight
+\item size
 }
 }
 

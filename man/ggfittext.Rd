@@ -6,5 +6,5 @@
 \alias{ggfittext-package}
 \title{'ggfittext': provides a 'ggplot2' geom to fit text inside a box.}
 \description{
-This package provides only one function, \code{geom_fit_text}.
+This package provides only one function, \code{geom_fit_text()}.
 }
