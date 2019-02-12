@@ -2,6 +2,7 @@
 [![Travis-CI Build
 Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 
 **‘ggfittext’ provides a ‘ggplot2’ geom for fitting text inside a box**
 
