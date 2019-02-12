@@ -9,25 +9,6 @@ testdata <- data.frame(
 
 context("shrinking text")
 
-test_that("simple plots and options appear the way they should", {
-  vdiffr::expect_doppelganger("simple plot", {
-    ggplot2::ggplot(testdata, ggplot2::aes(
-      xmin = xmin,
-      xmax = xmax,
-      ymin = ymin,
-      ymax = ymax,
-      label = vehicle,
-      colour = class
-    )) + 
-      geom_fit_text(
-        padding.x = grid::unit(1, "lines"),
-        padding.y = grid::unit(3, "mm"),
-        min.size = 2,
-        place = "topright"
-      )
-  })
-})
-
 test_that("simple plots and options do not produce errors", {
   expect_silent( {
     p <- ggplot2::ggplot(testdata, ggplot2::aes(
@@ -84,26 +65,6 @@ test_that("missing aesthetics and bad options don't work", {
 
 context("growing text")
 
-test_that("simple plots and options look the way they should", {
-  vdiffr::expect_doppelganger("simple plot with growing",  {
-    ggplot2::ggplot(testdata, ggplot2::aes(
-      xmin = xmin,
-      xmax = xmax,
-      ymin = ymin,
-      ymax = ymax,
-      label = vehicle,
-      colour = class
-    )) + 
-      geom_fit_text(
-        padding.x = grid::unit(1, "lines"),
-        padding.y = grid::unit(3, "mm"),
-        min.size = 2,
-        place = "bottom",
-        grow = T
-      )
-  } )
-} )
-
 test_that("simple plots and options do not produce errors", {
   expect_silent( {
     p <- ggplot2::ggplot(testdata, ggplot2::aes(
@@ -144,27 +105,6 @@ test_that("simple plots and options do not produce errors", {
 })
 
 context("reflowing text")
-
-test_that("simple plots and options look the way they should", {
-  vdiffr::expect_doppelganger("simple plot with reflowing", {
-    ggplot2::ggplot(testdata, ggplot2::aes(
-      xmin = xmin,
-      xmax = xmax,
-      ymin = ymin,
-      ymax = ymax,
-      label = vehicle,
-      colour = class
-    )) + 
-      geom_fit_text(
-        padding.x = grid::unit(1, "lines"),
-        padding.y = grid::unit(3, "mm"),
-        min.size = 2,
-        place = "bottom",
-        grow = T,
-        reflow = T
-      )
-  } )
-} )
 
 test_that("simple plots and options do not produce errors", {
   expect_silent( {
@@ -272,26 +212,5 @@ test_that("a `formatter` argument is accepted", {
       geom_rect(colour = "black") +
       geom_fit_text(grow = T, min.size = 0, formatter = wiki)
     print(p)
-  } )
-} )
-
-test_that("plot with `formatter` argument appears the way it should", {
-  vdiffr::expect_doppelganger("plot with `formatter`", {
-    library(ggplot2)
-    wiki <- function(x) { paste0(x, " (citation needed)") }
-
-    yeats <- data.frame(
-      xmin = c(0, 4, 6, 4, 4, 5, 5.5, 5,   5,    5.25, 5.25),
-      xmax = c(4, 8, 8, 6, 5, 6, 6,   5.5, 5.25, 5.5,  5.5),
-      ymin = c(0, 4, 0, 0, 2, 3, 2,   2,   2.5,  2.75, 2.5),
-      ymax = c(8, 8, 4, 2, 4, 4, 3,   2.5, 3,    3,    2.75),
-      label = c("Turning", "and", "turning", "in", "the", "widening", "gyre", "the",
-                "falcon", "cannot", "hear")
-    )
-
-    ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
-                      label)) +
-      geom_rect(colour = "black") +
-      geom_fit_text(grow = T, min.size = 0, formatter = wiki)
   } )
 } )

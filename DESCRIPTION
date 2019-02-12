@@ -18,6 +18,5 @@ URL: https://github.com/wilkox/ggfittext
 BugReports: https://github.com/wilkox/ggfittext/issues
 Suggests: knitr,
     rmarkdown,
-    testthat,
-    vdiffr
+    testthat
 VignetteBuilder: knitr
