@@ -93,7 +93,7 @@ geom_fit_text <- function(
   grow = FALSE,
   reflow = FALSE,
   width = NULL,
-  height = grid::unit(40, "mm"),
+  height = NULL,
   formatter = NULL,
   ...
 ) {
@@ -175,6 +175,13 @@ GeomFitText <- ggplot2::ggproto(
       data$xmax <- data$x + params$width / 2
     }
 
+    # If 'height' is provided, but not a unit, interpret it as a numeric on the
+    # y scale
+    if ((! is.null(params$height)) & class(params$height) != "unit") {
+      data$ymin <- data$y - params$height / 2
+      data$ymax <- data$y + params$height / 2
+    }
+
     # If neither a 'width' parameter nor xmin/xmax aesthetics have been
     # provided, infer the width using the method of geom_boxplot
     if (is.null(params$width) & ! "xmin" %in% names(data)) {
@@ -184,12 +191,13 @@ GeomFitText <- ggplot2::ggproto(
       data$width <- NULL
     }
 
-    # If 'height' is not a unit, then interpret it as a numeric on the y scale
-    if (is.null(data$ymin) & 
-        is.null(data$ymax) & 
-        class(params$height) != "unit") {
-      data$ymin <- data$y - params$height / 2
-      data$ymax <- data$y + params$height / 2
+    # If neither a 'height' parameter nor ymin/ymax aesthetics have been
+    # provided, infer the height using the method of geom_boxplot
+    if (is.null(params$height) & ! "ymin" %in% names(data)) {
+      data$height <- ggplot2::resolution(data$y, FALSE)
+      data$ymin <- data$y - data$height / 2
+      data$ymax <- data$y + data$height / 2
+      data$height <- NULL
     }
 
     data
