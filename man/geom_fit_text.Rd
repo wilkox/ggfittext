@@ -8,9 +8,8 @@ geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, padding.x = grid::unit(1, "mm"),
   padding.y = grid::unit(0.1, "lines"), place = "centre",
-  min.size = 4, grow = FALSE, reflow = FALSE,
-  width = grid::unit(40, "mm"), height = grid::unit(40, "mm"),
-  formatter = NULL, ...)
+  min.size = 4, grow = FALSE, reflow = FALSE, width = NULL,
+  height = NULL, formatter = NULL, ...)
 }
 \arguments{
 \item{mapping}{\code{ggplot2::aes()} object as standard in 'ggplot2'. Note
@@ -36,10 +35,9 @@ See Details.}
 \item{reflow}{If \code{TRUE}, text will be reflowed (wrapped) to better fit the
 box. See Details.}
 
-\item{width, height}{When using \code{x} and/or \code{y} aesthetics, these will be used
-to determine the width and/or height of the box. These should be either
-numeric values on the \code{x} and \code{y} scales or \code{grid::unit()} objects. Both
-default to 40 mm units.}
+\item{width, height}{When using \code{x} and/or \code{y} aesthetics, these can be used
+to set the width and/or height of the box. These should be either
+numeric values on the \code{x} and \code{y} scales or \code{grid::unit()} objects.}
 
 \item{formatter}{A function that will be applied to the text before it is
 drawn. This can be useful when using \code{geom_fit_text()} in an automated
@@ -55,13 +53,20 @@ rectangular area.
 Except where noted, \code{geom_fit_text()} behaves more or less like
 \code{ggplot2::geom_text()}.
 
-In addition to the normal \code{geom_text()} aesthetics, \code{geom_fit_text()}
-requires you to specify the box in which you wish to fit the text, usually
-with 'xmin', 'xmax', 'ymin' and 'ymax' aesthetics. Alternatively, you can
-specify the centre of the box with 'x' and/or 'y', and the height and/or
-width of the box with 'height' and/or 'width' arguments. This can be useful
-when one or both axes are discrete. 'height' and 'width' should be provided
-as \code{grid::unit()} objects, and both default to 40 mm.
+There are three ways to define the box in which you want the text to be
+drawn:
+\enumerate{
+\item On a continuous axis, the limits of the box can be defined in the data
+using plot aesthetics: 'xmin' and 'xmax', and/or 'ymin' and 'ymax'.
+\item Alternatively on a continuous axis, the centre of the box can be defined
+in the data with the 'x' and/or 'y' aesthetic, and the width and/or height
+of the box can be specified with a 'width' and/or 'height' argument. 'width'
+and 'height' should be provided as \code{grid::unit()} objects; if not, they will
+be assumed to use the native axis scale.
+\item On a discrete (categorical) axis, the width or height will be determined
+automatically. This can be overridden if you wish using the 'width' and
+'height' arguments.
+}
 
 By default, the text will be drawn as if with \code{geom_text()}, unless it is
 too big for the box, in which case it will be shrunk to fit the box. With
@@ -82,8 +87,8 @@ line breaks in the text will be respected when reflowing.
 
 \itemize{
 \item label (required)
-\item xmin, xmax OR x (required)
-\item ymin, ymax OR y (required)
+\item (xmin AND xmax) OR x (required)
+\item (ymin AND ymax) OR y (required)
 \item alpha
 \item angle
 \item colour
@@ -97,8 +102,7 @@ line breaks in the text will be respected when reflowing.
 \examples{
 
 ggplot2::ggplot(ggplot2::presidential, ggplot2::aes(ymin = start, ymax = end,
-    label = name, fill = party, xmin = 0, xmax = 1)) +
-  ggplot2::geom_rect(colour = 'black') +
+    label = name, x = party)) +
   geom_fit_text(grow = TRUE)
 
 }

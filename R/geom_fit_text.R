@@ -8,13 +8,19 @@
 #' Except where noted, `geom_fit_text()` behaves more or less like
 #' `ggplot2::geom_text()`.
 #'
-#' In addition to the normal `geom_text()` aesthetics, `geom_fit_text()`
-#' requires you to specify the box in which you wish to fit the text, usually
-#' with 'xmin', 'xmax', 'ymin' and 'ymax' aesthetics. Alternatively, you can
-#' specify the centre of the box with 'x' and/or 'y', and the height and/or
-#' width of the box with 'height' and/or 'width' arguments. This can be useful
-#' when one or both axes are discrete. 'height' and 'width' should be provided
-#' as `grid::unit()` objects, and both default to 40 mm.
+#' There are three ways to define the box in which you want the text to be
+#' drawn:
+#' 
+#' 1. On a continuous axis, the limits of the box can be defined in the data
+#' using plot aesthetics: 'xmin' and 'xmax', and/or 'ymin' and 'ymax'.
+#' 2. Alternatively on a continuous axis, the centre of the box can be defined
+#' in the data with the 'x' and/or 'y' aesthetic, and the width and/or height
+#' of the box can be specified with a 'width' and/or 'height' argument. 'width'
+#' and 'height' should be provided as `grid::unit()` objects; if not, they will
+#' be assumed to use the native axis scale.
+#' 3. On a discrete (categorical) axis, the width or height will be determined
+#' automatically. This can be overridden if you wish using the 'width' and
+#' 'height' arguments.
 #'
 #' By default, the text will be drawn as if with `geom_text()`, unless it is
 #' too big for the box, in which case it will be shrunk to fit the box. With
@@ -34,8 +40,8 @@
 #' @section Aesthetics:
 #'
 #' - label (required)
-#' - xmin, xmax OR x (required)
-#' - ymin, ymax OR y (required)
+#' - (xmin AND xmax) OR x (required)
+#' - (ymin AND ymax) OR y (required)
 #' - alpha
 #' - angle
 #' - colour
@@ -56,10 +62,9 @@
 #' See Details.
 #' @param reflow If `TRUE`, text will be reflowed (wrapped) to better fit the
 #' box. See Details.
-#' @param width,height When using `x` and/or `y` aesthetics, these will be used
-#' to determine the width and/or height of the box. These should be either
-#' numeric values on the `x` and `y` scales or `grid::unit()` objects. Both
-#' default to 40 mm units.
+#' @param width,height When using `x` and/or `y` aesthetics, these can be used
+#' to set the width and/or height of the box. These should be either
+#' numeric values on the `x` and `y` scales or `grid::unit()` objects.
 #' @param formatter A function that will be applied to the text before it is
 #' drawn. This can be useful when using `geom_fit_text()` in an automated
 #' context, such as with the 'gganimate' package. `formatter` will be applied
@@ -73,8 +78,7 @@
 #' @examples
 #'
 #' ggplot2::ggplot(ggplot2::presidential, ggplot2::aes(ymin = start, ymax = end,
-#'     label = name, fill = party, xmin = 0, xmax = 1)) +
-#'   ggplot2::geom_rect(colour = 'black') +
+#'     label = name, x = party)) +
 #'   geom_fit_text(grow = TRUE)
 #'
 #' @export
@@ -185,7 +189,7 @@ GeomFitText <- ggplot2::ggproto(
     # If neither a 'width' parameter nor xmin/xmax aesthetics have been
     # provided, infer the width using the method of geom_boxplot
     if (is.null(params$width) & ! "xmin" %in% names(data)) {
-      data$width <- ggplot2::resolution(data$x, FALSE)
+      data$width <- ggplot2::resolution(data$x, FALSE) * 0.9
       data$xmin <- data$x - data$width / 2
       data$xmax <- data$x + data$width / 2
       data$width <- NULL
@@ -194,7 +198,7 @@ GeomFitText <- ggplot2::ggproto(
     # If neither a 'height' parameter nor ymin/ymax aesthetics have been
     # provided, infer the height using the method of geom_boxplot
     if (is.null(params$height) & ! "ymin" %in% names(data)) {
-      data$height <- ggplot2::resolution(data$y, FALSE)
+      data$height <- ggplot2::resolution(data$y, FALSE) * 0.9
       data$ymin <- data$y - data$height / 2
       data$ymax <- data$y + data$height / 2
       data$height <- NULL
