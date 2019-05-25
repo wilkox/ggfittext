@@ -67,7 +67,7 @@ fitting text inside a box. It works more or less like `ggplot2::geom_text()`,
 but provides some additional aesthetics and options that let you specify the box
 in which the text is to fit and how to make it fit.
 
-```{r doesnt_fit}
+```{r doesnt_fit, fig.width = 4}
 library(ggplot2)
 library(ggfittext)
 
@@ -109,7 +109,7 @@ You can specify where in the box to place the text with the `place` argument,
 and a minimum point size for the text with the `min.size` argument. (Any text
 that would need to be smaller than `min.size` to fit the box will be hidden.)
 
-```{r geom_fit_text_2}
+```{r geom_fit_text_2, fig.width = 4}
 ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
                    ymax = ymax)) + 
   geom_rect() +

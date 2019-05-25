@@ -1,3 +1,14 @@
+# ggfittext 0.6.0.9003
+
+## Major changes
+
+- Add support for automatic sizing of text on discrete (categorical) axes
+- Fully deprecate 'width' and 'height' as aesthetics
+
+## Minor changes
+
+- Remove default values for 'width' and 'height' parameters
+
 # ggfittext 0.6.0.9002
 
 ## Minor changes

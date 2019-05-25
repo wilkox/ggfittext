@@ -64,7 +64,7 @@ rectangular area." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggfittext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0</span>
       </span>
     </div>
 
@@ -131,22 +131,21 @@ rectangular area.</p>
   <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"identity"</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>padding.x</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>),
   <span class='kw'>padding.y</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>0.1</span>, <span class='st'>"lines"</span>), <span class='kw'>place</span> <span class='kw'>=</span> <span class='st'>"centre"</span>,
-  <span class='kw'>min.size</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>40</span>, <span class='st'>"mm"</span>), <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>40</span>, <span class='st'>"mm"</span>),
-  <span class='kw'>formatter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>min.size</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>formatter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mapping</th>
-      <td><p><code><a href='https://ggplot2.tidyverse.org/reference/aes.html'>ggplot2::aes()</a></code> object as standard in 'ggplot2'. Note
+      <td><p><code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/aes'>ggplot2::aes()</a></code> object as standard in 'ggplot2'. Note
 that aesthetics specifying the box must be provided. See Details.</p></td>
     </tr>
     <tr>
       <th>data, stat, position, na.rm, show.legend, inherit.aes, ...</th>
       <td><p>Standard geom
-arguments as for <code><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>ggplot2::geom_text()</a></code>.</p></td>
+arguments as for <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/geom_text'>ggplot2::geom_text()</a></code>.</p></td>
     </tr>
     <tr>
       <th>padding.x, padding.y</th>
@@ -177,10 +176,9 @@ box. See Details.</p></td>
     </tr>
     <tr>
       <th>width, height</th>
-      <td><p>When using <code>x</code> and/or <code>y</code> aesthetics, these will be used
-to determine the width and/or height of the box. These should be either
-numeric values on the <code>x</code> and <code>y</code> scales or <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects. Both
-default to 40 mm units.</p></td>
+      <td><p>When using <code>x</code> and/or <code>y</code> aesthetics, these can be used
+to set the width and/or height of the box. These should be either
+numeric values on the <code>x</code> and <code>y</code> scales or <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects.</p></td>
     </tr>
     <tr>
       <th>formatter</th>
@@ -195,15 +193,21 @@ vectorised function.</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Except where noted, <code>geom_fit_text()</code> behaves more or less like
-<code><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>ggplot2::geom_text()</a></code>.</p>
-<p>In addition to the normal <code>geom_text()</code> aesthetics, <code>geom_fit_text()</code>
-requires you to specify the box in which you wish to fit the text, usually
-with 'xmin', 'xmax', 'ymin' and 'ymax' aesthetics. Alternatively, you can
-specify the centre of the box with 'x' and/or 'y', and the height and/or
-width of the box with 'height' and/or 'width' arguments. This can be useful
-when one or both axes are discrete. 'height' and 'width' should be provided
-as <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects, and both default to 40 mm.</p>
-<p>By default, the text will be drawn as if with <code>geom_text()</code>, unless it is
+<code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/geom_text'>ggplot2::geom_text()</a></code>.</p>
+<p>There are three ways to define the box in which you want the text to be
+drawn:</p><ol>
+<li><p>On a continuous axis, the limits of the box can be defined in the data
+using plot aesthetics: 'xmin' and 'xmax', and/or 'ymin' and 'ymax'.</p></li>
+<li><p>Alternatively on a continuous axis, the centre of the box can be defined
+in the data with the 'x' and/or 'y' aesthetic, and the width and/or height
+of the box can be specified with a 'width' and/or 'height' argument. 'width'
+and 'height' should be provided as <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects; if not, they will
+be assumed to use the native axis scale.</p></li>
+<li><p>On a discrete (categorical) axis, the width or height will be determined
+automatically. This can be overridden if you wish using the 'width' and
+'height' arguments.</p></li>
+</ol>
+    <p>By default, the text will be drawn as if with <code>geom_text()</code>, unless it is
 too big for the box, in which case it will be shrunk to fit the box. With
 <code>grow = TRUE</code>, the text will be made to fill the box completely whether
 that requires shrinking or growing.</p>
@@ -222,8 +226,8 @@ line breaks in the text will be respected when reflowing.</p>
     
     <ul>
 <li><p>label (required)</p></li>
-<li><p>xmin, xmax OR x (required)</p></li>
-<li><p>ymin, ymax OR y (required)</p></li>
+<li><p>(xmin AND xmax) OR x (required)</p></li>
+<li><p>(ymin AND ymax) OR y (required)</p></li>
 <li><p>alpha</p></li>
 <li><p>angle</p></li>
 <li><p>colour</p></li>
@@ -236,9 +240,8 @@ line breaks in the text will be respected when reflowing.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='no'><a href='https://ggplot2.tidyverse.org/reference/presidential.html'>presidential</a></span>, <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>ymin</span> <span class='kw'>=</span> <span class='no'>start</span>, <span class='kw'>ymax</span> <span class='kw'>=</span> <span class='no'>end</span>,
-    <span class='kw'>label</span> <span class='kw'>=</span> <span class='no'>name</span>, <span class='kw'>fill</span> <span class='kw'>=</span> <span class='no'>party</span>, <span class='kw'>xmin</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>xmax</span> <span class='kw'>=</span> <span class='fl'>1</span>)) +
-  <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_tile.html'>geom_rect</a></span>(<span class='kw'>colour</span> <span class='kw'>=</span> <span class='st'>'black'</span>) +
+<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/ggplot'>ggplot</a></span>(<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/presidential'>presidential</a></span>, <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/aes'>aes</a></span>(<span class='kw'>ymin</span> <span class='kw'>=</span> <span class='no'>start</span>, <span class='kw'>ymax</span> <span class='kw'>=</span> <span class='no'>end</span>,
+    <span class='kw'>label</span> <span class='kw'>=</span> <span class='no'>name</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>party</span>)) +
   <span class='fu'>geom_fit_text</span>(<span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='geom_fit_text-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
