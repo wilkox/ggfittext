@@ -92,7 +92,7 @@ geom_fit_text <- function(
   min.size = 4,
   grow = FALSE,
   reflow = FALSE,
-  width = grid::unit(40, "mm"),
+  width = NULL,
   height = grid::unit(40, "mm"),
   formatter = NULL,
   ...
@@ -140,41 +140,13 @@ GeomFitText <- ggplot2::ggproto(
     xmin = NULL,
     xmax = NULL,
     ymin = NULL,
-    ymax = NULL,
-    width = NULL,
-    height = NULL
+    ymax = NULL
   ),
-  setup_params = function(
-    params
-  ) {
 
-    # Check that width and height are `grid::unit()` objects
-    if(! class(params$width) == "unit" & !is.numeric(params$width)) {
-      stop("'width' should be numeric or a `grid::unit()` object",
-           .call = FALSE
-      )
-    }
-    if(! class(params$height) == "unit" & !is.numeric(params$height)) {
-      stop("'height' should be numeric or a `grid::unit()` object",
-           .call = FALSE
-      )
-    }
-
-    params
-
-  },
   setup_data = function(
     data,
     params
   ) {
-
-    # Warn about deprecated width and height aesthetics
-    if ("width" %in% names(data)) {
-      warning("`width` is now an argument, not an aesthetic, and will be removed in a future version")
-    }
-    if ("height" %in% names(data)) {
-      warning("`height` is now an argument, not an aesthetic, and will be removed in a future version")
-    }
 
     # Check that valid aesthetics have been supplied for each dimension
     if (!(
@@ -196,12 +168,20 @@ GeomFitText <- ggplot2::ggproto(
       )
     }
 
-    # If 'width' is not a unit, then interpret it as a numeric on the x scale
-    if (is.null(data$xmin) & 
-        is.null(data$xmax) & 
-        class(params$width) != "unit") {
+    # If 'width' is provided, but not as unit, interpret it as a numeric on the
+    # x scale
+    if ((! is.null(params$width)) & class(params$width) != "unit") {
       data$xmin <- data$x - params$width / 2
       data$xmax <- data$x + params$width / 2
+    }
+
+    # If neither a 'width' parameter nor xmin/xmax aesthetics have been
+    # provided, infer the width using the method of geom_boxplot
+    if (is.null(params$width) & ! "xmin" %in% names(data)) {
+      data$width <- ggplot2::resolution(data$x, FALSE)
+      data$xmin <- data$x - data$width / 2
+      data$xmax <- data$x + data$width / 2
+      data$width <- NULL
     }
 
     # If 'height' is not a unit, then interpret it as a numeric on the y scale
@@ -215,7 +195,9 @@ GeomFitText <- ggplot2::ggproto(
     data
 
   },
+
   draw_key = ggplot2::draw_key_text,
+
   draw_panel = function(
     data,
     panel_scales,
@@ -251,7 +233,6 @@ GeomFitText <- ggplot2::ggproto(
       data$label <- formatted_labels
     }
 
-
     gt <- grid::gTree(
       data = data,
       padding.x = padding.x,
@@ -274,17 +255,6 @@ GeomFitText <- ggplot2::ggproto(
 makeContent.fittexttree <- function(x) {
 
   data <- x$data
-
-  # For backwards compatibility, if a 'width' or 'height' was provided in the
-  # data, convert to 'width' or 'height' parameters (assuming in mm) TODO this
-  # should be removed in a future version when width and height aesthetics are
-  # completely deprecated
-  if ("width" %in% names(data)) {
-    x$width <- grid::unit(data$width[1], "mm")
-  }
-  if ("height" %in% names(data)) {
-    x$height <- grid::unit(data$height[1], "mm")
-  }
 
   # Determine which aesthetics to use for the bounding box
   # Rules: if xmin/xmax are available, use these in preference to x UNLESS
