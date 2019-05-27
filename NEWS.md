@@ -4,6 +4,7 @@
 
 - Add support for automatic sizing of text on discrete (categorical) axes
 - Fully deprecate 'width' and 'height' as aesthetics
+- Increase required R version to 3.2.3
 
 ## Minor changes
 
