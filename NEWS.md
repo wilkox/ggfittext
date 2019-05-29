@@ -1,4 +1,4 @@
-# ggfittext 0.6.0.9003
+# ggfittext 0.7.0
 
 ## Major changes
 
@@ -9,15 +9,8 @@
 ## Minor changes
 
 - Remove default values for 'width' and 'height' parameters
-
-# ggfittext 0.6.0.9002
-
-## Minor changes
-
 - Add new `formatter` argument to `geom_fit_text()`.
 - Add visual tests with vdiffr.
-
-# ggfittext 0.6.0.9001
 
 ## Bug fixes
 
