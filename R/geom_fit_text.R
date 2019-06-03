@@ -51,8 +51,7 @@
 #' - size
 #'
 #' @param padding.x,padding.y Amount of horizontal and vertical padding around
-#' the text, expressed as `grid::unit()` objects. Default to 1 mm and 0.1
-#' lines respectively.
+#' the text, expressed as `grid::unit()` objects. Both default to 1 mm.
 #' @param min.size Minimum font size, in points. If provided, text that would
 #' need to be shrunk below this size to fit the box will not be drawn. Defaults
 #' to 4 pt.
@@ -91,7 +90,7 @@ geom_fit_text <- function(
   show.legend = NA,
   inherit.aes = TRUE,
   padding.x = grid::unit(1, "mm"),
-  padding.y = grid::unit(0.1, "lines"),
+  padding.y = grid::unit(1, "mm"),
   place = "centre",
   min.size = 4,
   grow = FALSE,
@@ -215,7 +214,7 @@ GeomFitText <- ggplot2::ggproto(
     panel_scales,
     coord,
     padding.x = grid::unit(1, "mm"),
-    padding.y = grid::unit(0.1, "lines"),
+    padding.y = grid::unit(1, "mm"),
     min.size = 4,
     grow = FALSE,
     reflow = FALSE,
@@ -280,14 +279,14 @@ makeContent.fittexttree <- function(x) {
     data$xmin <- data$x - (
       grid::convertWidth(
         grid::unit(x$width, "mm"),
-        "native",
+        "npc",
         valueOnly = TRUE
       ) / 2
     )
     data$xmax <- data$x + (
       grid::convertWidth(
         grid::unit(x$width, "mm"),
-        "native",
+        "npc",
         valueOnly = TRUE
       ) / 2
     )
@@ -301,22 +300,22 @@ makeContent.fittexttree <- function(x) {
     data$ymin <- data$y - (
       grid::convertHeight(
         grid::unit(x$height, "mm"),
-        "native",
+        "npc",
         valueOnly = TRUE
       ) / 2
     )
     data$ymax <- data$y + (
       grid::convertHeight(
         grid::unit(x$height, "mm"),
-        "native",
+        "npc",
         valueOnly = TRUE
       ) / 2
     )
   }
 
-  # Padding around text
-  paddingx <- grid::convertWidth(x$padding.x, "native", valueOnly = TRUE)
-  paddingy <- grid::convertHeight(x$padding.y, "native", valueOnly = TRUE)
+  # Convert padding.x and padding.y to npc units
+  padding.x <- grid::convertWidth(x$padding.x, "npc", valueOnly = TRUE)
+  padding.y <- grid::convertHeight(x$padding.y, "npc", valueOnly = TRUE)
 
   # Prepare grob for each text label
   grobs <- lapply(seq_len(nrow(data)), function(i) {
@@ -324,78 +323,16 @@ makeContent.fittexttree <- function(x) {
     # Convenience
     text <- data[i, ]
 
-    # Place text within bounding box according to 'place' aesthetic
-    if (x$place == "topleft") {
-      text$x <- text$xmin + paddingx
-      text$y <- text$ymax - paddingy
-      text$hjust <- 0
-      text$vjust <- 1
-
-    } else if (x$place == "top") {
-      text$x <- mean((c(text$xmin, text$xmax)))
-      text$y <- text$ymax - paddingy
-      text$hjust <- 0.5
-      text$vjust <- 1
-
-    } else if (x$place == "topright") {
-      text$x <- text$xmax - paddingx
-      text$y <- text$ymax - paddingy
-      text$hjust <- 1
-      text$vjust <- 1
-
-    } else if (x$place == "right") {
-      text$x <- text$xmax - paddingx
-      text$y <- mean(c(text$ymin, text$ymax))
-      text$hjust <- 1
-      text$vjust <- 0.5
-
-    } else if (x$place == "bottomright") {
-      text$x <- text$xmax - paddingx
-      text$y <- text$ymin + paddingy
-      text$hjust <- 1
-      text$vjust <- 0
-
-    } else if (x$place == "bottom") {
-      text$x <- mean((c(text$xmin, text$xmax)))
-      text$y <- text$ymin + paddingy
-      text$hjust <- 0.5
-      text$vjust <- 0
-
-    } else if (x$place == "bottomleft") {
-      text$x <- text$xmin + paddingx
-      text$y <- text$ymin + paddingy
-      text$hjust <- 0
-      text$vjust <- 0
-
-    } else if (x$place == "left") {
-      text$x <- text$xmin + paddingx
-      text$y <- mean(c(text$ymin, text$ymax))
-      text$hjust <- 0
-      text$vjust <- 0.5
-
-    } else if (x$place == "centre" | 
-               x$place == "center" | 
-               x$place == "middle") {
-      text$x <- mean((c(text$xmin, text$xmax)))
-      text$y <- mean(c(text$ymin, text$ymax))
-      text$hjust <- 0.5
-      text$vjust <- 0.5
-
-    } else {
-      stop(
-        "geom_fit_text does not recognise place '",
-        x$place,
-        "' (try something like 'topright' or 'centre')",
-        call. = FALSE
-      )
-    }
+    # Set location of textGrob
+    text$x <- mean((c(text$xmin, text$xmax)))
+    text$y <- mean(c(text$ymin, text$ymax))
 
     # Create textGrob
     tg <- grid::textGrob(
       label = text$label,
       x = text$x,
       y = text$y,
-      default.units = "native",
+      default.units = "npc",
       hjust = text$hjust,
       vjust = text$vjust,
       rot = text$angle,
@@ -413,19 +350,20 @@ makeContent.fittexttree <- function(x) {
 
     # Get textGrob dimensions
     labelw <- function(tg) {
-      grid::convertWidth(grid::grobWidth(tg), "native", TRUE)
+      grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
     }
     labelh <- function(tg) {
       grid::convertHeight(
-        grid::grobHeight(tg) + (2 * grid::grobDescent(tg)),
-        "native",
+        grid::grobHeight(tg) + (2 * grid::grobDescent(tg)) +
+          grid::grobDescent(tg),
+        "npc",
         TRUE
       )
     }
 
     # Get x and y dimensions of bounding box
-    xdim <- abs(text$xmin - text$xmax) - (2 * paddingx)
-    ydim <- abs(text$ymin - text$ymax) - (2 * paddingy)
+    xdim <- abs(text$xmin - text$xmax) - (2 * padding.x)
+    ydim <- abs(text$ymin - text$ymax) - (2 * padding.y)
 
     # Resize text to fit bounding box
     if (
@@ -497,11 +435,40 @@ makeContent.fittexttree <- function(x) {
 
       # Set to smaller of target font sizes
       tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
-
     }
 
     # Hide if below minimum font size
     if (tg$gp$fontsize < x$min.size) { return() }
+
+    # Shift grob to the correct position within the bounding box
+    tg_width <- grid::convertWidth(
+      grid::grobWidth(tg),
+      "npc",
+      valueOnly = TRUE
+    )
+    xmin <- text$xmin + padding.x
+    xmax <- text$xmax - padding.x
+    tg_height <- grid::convertHeight(
+      grid::grobHeight(tg) + (2 * grid::grobDescent(tg)) + grid::grobDescent(tg),
+      "npc",
+      valueOnly = TRUE
+    )
+    ymin <- text$ymin + padding.y
+    ymax <- text$ymax - padding.y
+    if (x$place %in% c("topleft", "left", "bottomleft")) {
+      tg$x <- grid::unit(xmin + (0.5 * tg_width), "npc")
+    } else if (x$place %in% c("top", "middle", "centre", "center", "bottom")) {
+      tg$x <- grid::unit((xmin + xmax) / 2, "npc")
+    } else if (x$place %in% c("topright", "right", "bottomright")) {
+      tg$x <- grid::unit(xmax - (0.5 * tg_width), "npc")
+    }
+    if (x$place %in% c("topleft", "top", "topright")) {
+      tg$y <- grid::unit(ymax - (0.5 * tg_height), "npc")
+    } else if (x$place %in% c("left", "middle", "centre", "center", "right")) {
+      tg$y <- grid::unit((ymax + ymin) / 2, "npc")
+    } else if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
+      tg$y <- grid::unit(ymin + (0.5 * tg_height), "npc")
+    }
 
     # Return the textGrob
     tg

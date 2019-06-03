@@ -1,3 +1,9 @@
+# ggfittext 0.7.0.9000
+
+## Bug fixes
+
+- Angled text is now placed correctly in places other than 'centre'
+
 # ggfittext 0.7.0
 
 ## Major changes
