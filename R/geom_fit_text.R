@@ -348,7 +348,7 @@ makeContent.fittexttree <- function(x) {
     # Hide if below minimum font size
     if (tg$gp$fontsize < x$min.size) { return() }
 
-    # Get textGrob dimensions
+    # Get starting textGrob dimensions
     labelw <- function(tg) {
       grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
     }
@@ -357,19 +357,19 @@ makeContent.fittexttree <- function(x) {
       tgd <- grid::convertHeight(grid::grobDescent(tg), "npc", TRUE)
       tgh + tgd
     }
+    tg_width <- labelw(tg)
+    tg_height <- labelh(tg)
 
     # Get x and y dimensions of bounding box
     xdim <- abs(text$xmin - text$xmax) - (2 * padding.x)
     ydim <- abs(text$ymin - text$ymax) - (2 * padding.y)
 
     # Resize text to fit bounding box
-    lw <- labelw(tg)
-    lh <- labelh(tg)
     if (
       # Standard condition - is text too big for box?
-      (lw > xdim | lh > ydim) |
+      (tg_width > xdim | tg_height > ydim) |
       # grow = TRUE condition - is text too small for box?
-      (x$grow & lw < xdim & lh < ydim)
+      (x$grow & tg_width < xdim & tg_height < ydim)
     ) {
 
       # Reflow text if requested
@@ -390,9 +390,11 @@ makeContent.fittexttree <- function(x) {
             stringi::stri_wrap(label, w, normalize = FALSE),
             collapse = "\n"
           )
-
+          
           # Calculate aspect ratio and update if this is the new best ratio
-          aspect_ratio <- labelw(tg) / labelh(tg)
+          tg_width <- labelw(tg)
+          tg_height <- labelh(tg)
+          aspect_ratio <- tg_width / tg_height
           diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
           best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
           if (diff_from_box_ratio < best_diff_from_box_ratio) {
@@ -402,7 +404,7 @@ makeContent.fittexttree <- function(x) {
 
           # If the text now fits the bounding box (and we are not trying to grow
           # the text), good to stop and return the grob
-          if (labelw(tg) < xdim & labelh(tg) < ydim & !x$grow) {
+          if (tg_width < xdim & tg_height < ydim & !x$grow) {
             return(tg)
           }
         }
@@ -416,16 +418,16 @@ makeContent.fittexttree <- function(x) {
           stringi::stri_wrap(label, best_width, normalize = FALSE),
           collapse = "\n"
         )
+        tg_width <- labelw(tg)
+        tg_height <- labelh(tg)
       }
 
       # Get the slopes of the relationships between font size and label
       # dimensions
       fs1 <- tg$gp$fontsize
-      lw1 <- labelw(tg)
-      lh1 <- labelh(tg)
       tg$gp$fontsize <- tg$gp$fontsize * 2
-      slopew <- fs1 / (labelw(tg) - lw1)
-      slopeh <- fs1 / (labelh(tg) - lh1)
+      slopew <- fs1 / (labelw(tg) - tg_width)
+      slopeh <- fs1 / (labelh(tg) - tg_height)
 
       # Calculate the target font size required to fit text to box along each
       # dimension
@@ -440,10 +442,8 @@ makeContent.fittexttree <- function(x) {
     if (tg$gp$fontsize < x$min.size) { return() }
 
     # Shift grob to the correct position within the bounding box
-    tg_width <- labelw(tg)
     xmin <- text$xmin + padding.x
     xmax <- text$xmax - padding.x
-    tg_height <- labelh(tg)
     ymin <- text$ymin + padding.y
     ymax <- text$ymax - padding.y
     # Calculate adjustment for descenders
