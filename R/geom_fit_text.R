@@ -353,12 +353,9 @@ makeContent.fittexttree <- function(x) {
       grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
     }
     labelh <- function(tg) {
-      grid::convertHeight(
-        grid::grobHeight(tg) + (2 * grid::grobDescent(tg)) +
-          grid::grobDescent(tg),
-        "npc",
-        TRUE
-      )
+      tgh <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
+      tgd <- grid::convertHeight(grid::grobDescent(tg), "npc", TRUE)
+      tgh + tgd
     }
 
     # Get x and y dimensions of bounding box
@@ -366,11 +363,13 @@ makeContent.fittexttree <- function(x) {
     ydim <- abs(text$ymin - text$ymax) - (2 * padding.y)
 
     # Resize text to fit bounding box
+    lw <- labelw(tg)
+    lh <- labelh(tg)
     if (
       # Standard condition - is text too big for box?
-      (labelw(tg) > xdim | labelh(tg) > ydim) |
+      (lw > xdim | lh > ydim) |
       # grow = TRUE condition - is text too small for box?
-      (x$grow & labelw(tg) < xdim & labelh(tg) < ydim)
+      (x$grow & lw < xdim & lh < ydim)
     ) {
 
       # Reflow text if requested
@@ -441,20 +440,15 @@ makeContent.fittexttree <- function(x) {
     if (tg$gp$fontsize < x$min.size) { return() }
 
     # Shift grob to the correct position within the bounding box
-    tg_width <- grid::convertWidth(
-      grid::grobWidth(tg),
-      "npc",
-      valueOnly = TRUE
-    )
+    tg_width <- labelw(tg)
     xmin <- text$xmin + padding.x
     xmax <- text$xmax - padding.x
-    tg_height <- grid::convertHeight(
-      grid::grobHeight(tg) + (2 * grid::grobDescent(tg)) + grid::grobDescent(tg),
-      "npc",
-      valueOnly = TRUE
-    )
+    tg_height <- labelh(tg)
     ymin <- text$ymin + padding.y
     ymax <- text$ymax - padding.y
+    # Calculate adjustment for descenders
+    tg_descent <- grid::convertHeight(grid::grobDescent(tg), "npc", TRUE)
+    des_adj <- (0.5 * tg_descent * cos((pi * text$angle) / 180))
     if (x$place %in% c("topleft", "left", "bottomleft")) {
       tg$x <- grid::unit(xmin + (0.5 * tg_width), "npc")
     } else if (x$place %in% c("top", "middle", "centre", "center", "bottom")) {
@@ -463,11 +457,11 @@ makeContent.fittexttree <- function(x) {
       tg$x <- grid::unit(xmax - (0.5 * tg_width), "npc")
     }
     if (x$place %in% c("topleft", "top", "topright")) {
-      tg$y <- grid::unit(ymax - (0.5 * tg_height), "npc")
+      tg$y <- grid::unit(ymax - (0.5 * tg_height) + des_adj, "npc")
     } else if (x$place %in% c("left", "middle", "centre", "center", "right")) {
-      tg$y <- grid::unit((ymax + ymin) / 2, "npc")
+      tg$y <- grid::unit(((ymax + ymin) / 2) + des_adj, "npc")
     } else if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-      tg$y <- grid::unit(ymin + (0.5 * tg_height), "npc")
+      tg$y <- grid::unit(ymin + (0.5 * tg_height) + des_adj, "npc")
     }
 
     # Return the textGrob
