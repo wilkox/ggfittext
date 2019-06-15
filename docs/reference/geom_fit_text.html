@@ -64,7 +64,7 @@ rectangular area." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggfittext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
       </span>
     </div>
 
@@ -130,9 +130,9 @@ rectangular area.</p>
     <pre class="usage"><span class='fu'>geom_fit_text</span>(<span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>stat</span> <span class='kw'>=</span> <span class='st'>"identity"</span>,
   <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"identity"</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>padding.x</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>),
-  <span class='kw'>padding.y</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>0.1</span>, <span class='st'>"lines"</span>), <span class='kw'>place</span> <span class='kw'>=</span> <span class='st'>"centre"</span>,
-  <span class='kw'>min.size</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>formatter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>padding.y</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>), <span class='kw'>place</span> <span class='kw'>=</span> <span class='st'>"centre"</span>, <span class='kw'>min.size</span> <span class='kw'>=</span> <span class='fl'>4</span>,
+  <span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>formatter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,8 +150,7 @@ arguments as for <code><a href='https://www.rdocumentation.org/packages/ggplot2/
     <tr>
       <th>padding.x, padding.y</th>
       <td><p>Amount of horizontal and vertical padding around
-the text, expressed as <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects. Default to 1 mm and 0.1
-lines respectively.</p></td>
+the text, expressed as <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects. Both default to 1 mm.</p></td>
     </tr>
     <tr>
       <th>place</th>

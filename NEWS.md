@@ -1,4 +1,8 @@
-# ggfittext 0.7.0.9000
+# ggfittext 0.7.1
+
+## Minor changes
+
+- `padding.x` and `padding.y` now default to 1 mm
 
 ## Bug fixes
 
