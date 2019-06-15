@@ -30,7 +30,7 @@ yeats <- data.frame(
   ymax = c(8, 8, 4, 2, 4, 4, 3,   2.5, 3,    3,    2.75),
   label = c("Turning", "and", "turning", "in", "the", "widening", "gyre", "the",
             "falcon", "cannot", "hear"),
-  angle = c(0, 45, 90, 135, 180, 225, 270, 315, 0, 45, 90)
+  angle = c(0, 315, 270, 225, 180, 135, 90, 45, 0, 315, 270)
 )
 library(ggplot2)
 library(ggfittext)

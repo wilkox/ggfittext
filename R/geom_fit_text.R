@@ -446,22 +446,23 @@ makeContent.fittexttree <- function(x) {
     xmax <- text$xmax - padding.x
     ymin <- text$ymin + padding.y
     ymax <- text$ymax - padding.y
-    # Calculate adjustment for descenders
+    # Calculate adjustments for descenders
     tg_descent <- grid::convertHeight(grid::grobDescent(tg), "npc", TRUE)
-    des_adj <- (0.5 * tg_descent * cos((pi * text$angle) / 180))
+    des_y_adj <- (0.5 * tg_descent * cos((pi * text$angle) / 180))
+    des_x_adj <- (0.5 * tg_descent * sin((pi * text$angle) / 180))
     if (x$place %in% c("topleft", "left", "bottomleft")) {
-      tg$x <- grid::unit(xmin + (0.5 * tg_width), "npc")
+      tg$x <- grid::unit(xmin + (0.5 * tg_width) - des_x_adj, "npc")
     } else if (x$place %in% c("top", "middle", "centre", "center", "bottom")) {
-      tg$x <- grid::unit((xmin + xmax) / 2, "npc")
+      tg$x <- grid::unit(((xmin + xmax) / 2) - des_x_adj, "npc")
     } else if (x$place %in% c("topright", "right", "bottomright")) {
-      tg$x <- grid::unit(xmax - (0.5 * tg_width), "npc")
+      tg$x <- grid::unit(xmax - (0.5 * tg_width) - des_x_adj, "npc")
     }
     if (x$place %in% c("topleft", "top", "topright")) {
-      tg$y <- grid::unit(ymax - (0.5 * tg_height) + des_adj, "npc")
+      tg$y <- grid::unit(ymax - (0.5 * tg_height) + des_y_adj, "npc")
     } else if (x$place %in% c("left", "middle", "centre", "center", "right")) {
-      tg$y <- grid::unit(((ymax + ymin) / 2) + des_adj, "npc")
+      tg$y <- grid::unit(((ymax + ymin) / 2) + des_y_adj, "npc")
     } else if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-      tg$y <- grid::unit(ymin + (0.5 * tg_height) + des_adj, "npc")
+      tg$y <- grid::unit(ymin + (0.5 * tg_height) + des_y_adj, "npc")
     }
 
     # Return the textGrob

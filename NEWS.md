@@ -1,12 +1,10 @@
 # ggfittext 0.7.1
 
-## Major changes
-
-- Substantial speed improvement
-
 ## Minor changes
 
 - `padding.x` and `padding.y` now default to 1 mm
+- Speed improvements
+- More accurate adjustment for descenders
 
 ## Bug fixes
 
