@@ -204,11 +204,12 @@ test_that("a `formatter` argument is accepted", {
       ymin = c(0, 4, 0, 0, 2, 3, 2,   2,   2.5,  2.75, 2.5),
       ymax = c(8, 8, 4, 2, 4, 4, 3,   2.5, 3,    3,    2.75),
       label = c("Turning", "and", "turning", "in", "the", "widening", "gyre", "the",
-                "falcon", "cannot", "hear")
+                "falcon", "cannot", "hear"),
+      angle = sample(0:360, 11)
     )
 
     p <- ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
-                      label)) +
+                      label, angle = angle)) +
       geom_rect(colour = "black") +
       geom_fit_text(grow = T, min.size = 0, formatter = wiki)
     print(p)

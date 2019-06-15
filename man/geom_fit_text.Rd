@@ -7,9 +7,9 @@
 geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, padding.x = grid::unit(1, "mm"),
-  padding.y = grid::unit(0.1, "lines"), place = "centre",
-  min.size = 4, grow = FALSE, reflow = FALSE, width = NULL,
-  height = NULL, formatter = NULL, ...)
+  padding.y = grid::unit(1, "mm"), place = "centre", min.size = 4,
+  grow = FALSE, reflow = FALSE, width = NULL, height = NULL,
+  formatter = NULL, ...)
 }
 \arguments{
 \item{mapping}{\code{ggplot2::aes()} object as standard in 'ggplot2'. Note
@@ -19,8 +19,7 @@ that aesthetics specifying the box must be provided. See Details.}
 arguments as for \code{ggplot2::geom_text()}.}
 
 \item{padding.x, padding.y}{Amount of horizontal and vertical padding around
-the text, expressed as \code{grid::unit()} objects. Default to 1 mm and 0.1
-lines respectively.}
+the text, expressed as \code{grid::unit()} objects. Both default to 1 mm.}
 
 \item{place}{Where inside the box to place the text. Default is 'centre';
 other options are 'topleft', 'top', 'topright', etc.}
