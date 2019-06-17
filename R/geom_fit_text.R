@@ -579,8 +579,8 @@ makeContent.fittexttree <- function(x) {
       tg_x <- xmin + (tg_width / 2)
       tg_y <- 0.5
     } else {
-      tg_x <- 0.5
-      tg_y <- 0.5
+      tg_x <- (xmin + xmax) / 2
+      tg_y <- (ymin + ymax) / 2
     }
 
     tg$x <- grid::unit(tg_x, "npc")
