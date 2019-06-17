@@ -323,18 +323,17 @@ makeContent.fittexttree <- function(x) {
     # Convenience
     text <- data[i, ]
 
-    # Set location of textGrob
-    text$x <- mean((c(text$xmin, text$xmax)))
-    text$y <- mean(c(text$ymin, text$ymax))
+    # Clean up angle
+    text$angle <- text$angle %% 360
 
     # Create textGrob
     tg <- grid::textGrob(
       label = text$label,
-      x = text$x,
-      y = text$y,
+      x = 0.5,
+      y = 0.5,
       default.units = "npc",
-      hjust = text$hjust,
-      vjust = text$vjust,
+      hjust = 0.5,
+      vjust = 0.5,
       rot = text$angle,
       gp = grid::gpar(
         col = ggplot2::alpha(text$colour, text$alpha),
@@ -344,9 +343,6 @@ makeContent.fittexttree <- function(x) {
         lineheight = text$lineheight
       )
     )
-
-    # Hide if below minimum font size
-    if (tg$gp$fontsize < x$min.size) { return() }
 
     # Get starting textGrob dimensions
     labelw <- function(tg) {
@@ -360,11 +356,11 @@ makeContent.fittexttree <- function(x) {
     tg_width <- labelw(tg)
     tg_height <- labelh(tg)
 
-    # Get x and y dimensions of bounding box
+    # Get dimensions of bounding box
     xdim <- abs(text$xmin - text$xmax) - (2 * padding.x)
     ydim <- abs(text$ymin - text$ymax) - (2 * padding.y)
 
-    # Resize text to fit bounding box
+    # Resize text to fit bounding box if it doesn't fit
     if (
       # Standard condition - is text too big for box?
       (tg_width > xdim | tg_height > ydim) |
@@ -441,29 +437,154 @@ makeContent.fittexttree <- function(x) {
     # Hide if below minimum font size
     if (tg$gp$fontsize < x$min.size) { return() }
 
-    # Shift grob to the correct position within the bounding box
+    # === Shift grob to the correct position within the bounding box
+
+    # Specify the bounding box limits
     xmin <- text$xmin + padding.x
     xmax <- text$xmax - padding.x
     ymin <- text$ymin + padding.y
     ymax <- text$ymax - padding.y
-    # Calculate adjustments for descenders
-    tg_descent <- grid::convertHeight(grid::grobDescent(tg), "npc", TRUE)
-    des_y_adj <- (0.5 * tg_descent * cos((pi * text$angle) / 180))
-    des_x_adj <- (0.5 * tg_descent * sin((pi * text$angle) / 180))
-    if (x$place %in% c("topleft", "left", "bottomleft")) {
-      tg$x <- grid::unit(xmin + (0.5 * tg_width) - des_x_adj, "npc")
-    } else if (x$place %in% c("top", "middle", "centre", "center", "bottom")) {
-      tg$x <- grid::unit(((xmin + xmax) / 2) - des_x_adj, "npc")
-    } else if (x$place %in% c("topright", "right", "bottomright")) {
-      tg$x <- grid::unit(xmax - (0.5 * tg_width) - des_x_adj, "npc")
+
+    # Pre-calculate the dimensions of the unrotated text and adjustments We
+    # need to calculate in absolute units (mm) before converting to native
+    # (npc) values along each dimension to account for non-square aspect ratios
+    #              +---------------+ +---------------+            
+    #              |b = wcos(delta)| |c = hsin(delta)|            
+    #              +---------------+ +---------------+            
+    #             ^<----------------> <------------>^+-----------+
+    #             |        delta     /--+           ||     d     |
+    #             |          =      /   +---h       ||     =     |
+    #             |       90 - rot /        +---+   ||hcos(delta)|
+    #             |               /             +---v+-----------+
+    #             |              /                                
+    #+-----------+|             /                                 
+    #|     a     ||            /                                  
+    #|     =     ||           w                                   
+    #|wsin(delta)||          /                                    
+    #+-----------+|         /                                     
+    #             |        /                                      
+    #             |       /                                       
+    #             |      /                                        
+    #             |     /                                         
+    #             |    /                                          
+    #             |   /                                           
+    #             |  /                                            
+    #             | /                                             
+    #             v/                                              
+    tg$rot <- 0
+    unrot_w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+    unrot_h <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE) +
+                 grid::convertHeight(grid::grobDescent(tg), "mm", TRUE)
+    tg$rot <- text$angle
+    theta <- (text$angle %% 90) * (pi / 180)
+    h2npc <- function(x) grid::convertHeight(grid::unit(x, "mm"), "npc", TRUE)
+    w2npc <- function(x) grid::convertWidth(grid::unit(x, "mm"), "npc", TRUE)
+    a <- unrot_w * sin(theta)
+    ay <- h2npc(a)
+    ax <- w2npc(a)
+    b <- unrot_w * cos(theta)
+    by <- h2npc(b)
+    bx <- w2npc(b)
+    c <- unrot_h * sin(theta)
+    cy <- h2npc(c)
+    cx <- w2npc(c)
+    d <- unrot_h * cos(theta)
+    dy <- h2npc(d)
+    dx <- w2npc(d)
+
+    # Put the text in the correct horizontal justification and place,
+    # correcting for rotation and the shifted anchor point
+    if (x$place == "topleft") {
+      tg$hjust <- 0
+      tg$vjust <- 1
+      if (tg$rot < 90) {
+        tg_x <- xmin
+        tg_y <- ymax - ay
+      } else if (tg$rot < 180) {
+        tg_x <- xmin + ax
+        tg_y <- ymax - by - cy
+      } else if (tg$rot < 270) {
+        tg_x <- xmin + bx + cx
+        tg_y <- ymax - dy
+      } else if (tg$rot < 360) {
+        tg_x <- xmin + dx
+        tg_y <- ymax
+      }
+    } else if (x$place == "top") {
+      tg$hjust <- 0.5
+      tg$vjust <- 0.5 
+      tg_x <- 0.5
+      tg_y <- ymax - (tg_height / 2)
+    } else if (x$place == "topright") {
+      tg$hjust <- 1
+      tg$vjust <- 1
+      if (tg$rot < 90) {
+        tg_x <- xmax - cx
+        tg_y <- ymax
+      } else if (tg$rot < 180) {
+        tg_x <- xmax - ax - dx
+        tg_y <- ymax - cy
+      } else if (tg$rot < 270) {
+        tg_x <- xmax - bx
+        tg_y <- ymax - ay - dy
+      } else if (tg$rot < 360) {
+        tg_x <- xmax
+        tg_y <- ymax - by
+      }
+    } else if (x$place == "right") {
+      tg$hjust <- 0.5
+      tg$vjust <- 0.5
+      tg_x <- xmax - (tg_width / 2)
+      tg_y <- 0.5
+    } else if (x$place == "bottomright") {
+      tg$hjust <- 1
+      tg$vjust <- 0
+      if (tg$rot < 90) {
+        tg_x <- xmax
+        tg_y <- ymin + ay
+      } else if (tg$rot < 180) {
+        tg_x <- xmax - ax
+        tg_y <- ymin + by + cy
+      } else if (tg$rot < 270) {
+        tg_x <- xmax - bx - cx
+        tg_y <- ymin + dy
+      } else if (tg$rot < 360) {
+        tg_x <- xmax - dx
+        tg_y <- ymin
+      }
+    } else if (x$place == "bottom") {
+      tg$hjust <- 0.5
+      tg$vjust <- 0.5
+      tg_x <- 0.5
+      tg_y <- ymin + (tg_height / 2)
+    } else if (x$place == "bottomleft") {
+      tg$hjust <- 0
+      tg$vjust <- 0
+      if (tg$rot < 90) {
+        tg_x <- xmin + cx
+        tg_y <- ymin
+      } else if (tg$rot < 180) {
+        tg_x <- xmin + ax + dx
+        tg_y <- ymin + cy
+      } else if (tg$rot < 270) {
+        tg_x <- xmin + bx
+        tg_y <- ymin + ay + dy
+      } else if (tg$rot < 360) {
+        tg_x <- xmin
+        tg_y <- ymin + by
+      }
+    } else if (x$place == "left") {
+      tg$hjust <- 0.5
+      tg$vjust <- 0.5
+      tg_x <- xmin + (tg_width / 2)
+      tg_y <- 0.5
+    } else {
+      tg_x <- 0.5
+      tg_y <- 0.5
     }
-    if (x$place %in% c("topleft", "top", "topright")) {
-      tg$y <- grid::unit(ymax - (0.5 * tg_height) + des_y_adj, "npc")
-    } else if (x$place %in% c("left", "middle", "centre", "center", "right")) {
-      tg$y <- grid::unit(((ymax + ymin) / 2) + des_y_adj, "npc")
-    } else if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-      tg$y <- grid::unit(ymin + (0.5 * tg_height) + des_y_adj, "npc")
-    }
+
+    tg$x <- grid::unit(tg_x, "npc")
+    tg$y <- grid::unit(tg_y, "npc")
 
     # Return the textGrob
     tg
