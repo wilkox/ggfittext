@@ -346,12 +346,18 @@ makeContent.fittexttree <- function(x) {
 
     # Get starting textGrob dimensions
     labelw <- function(tg) {
-      grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
+      w <- grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
+      if (x$grow) {
+        w <- w + (grid::convertWidth(grid::grobDescent(tg), "npc", TRUE) *
+          sin(text$angle * (pi / 180)))
+      }
+      w
     }
     labelh <- function(tg) {
       h <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
       if (x$grow) {
-        h <- h + grid::convertHeight(grid::grobDescent(tg), "npc", TRUE)
+        h <- h + (grid::convertHeight(grid::grobDescent(tg), "npc", TRUE) *
+          cos(text$angle * (pi / 180)))
       }
       h
     }
@@ -495,8 +501,9 @@ makeContent.fittexttree <- function(x) {
     tg$rot <- 0
     unrot_w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
     unrot_h <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+    unrot_d <- grid::convertHeight(grid::grobDescent(tg), "mm", TRUE)
     if (x$grow) {
-      unrot_h <- unrot_h + grid::convertHeight(grid::grobDescent(tg), "mm", TRUE)
+      unrot_h <- unrot_h + unrot_d
     }
     tg$rot <- text$angle
     theta <- (text$angle %% 90) * (pi / 180)
@@ -604,6 +611,21 @@ makeContent.fittexttree <- function(x) {
     } else if (x$place %in% c("middle", "centre", "center")) {
       tg_x <- (xmin + xmax) / 2
       tg_y <- (ymin + ymax) / 2
+    }
+
+    # If placed in the centre and growing, add a positioning correction for
+    # descenders
+    if (x$place %in% c("middle", "centre", "center") & x$grow) {
+      tg_x <- tg_x - grid::convertWidth(
+        grid::unit((0.5 * unrot_d * sin(text$angle * (pi / 180))), "mm"),
+        "npc",
+        TRUE
+      )
+      tg_y <- tg_y + grid::convertHeight(
+        grid::unit((0.5 * unrot_d * cos(text$angle * (pi / 180))), "mm"),
+        "npc",
+        TRUE
+      )
     }
 
     tg$x <- grid::unit(tg_x, "npc")
