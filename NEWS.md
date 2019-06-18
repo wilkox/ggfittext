@@ -2,7 +2,7 @@
 
 ## Minor changes
 
-- `padding.x` and `padding.y` now default to 1 mm
+- `padding.x` and `padding.y` now both default to 2 mm
 - Speed improvements
 - More accurate adjustment for descenders
 
