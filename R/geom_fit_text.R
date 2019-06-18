@@ -532,7 +532,7 @@ makeContent.fittexttree <- function(x) {
     } else if (x$place == "top") {
       tg$hjust <- 0.5
       tg$vjust <- 0.5 
-      tg_x <- 0.5
+      tg_x <- (xmin + xmax) / 2
       tg_y <- ymax - (tg_height / 2)
     } else if (x$place == "topright") {
       tg$hjust <- 1
@@ -554,7 +554,7 @@ makeContent.fittexttree <- function(x) {
       tg$hjust <- 0.5
       tg$vjust <- 0.5
       tg_x <- xmax - (tg_width / 2)
-      tg_y <- 0.5
+      tg_y <- (ymin + ymax) / 2
     } else if (x$place == "bottomright") {
       tg$hjust <- 1
       tg$vjust <- 0
@@ -574,7 +574,7 @@ makeContent.fittexttree <- function(x) {
     } else if (x$place == "bottom") {
       tg$hjust <- 0.5
       tg$vjust <- 0.5
-      tg_x <- 0.5
+      tg_x <- (xmin + xmax) / 2
       tg_y <- ymin + (tg_height / 2)
     } else if (x$place == "bottomleft") {
       tg$hjust <- 0
@@ -596,7 +596,7 @@ makeContent.fittexttree <- function(x) {
       tg$hjust <- 0.5
       tg$vjust <- 0.5
       tg_x <- xmin + (tg_width / 2)
-      tg_y <- 0.5
+      tg_y <- (ymin + ymax) / 2
     } else if (x$place %in% c("middle", "centre", "center")) {
       tg_x <- (xmin + xmax) / 2
       tg_y <- (ymin + ymax) / 2
