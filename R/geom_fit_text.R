@@ -446,6 +446,10 @@ makeContent.fittexttree <- function(x) {
 
         # Set to smaller of target font sizes
         tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
+
+        # Update dimensions
+        tg_width <- labelw(tg)
+        tg_height <- labelh(tg)
       }
     }
 
