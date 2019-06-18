@@ -329,8 +329,8 @@ makeContent.fittexttree <- function(x) {
     # Create textGrob
     tg <- grid::textGrob(
       label = text$label,
-      x = 0.5,
-      y = 0.5,
+      x = 0.25,
+      y = 0.25,
       default.units = "npc",
       hjust = 0.5,
       vjust = 0.5,
@@ -399,10 +399,8 @@ makeContent.fittexttree <- function(x) {
           }
 
           # If the text now fits the bounding box (and we are not trying to grow
-          # the text), good to stop and return the grob
-          if (tg_width < xdim & tg_height < ydim & !x$grow) {
-            return(tg)
-          }
+          # the text), good to stop here
+          if (tg_width < xdim & tg_height < ydim & !x$grow) break
         }
 
         # If all reflow widths have been tried and none is smaller than the box
@@ -410,12 +408,14 @@ makeContent.fittexttree <- function(x) {
         # produces the aspect ratio closest to that of the bounding box. In the
         # condition that we are trying to grow the text, this will also ensure
         # the text is grown with the best aspect ratio.
-        tg$label <- paste(
-          stringi::stri_wrap(label, best_width, normalize = FALSE),
-          collapse = "\n"
-        )
-        tg_width <- labelw(tg)
-        tg_height <- labelh(tg)
+        if (tg_width > xdim | tg_height > ydim) {
+          tg$label <- paste(
+            stringi::stri_wrap(label, best_width, normalize = FALSE),
+            collapse = "\n"
+          )
+          tg_width <- labelw(tg)
+          tg_height <- labelh(tg)
+        }
       }
 
       # Get the slopes of the relationships between font size and label
@@ -578,7 +578,7 @@ makeContent.fittexttree <- function(x) {
       tg$vjust <- 0.5
       tg_x <- xmin + (tg_width / 2)
       tg_y <- 0.5
-    } else {
+    } else if (x$place %in% c("middle", "centre", "center")) {
       tg_x <- (xmin + xmax) / 2
       tg_y <- (ymin + ymax) / 2
     }
