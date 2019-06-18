@@ -329,8 +329,8 @@ makeContent.fittexttree <- function(x) {
     # Create textGrob
     tg <- grid::textGrob(
       label = text$label,
-      x = 0.25,
-      y = 0.25,
+      x = 0.5,
+      y = 0.5,
       default.units = "npc",
       hjust = 0.5,
       vjust = 0.5,
@@ -349,9 +349,11 @@ makeContent.fittexttree <- function(x) {
       grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
     }
     labelh <- function(tg) {
-      tgh <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
-      tgd <- grid::convertHeight(grid::grobDescent(tg), "npc", TRUE)
-      tgh + tgd
+      h <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
+      if (x$grow) {
+        h <- h + grid::convertHeight(grid::grobDescent(tg), "npc", TRUE)
+      }
+      h
     }
     tg_width <- labelw(tg)
     tg_height <- labelh(tg)
@@ -492,8 +494,10 @@ makeContent.fittexttree <- function(x) {
     #             v/                                              
     tg$rot <- 0
     unrot_w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
-    unrot_h <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE) +
-                 grid::convertHeight(grid::grobDescent(tg), "mm", TRUE)
+    unrot_h <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+    if (x$grow) {
+      unrot_h <- unrot_h + grid::convertHeight(grid::grobDescent(tg), "mm", TRUE)
+    }
     tg$rot <- text$angle
     theta <- (text$angle %% 90) * (pi / 180)
     h2npc <- function(x) grid::convertHeight(grid::unit(x, "mm"), "npc", TRUE)
