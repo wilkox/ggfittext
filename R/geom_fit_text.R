@@ -388,7 +388,7 @@ makeContent.fittexttree <- function(x) {
     tgWidth <- function(tg, unit = "npc") {
       w <- grid::convertWidth(grid::grobWidth(tg), unit, TRUE)
       if (x$fullheight) {
-        w <- w + (grid::convertWidth(grid::grobDescent(tg), unit, TRUE) *
+        w <- w + abs(grid::convertWidth(grid::grobDescent(tg), unit, TRUE) *
           sin(text$angle * (pi / 180)))
       }
       w
@@ -396,7 +396,7 @@ makeContent.fittexttree <- function(x) {
     tgHeight <- function(tg, unit = "npc") {
       h <- grid::convertHeight(grid::grobHeight(tg), unit, TRUE)
       if (x$fullheight) {
-        h <- h + (grid::convertHeight(grid::grobDescent(tg), unit, TRUE) *
+        h <- h + abs(grid::convertHeight(grid::grobDescent(tg), unit, TRUE) *
           cos(text$angle * (pi / 180)))
       }
       h
@@ -513,7 +513,7 @@ makeContent.fittexttree <- function(x) {
     # We can use these values to calculate the distance from the centre point to
     # the anchor point, using the Pythagorean identity
     if (x$fullheight) {
-      AB <- (tg_height_abs * tg$vjust) - ((tg_height_abs + tg_descent_abs) * 0.5)
+      AB <- (tg_height_abs * tg$vjust) - ((tg_height_abs - tg_descent_abs) * 0.5)
     } else {
       AB <- (tg_height_abs * tg$vjust) - (tg_height_abs * 0.5)
     }
