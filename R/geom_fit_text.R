@@ -100,6 +100,7 @@ geom_fit_text <- function(
   reflow = FALSE,
   hjust = NULL,
   vjust = NULL,
+  fullheight = NULL,
   width = NULL,
   height = NULL,
   formatter = NULL,
@@ -123,6 +124,7 @@ geom_fit_text <- function(
       reflow = reflow,
       hjust = hjust,
       vjust = vjust,
+      fullheight = fullheight,
       width = width,
       height = height,
       formatter = formatter,
@@ -244,6 +246,7 @@ GeomFitText <- ggplot2::ggproto(
     reflow = FALSE,
     hjust = NULL,
     vjust = NULL,
+    fullheight = NULL,
     width = NULL,
     height = NULL,
     formatter = NULL,
@@ -262,6 +265,7 @@ GeomFitText <- ggplot2::ggproto(
       reflow = reflow,
       hjust = hjust,
       vjust = vjust,
+      fullheight = fullheight,
       width = width,
       height = height,
       cl = "fittexttree"
@@ -342,7 +346,7 @@ makeContent.fittexttree <- function(x) {
     text$angle <- text$angle %% 360
 
     # If hjust and/or vjust have not been set, set an appropriate value based
-    # on place and angle
+    # on place
     if (is.null(x$hjust)) {
       if (x$place %in% c("left", "bottomleft", "topleft")) {
         x$hjust <- 0
@@ -354,6 +358,12 @@ makeContent.fittexttree <- function(x) {
     }
     if (is.null(x$vjust)) {
       x$vjust <- 0.5
+    }
+
+    # If fullheight has not been set, set an appropriate value based on place
+    # and grow
+    if (is.null(x$fullheight)) {
+      x$fullheight <- x$place == "middle" | x$grow
     }
 
     # Create textGrob
@@ -374,9 +384,20 @@ makeContent.fittexttree <- function(x) {
       )
     )
 
+    # Functions to get textgrob dimensions
+    tgWidth <- function(tg, unit = "npc") {
+      grid::convertWidth(grid::grobWidth(tg), unit, TRUE)
+    }
+    tgHeight <- function(tg, unit = "npc") {
+      h <- grid::convertHeight(grid::grobHeight(tg), unit, TRUE)
+      if (x$fullheight) {
+        d <- grid::convertHeight(grid::grobDescent(tg), unit, TRUE)
+      }
+    }
+
     # Get starting textGrob dimensions, in npc
-    tg_width <- grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
-    tg_height <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
+    tg_width <- tgWidth(tg)
+    tg_height <- tgHeight(tg)
 
     # Get dimensions of bounding box, in npc
     xdim <- abs(text$xmin - text$xmax) - (2 * padding.x)
@@ -409,8 +430,8 @@ makeContent.fittexttree <- function(x) {
         
         # Calculate aspect ratio of text grob using absolute units and update
         # if this is the new best ratio
-        tg_width_abs <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
-        tg_height_abs <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+        tg_width_abs <- tgWidth(tg, "mm")
+        tg_height_abs <- tgHeight(tg, "mm")
         aspect_ratio <- tg_width_abs / tg_height_abs
         diff_from_box_ratio <- abs(aspect_ratio - (xdim_abs / ydim_abs))
         best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim_abs / ydim_abs))
@@ -436,8 +457,8 @@ makeContent.fittexttree <- function(x) {
       }
 
       # Update the textGrob dimensions
-      tg_width <- grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
-      tg_height <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
+      tg_width <- tgWidth(tg)
+      tg_height <- tgHeight(tg)
     }
 
     # Resize text to fit bounding box if it doesn't fit
@@ -452,12 +473,8 @@ makeContent.fittexttree <- function(x) {
       # dimensions
       fs1 <- tg$gp$fontsize
       tg$gp$fontsize <- tg$gp$fontsize * 2
-      slopew <- fs1 / (
-        grid::convertWidth(grid::grobWidth(tg), "npc", TRUE) - tg_width
-      )
-      slopeh <- fs1 / (
-        grid::convertHeight(grid::grobHeight(tg), "npc", TRUE) - tg_height
-      )
+      slopew <- fs1 / (tgWidth(tg) - tg_width)
+      slopeh <- fs1 / (tgHeight(tg) - tg_height)
 
       # Calculate the target font size required to fit text to box along each
       # dimension
@@ -468,8 +485,8 @@ makeContent.fittexttree <- function(x) {
       tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
 
       # Update the textGrob dimensions
-      tg_width <- grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
-      tg_height <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
+      tg_width <- tgWidth(tg)
+      tg_height <- tgHeight(tg)
     }
 
     # Hide if below minimum font size
@@ -479,8 +496,8 @@ makeContent.fittexttree <- function(x) {
 
     # First, we need the dimensions of the unrotated text in absolute units (mm)
     tg$rot <- 0
-    tg_width_abs <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
-    tg_height_abs <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+    tg_width_abs <- tgWidth(tg, "mm")
+    tg_height_abs <- tgHeight(tg, "mm")
     tg$rot <- text$angle
 
     # We can use these values to calculate the distance from the centre point to
