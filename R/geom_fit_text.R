@@ -373,6 +373,57 @@ makeContent.fittexttree <- function(x) {
     xdim_abs <- grid::convertWidth(grid::unit(xdim, "npc"), "mm", TRUE)
     ydim_abs <- grid::convertHeight(grid::unit(ydim, "npc"), "mm", TRUE)
 
+    # Reflow the text, if reflow = TRUE and either the text doesn't currently
+    # fit or grow = TRUE
+    if (x$reflow & (x$grow | tg_width > xdim | tg_height > ydim)) {
+
+      # Try reducing the text width, one character at a time, and see if it
+      # fits the bounding box
+      best_aspect_ratio <- Inf
+      best_width <- stringi::stri_length(tg$label)
+      label <- unlist(stringi::stri_split(tg$label, regex = "\n"))
+      stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
+      for (w in (stringwidth):1) {
+
+        # Reflow text to this width
+        # By splitting the text on whitespace and passing normalize = F,
+        # line breaks in the original text are respected
+        tg$label <- paste(
+          stringi::stri_wrap(label, w, normalize = FALSE),
+          collapse = "\n"
+        )
+        
+        # Calculate aspect ratio and update if this is the new best ratio
+        tg_width <- labelw(tg)
+        tg_height <- labelh(tg)
+        aspect_ratio <- tg_width / tg_height
+        diff_from_box_ratio <- abs(aspect_ratio - (xdim_abs / ydim_abs))
+        best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim_abs / ydim_abs))
+        if (diff_from_box_ratio < best_diff_from_box_ratio) {
+          best_aspect_ratio <- aspect_ratio
+          best_width <- w
+        }
+
+        # If the text now fits the bounding box (and we are not trying to grow
+        # the text), good to stop here
+        if (tg_width < xdim & tg_height < ydim & !x$grow) break
+      }
+
+      # If all reflow widths have been tried and none is smaller than the box
+      # (i.e. some shrinking is still required), pick the reflow width that
+      # produces the aspect ratio closest to that of the bounding box. In the
+      # condition that we are trying to grow the text, this will also ensure
+      # the text is grown with the best aspect ratio.
+      if (tg_width > xdim | tg_height > ydim) {
+        tg$label <- paste(
+          stringi::stri_wrap(label, best_width, normalize = FALSE),
+          collapse = "\n"
+        )
+        tg_width <- labelw(tg)
+        tg_height <- labelh(tg)
+      }
+    }
+
     # Resize text to fit bounding box if it doesn't fit
     if (
       # Standard condition - is text too big for box?
@@ -381,84 +432,24 @@ makeContent.fittexttree <- function(x) {
       (x$grow & tg_width < xdim & tg_height < ydim)
     ) {
 
-      # Reflow text if requested
-      if (x$reflow) {
+      # Get the slopes of the relationships between font size and label
+      # dimensions
+      fs1 <- tg$gp$fontsize
+      tg$gp$fontsize <- tg$gp$fontsize * 2
+      slopew <- fs1 / (labelw(tg) - tg_width)
+      slopeh <- fs1 / (labelh(tg) - tg_height)
 
-        # Try reducing the text width, one character at a time, and see if it
-        # fits the bounding box
-        best_aspect_ratio <- Inf
-        best_width <- stringi::stri_length(tg$label)
-        label <- unlist(stringi::stri_split(tg$label, regex = "\n"))
-        stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
-        for (w in (stringwidth):1) {
+      # Calculate the target font size required to fit text to box along each
+      # dimension
+      targetfsw <- xdim * slopew
+      targetfsh <- ydim * slopeh
 
-          # Reflow text to this width
-          # By splitting the text on whitespace and passing normalize = F,
-          # line breaks in the original text are respected
-          tg$label <- paste(
-            stringi::stri_wrap(label, w, normalize = FALSE),
-            collapse = "\n"
-          )
-          
-          # Calculate aspect ratio and update if this is the new best ratio
-          tg_width <- labelw(tg)
-          tg_height <- labelh(tg)
-          aspect_ratio <- tg_width / tg_height
-          diff_from_box_ratio <- abs(aspect_ratio - (xdim_abs / ydim_abs))
-          best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim_abs / ydim_abs))
-          if (diff_from_box_ratio < best_diff_from_box_ratio) {
-            best_aspect_ratio <- aspect_ratio
-            best_width <- w
-          }
+      # Set to smaller of target font sizes
+      tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
 
-          # If the text now fits the bounding box (and we are not trying to grow
-          # the text), good to stop here
-          if (tg_width < xdim & tg_height < ydim & !x$grow) break
-        }
-
-        # If all reflow widths have been tried and none is smaller than the box
-        # (i.e. some shrinking is still required), pick the reflow width that
-        # produces the aspect ratio closest to that of the bounding box. In the
-        # condition that we are trying to grow the text, this will also ensure
-        # the text is grown with the best aspect ratio.
-        if (tg_width > xdim | tg_height > ydim) {
-          tg$label <- paste(
-            stringi::stri_wrap(label, best_width, normalize = FALSE),
-            collapse = "\n"
-          )
-          tg_width <- labelw(tg)
-          tg_height <- labelh(tg)
-        }
-      }
-      
-      # Make sure there is still a reason (post-reflowing) to change the font
-      # size
-      if (
-        # Standard condition - is text too big for box?
-        (tg_width > xdim | tg_height > ydim) |
-        # grow = TRUE condition - is text too small for box?
-        (x$grow & tg_width < xdim & tg_height < ydim)
-      ) {
-
-        # Get the slopes of the relationships between font size and label
-        # dimensions
-        fs1 <- tg$gp$fontsize
-        tg$gp$fontsize <- tg$gp$fontsize * 2
-        slopew <- fs1 / (labelw(tg) - tg_width)
-        slopeh <- fs1 / (labelh(tg) - tg_height)
-
-        # Calculate the target font size required to fit text to box along each
-        # dimension
-        targetfsw <- xdim * slopew
-        targetfsh <- ydim * slopeh
-
-        # Set to smaller of target font sizes
-        tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
-
-        # Update dimensions
-        tg_width <- labelw(tg)
-        tg_height <- labelh(tg)
-      }
+      # Update dimensions
+      tg_width <- labelw(tg)
+      tg_height <- labelh(tg)
     }
 
     # Hide if below minimum font size
