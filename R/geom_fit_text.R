@@ -61,6 +61,9 @@
 #' See Details.
 #' @param reflow If `TRUE`, text will be reflowed (wrapped) to better fit the
 #' box. See Details.
+#' @param hjust,vjust Horizontal and vertical justification of text. By
+#' default, these are automatically set to appropriate values based on `place`
+#' and `angle`.
 #' @param width,height When using `x` and/or `y` aesthetics, these can be used
 #' to set the width and/or height of the box. These should be either
 #' numeric values on the `x` and `y` scales or `grid::unit()` objects.
@@ -91,10 +94,12 @@ geom_fit_text <- function(
   inherit.aes = TRUE,
   padding.x = grid::unit(2, "mm"),
   padding.y = grid::unit(2, "mm"),
-  place = "centre",
   min.size = 4,
+  place = "centre",
   grow = FALSE,
   reflow = FALSE,
+  hjust = NULL,
+  vjust = NULL,
   width = NULL,
   height = NULL,
   formatter = NULL,
@@ -116,6 +121,8 @@ geom_fit_text <- function(
       min.size = min.size,
       grow = grow,
       reflow = reflow,
+      hjust = hjust,
+      vjust = vjust,
       width = width,
       height = height,
       formatter = formatter,
@@ -222,7 +229,6 @@ GeomFitText <- ggplot2::ggproto(
     }
 
     data
-
   },
 
   draw_key = ggplot2::draw_key_text,
@@ -236,8 +242,10 @@ GeomFitText <- ggplot2::ggproto(
     min.size = 4,
     grow = FALSE,
     reflow = FALSE,
-    width = grid::unit(40, "mm"),
-    height = grid::unit(40, "mm"),
+    hjust = NULL,
+    vjust = NULL,
+    width = NULL,
+    height = NULL,
     formatter = NULL,
     place = "centre"
   ) {
@@ -252,6 +260,8 @@ GeomFitText <- ggplot2::ggproto(
       min.size = min.size,
       grow = grow,
       reflow = reflow,
+      hjust = hjust,
+      vjust = vjust,
       width = width,
       height = height,
       cl = "fittexttree"
@@ -266,6 +276,11 @@ GeomFitText <- ggplot2::ggproto(
 makeContent.fittexttree <- function(x) {
 
   data <- x$data
+
+  # Standardise the place argument
+  if (x$place %in% c("middle", "center")) {
+    x$place <- "centre"
+  }
 
   # Determine which aesthetics to use for the bounding box
   # Rules: if xmin/xmax are available, use these in preference to x UNLESS
@@ -326,14 +341,29 @@ makeContent.fittexttree <- function(x) {
     # Clean up angle
     text$angle <- text$angle %% 360
 
+    # If hjust and/or vjust have not been set, set an appropriate value based
+    # on place and angle
+    if (is.null(x$hjust)) {
+      if (x$place %in% c("left", "bottomleft", "topleft")) {
+        x$hjust <- 0
+      } else if (x$place %in% c("right", "bottomright", "topright")) {
+        x$hjust <- 1
+      } else {
+        x$hjust <- 0.5
+      }
+    }
+    if (is.null(x$vjust)) {
+      x$vjust <- 0.5
+    }
+
     # Create textGrob
     tg <- grid::textGrob(
       label = text$label,
       x = 0.5,
       y = 0.5,
       default.units = "npc",
-      hjust = 0.5,
-      vjust = 0.5,
+      hjust = x$hjust,
+      vjust = x$vjust,
       rot = text$angle,
       gp = grid::gpar(
         col = ggplot2::alpha(text$colour, text$alpha),
@@ -344,32 +374,16 @@ makeContent.fittexttree <- function(x) {
       )
     )
 
-    # Get starting textGrob dimensions
-    labelw <- function(tg) {
-      w <- grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
-      if (x$grow) {
-        w <- w + (grid::convertWidth(grid::grobDescent(tg), "npc", TRUE) *
-          sin(text$angle * (pi / 180)))
-      }
-      w
-    }
-    labelh <- function(tg) {
-      h <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
-      if (x$grow) {
-        h <- h + (grid::convertHeight(grid::grobDescent(tg), "npc", TRUE) *
-          cos(text$angle * (pi / 180)))
-      }
-      h
-    }
-    tg_width <- labelw(tg)
-    tg_height <- labelh(tg)
+    # Get starting textGrob dimensions, in npc
+    tg_width <- grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
+    tg_height <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
 
-    # Get dimensions of bounding box
+    # Get dimensions of bounding box, in npc
     xdim <- abs(text$xmin - text$xmax) - (2 * padding.x)
     ydim <- abs(text$ymin - text$ymax) - (2 * padding.y)
 
-    # Get the absolute bounding box dimensions (in mm), for calculating
-    # on-screen aspect ratio
+    # Get the absolute bounding box dimensions (in mm), necessary to accurately
+    # calculate the on-screen aspect ratio
     xdim_abs <- grid::convertWidth(grid::unit(xdim, "npc"), "mm", TRUE)
     ydim_abs <- grid::convertHeight(grid::unit(ydim, "npc"), "mm", TRUE)
 
@@ -393,10 +407,11 @@ makeContent.fittexttree <- function(x) {
           collapse = "\n"
         )
         
-        # Calculate aspect ratio and update if this is the new best ratio
-        tg_width <- labelw(tg)
-        tg_height <- labelh(tg)
-        aspect_ratio <- tg_width / tg_height
+        # Calculate aspect ratio of text grob using absolute units and update
+        # if this is the new best ratio
+        tg_width_abs <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+        tg_height_abs <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+        aspect_ratio <- tg_width_abs / tg_height_abs
         diff_from_box_ratio <- abs(aspect_ratio - (xdim_abs / ydim_abs))
         best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim_abs / ydim_abs))
         if (diff_from_box_ratio < best_diff_from_box_ratio) {
@@ -406,22 +421,23 @@ makeContent.fittexttree <- function(x) {
 
         # If the text now fits the bounding box (and we are not trying to grow
         # the text), good to stop here
-        if (tg_width < xdim & tg_height < ydim & !x$grow) break
+        if (tg_width_abs < xdim_abs & tg_height_abs < ydim_abs & !x$grow) break
       }
 
       # If all reflow widths have been tried and none is smaller than the box
-      # (i.e. some shrinking is still required), pick the reflow width that
-      # produces the aspect ratio closest to that of the bounding box. In the
-      # condition that we are trying to grow the text, this will also ensure
-      # the text is grown with the best aspect ratio.
-      if (tg_width > xdim | tg_height > ydim) {
+      # (i.e. some shrinking is still required), or if we are trying to grow
+      # the text, pick the reflow width that produces the aspect ratio closest
+      # to that of the bounding box
+      if (tg_width > xdim | tg_height > ydim | x$grow) {
         tg$label <- paste(
           stringi::stri_wrap(label, best_width, normalize = FALSE),
           collapse = "\n"
         )
-        tg_width <- labelw(tg)
-        tg_height <- labelh(tg)
       }
+
+      # Update the textGrob dimensions
+      tg_width <- grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
+      tg_height <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
     }
 
     # Resize text to fit bounding box if it doesn't fit
@@ -436,8 +452,12 @@ makeContent.fittexttree <- function(x) {
       # dimensions
       fs1 <- tg$gp$fontsize
       tg$gp$fontsize <- tg$gp$fontsize * 2
-      slopew <- fs1 / (labelw(tg) - tg_width)
-      slopeh <- fs1 / (labelh(tg) - tg_height)
+      slopew <- fs1 / (
+        grid::convertWidth(grid::grobWidth(tg), "npc", TRUE) - tg_width
+      )
+      slopeh <- fs1 / (
+        grid::convertHeight(grid::grobHeight(tg), "npc", TRUE) - tg_height
+      )
 
       # Calculate the target font size required to fit text to box along each
       # dimension
@@ -447,15 +467,68 @@ makeContent.fittexttree <- function(x) {
       # Set to smaller of target font sizes
       tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
 
-      # Update dimensions
-      tg_width <- labelw(tg)
-      tg_height <- labelh(tg)
+      # Update the textGrob dimensions
+      tg_width <- grid::convertWidth(grid::grobWidth(tg), "npc", TRUE)
+      tg_height <- grid::convertHeight(grid::grobHeight(tg), "npc", TRUE)
     }
 
     # Hide if below minimum font size
     if (tg$gp$fontsize < x$min.size) { return() }
 
-    # === Shift grob to the correct position within the bounding box
+    # === Calculate vector from geometric centre of text to anchor point
+
+    # First, we need the dimensions of the unrotated text in absolute units (mm)
+    tg$rot <- 0
+    tg_width_abs <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+    tg_height_abs <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+    tg$rot <- text$angle
+
+    # We can use these values to calculate the distance from the centre point to
+    # the anchor point, using the Pythagorean identity
+    AB <- (tg_height_abs * tg$vjust) - (tg_height_abs * 0.5)
+    CB <- (tg_width_abs * tg$hjust) - (tg_width_abs * 0.5)
+    CA <- sqrt((AB ^ 2) + (CB ^ 2))
+
+    # The angle ACB can be calculated from the known sides AC and BC
+    ACB <- asin(abs(AB) / abs(CA)) * (180 / pi)
+
+    # To express the vector CA relative to the baseline angle, we correct for the
+    # quadrant then add the rotation of the entire textGrob modulo 360. There's
+    # almost certainly a clever trigonometry way to do this but I can't figure it
+    # out
+    if (sign(AB) == 1 & sign(CB) == 1) {
+      CA_abs_angle <- ACB
+    } else if (sign(AB) == 1 & sign(CB) == 0) {
+      CA_abs_angle <- 90
+    } else if (sign(AB) == 1 & sign(CB) == -1) {
+      CA_abs_angle <- 180 - ACB
+    } else if (sign(AB) == 0 & sign(CB) == -1) {
+      CA_abs_angle <- 180
+    } else if (sign(AB) == -1 & sign(CB) == -1) {
+      CA_abs_angle <- 180 + ACB
+    } else if (sign(AB) == -1 & sign(CB) == 0) {
+      CA_abs_angle <- 270
+    } else if (sign(AB) == -1 & sign(CB) == 1) {
+      CA_abs_angle <- 360 - ACB
+    } else if (sign(AB) == 0 & sign(CB) == 1) {
+      CA_abs_angle <- 0
+    } else if (sign(AB) == 0 & sign(CB) == 0) {
+      CA_abs_angle <- 0
+    }
+    CA_abs_angle <- (CA_abs_angle + tg$rot) %% 360
+
+    # We can now use these to calculate the x and y offsets of the anchor point
+    # from the centre point. For convenience, we will convert these to npc
+    x_offset <- grid::convertWidth(
+      grid::unit(CA * cos(CA_abs_angle * (pi / 180)), "mm"),
+      "npc",
+      TRUE
+    )
+    y_offset <- grid::convertHeight(
+      grid::unit(CA * sin(CA_abs_angle * (pi / 180)), "mm"),
+      "npc",
+      TRUE
+    )
 
     # Specify the bounding box limits
     xmin <- text$xmin + padding.x
@@ -463,164 +536,25 @@ makeContent.fittexttree <- function(x) {
     ymin <- text$ymin + padding.y
     ymax <- text$ymax - padding.y
 
-    # Pre-calculate the dimensions of the unrotated text and adjustments We
-    # need to calculate in absolute units (mm) before converting to native
-    # (npc) values along each dimension to account for non-square aspect ratios
-    #              +---------------+ +---------------+            
-    #              |b = wcos(delta)| |c = hsin(delta)|            
-    #              +---------------+ +---------------+            
-    #             ^<----------------> <------------>^+-----------+
-    #             |        delta     /--+           ||     d     |
-    #             |          =      /   +---h       ||     =     |
-    #             |       90 - rot /        +---+   ||hcos(delta)|
-    #             |               /             +---v+-----------+
-    #             |              /                                
-    #+-----------+|             /                                 
-    #|     a     ||            /                                  
-    #|     =     ||           w                                   
-    #|wsin(delta)||          /                                    
-    #+-----------+|         /                                     
-    #             |        /                                      
-    #             |       /                                       
-    #             |      /                                        
-    #             |     /                                         
-    #             |    /                                          
-    #             |   /                                           
-    #             |  /                                            
-    #             | /                                             
-    #             v/                                              
-    tg$rot <- 0
-    unrot_w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
-    unrot_h <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
-    unrot_d <- grid::convertHeight(grid::grobDescent(tg), "mm", TRUE)
-    if (x$grow) {
-      unrot_h <- unrot_h + unrot_d
+    # Place the text
+    if (x$place %in% c("topleft", "left", "bottomleft")) {
+      tg$x <- xmin + (tg_width / 2) + x_offset
+    } else if (x$place %in% c("top", "centre", "bottom")) {
+      tg$x <- ((xmin + xmax) / 2) + x_offset
+    } else if (x$place %in% c("topright", "right", "bottomright")) {
+      tg$x <- xmax - (tg_width / 2) + x_offset
     }
-    tg$rot <- text$angle
-    theta <- (text$angle %% 90) * (pi / 180)
-    h2npc <- function(x) grid::convertHeight(grid::unit(x, "mm"), "npc", TRUE)
-    w2npc <- function(x) grid::convertWidth(grid::unit(x, "mm"), "npc", TRUE)
-    a <- unrot_w * sin(theta)
-    ay <- h2npc(a)
-    ax <- w2npc(a)
-    b <- unrot_w * cos(theta)
-    by <- h2npc(b)
-    bx <- w2npc(b)
-    c <- unrot_h * sin(theta)
-    cy <- h2npc(c)
-    cx <- w2npc(c)
-    d <- unrot_h * cos(theta)
-    dy <- h2npc(d)
-    dx <- w2npc(d)
-
-    # Put the text in the correct horizontal justification and place,
-    # correcting for rotation and the shifted anchor point
-    if (x$place == "topleft") {
-      tg$hjust <- 0
-      tg$vjust <- 1
-      if (tg$rot < 90) {
-        tg_x <- xmin
-        tg_y <- ymax - ay
-      } else if (tg$rot < 180) {
-        tg_x <- xmin + ax
-        tg_y <- ymax - by - cy
-      } else if (tg$rot < 270) {
-        tg_x <- xmin + bx + cx
-        tg_y <- ymax - dy
-      } else if (tg$rot < 360) {
-        tg_x <- xmin + dx
-        tg_y <- ymax
-      }
-    } else if (x$place == "top") {
-      tg$hjust <- 0.5
-      tg$vjust <- 0.5 
-      tg_x <- (xmin + xmax) / 2
-      tg_y <- ymax - (tg_height / 2)
-    } else if (x$place == "topright") {
-      tg$hjust <- 1
-      tg$vjust <- 1
-      if (tg$rot < 90) {
-        tg_x <- xmax - cx
-        tg_y <- ymax
-      } else if (tg$rot < 180) {
-        tg_x <- xmax - ax - dx
-        tg_y <- ymax - cy
-      } else if (tg$rot < 270) {
-        tg_x <- xmax - bx
-        tg_y <- ymax - ay - dy
-      } else if (tg$rot < 360) {
-        tg_x <- xmax
-        tg_y <- ymax - by
-      }
-    } else if (x$place == "right") {
-      tg$hjust <- 0.5
-      tg$vjust <- 0.5
-      tg_x <- xmax - (tg_width / 2)
-      tg_y <- (ymin + ymax) / 2
-    } else if (x$place == "bottomright") {
-      tg$hjust <- 1
-      tg$vjust <- 0
-      if (tg$rot < 90) {
-        tg_x <- xmax
-        tg_y <- ymin + ay
-      } else if (tg$rot < 180) {
-        tg_x <- xmax - ax
-        tg_y <- ymin + by + cy
-      } else if (tg$rot < 270) {
-        tg_x <- xmax - bx - cx
-        tg_y <- ymin + dy
-      } else if (tg$rot < 360) {
-        tg_x <- xmax - dx
-        tg_y <- ymin
-      }
-    } else if (x$place == "bottom") {
-      tg$hjust <- 0.5
-      tg$vjust <- 0.5
-      tg_x <- (xmin + xmax) / 2
-      tg_y <- ymin + (tg_height / 2)
-    } else if (x$place == "bottomleft") {
-      tg$hjust <- 0
-      tg$vjust <- 0
-      if (tg$rot < 90) {
-        tg_x <- xmin + cx
-        tg_y <- ymin
-      } else if (tg$rot < 180) {
-        tg_x <- xmin + ax + dx
-        tg_y <- ymin + cy
-      } else if (tg$rot < 270) {
-        tg_x <- xmin + bx
-        tg_y <- ymin + ay + dy
-      } else if (tg$rot < 360) {
-        tg_x <- xmin
-        tg_y <- ymin + by
-      }
-    } else if (x$place == "left") {
-      tg$hjust <- 0.5
-      tg$vjust <- 0.5
-      tg_x <- xmin + (tg_width / 2)
-      tg_y <- (ymin + ymax) / 2
-    } else if (x$place %in% c("middle", "centre", "center")) {
-      tg_x <- (xmin + xmax) / 2
-      tg_y <- (ymin + ymax) / 2
+    if (x$place %in% c("topleft", "top", "topright")) {
+      tg$y <- ymax - (tg_height / 2) - y_offset
+    } else if (x$place %in% c("left", "centre", "right")) {
+      tg$y <- ((ymin + ymax) / 2) - y_offset
+    } else if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
+      tg$y <- ymin + (tg_height / 2) - y_offset
     }
 
-    # If placed in the centre and growing, add a positioning correction for
-    # descenders
-    if (x$place %in% c("middle", "centre", "center") & x$grow) {
-      tg_x <- tg_x - grid::convertWidth(
-        grid::unit((0.5 * unrot_d * sin(text$angle * (pi / 180))), "mm"),
-        "npc",
-        TRUE
-      )
-      tg_y <- tg_y + grid::convertHeight(
-        grid::unit((0.5 * unrot_d * cos(text$angle * (pi / 180))), "mm"),
-        "npc",
-        TRUE
-      )
-    }
-
-    tg$x <- grid::unit(tg_x, "npc")
-    tg$y <- grid::unit(tg_y, "npc")
+    # Convert x and y coordinates to unit objects
+    tg$x <- grid::unit(tg$x, "npc")
+    tg$y <- grid::unit(tg$y, "npc")
 
     # Return the textGrob
     tg

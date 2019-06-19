@@ -1,18 +1,17 @@
-# ggfittext 0.7.1
+# ggfittext 0.8.0
 
-## Minor changes
+# Major changes
 
-- `padding.x` and `padding.y` now both default to 2 mm
-- Speed improvements
-- More accurate adjustment for descenders
+- New `hjust` and `vjust` arguments that can be controlled independent of `place`
+- Full support for angled text
+- Faster for many common uses
 
 ## Bug fixes
 
-- Angled text is now placed correctly in places other than 'centre'
 - When reflowing text, calculation of the best aspect ratio now takes into
   account the output device's aspect ratio
-- When reflowing, calculation of the best aspect ratio no longer ignores the
-  possibility that the un-reflowed text might have the best ratio
+- When reflowing text, calculation of the best aspect ratio no longer refuses
+  to entertain the possibility that the original text might have the best ratio
 
 # ggfittext 0.7.0
 
