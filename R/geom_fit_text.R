@@ -203,6 +203,24 @@ GeomFitText <- ggplot2::ggproto(
       data$height <- NULL
     }
 
+    # Apply a formatter function, if one was given
+    if (! is.null(params$formatter)) {
+
+      # Check that 'formatter' is a function
+      if (! is.function(params$formatter)) {
+        stop("`formatter` must be a function")
+      }
+
+      # Apply formatter to the labels, checking that the output is a character
+      # vector of the correct length
+      formatted_labels <- sapply(data$label, params$formatter, USE.NAMES = FALSE)
+      if ((! length(formatted_labels) == length(data$label)) | 
+          (! is.character(formatted_labels))) {
+        stop("`formatter` must produce a character vector of same length as input")
+      }
+      data$label <- formatted_labels
+    }
+
     data
 
   },
@@ -225,24 +243,6 @@ GeomFitText <- ggplot2::ggproto(
   ) {
 
     data <- coord$transform(data, panel_scales)
-
-    # If a 'formatter' was provided
-    if (! is.null(formatter)) {
-
-      # Check that 'formatter' is a function
-      if (! is.function(formatter)) {
-        stop("`formatter` must be a function")
-      }
-
-      # Apply formatter to the labels, checking that the output is a character
-      # vector of the correct length
-      formatted_labels <- sapply(data$label, formatter, USE.NAMES = FALSE)
-      if ((! length(formatted_labels) == length(data$label)) | 
-          (! is.character(formatted_labels))) {
-        stop("`formatter` must produce a character vector of same length as input")
-      }
-      data$label <- formatted_labels
-    }
 
     gt <- grid::gTree(
       data = data,
