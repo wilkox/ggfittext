@@ -386,13 +386,20 @@ makeContent.fittexttree <- function(x) {
 
     # Functions to get textgrob dimensions
     tgWidth <- function(tg, unit = "npc") {
-      grid::convertWidth(grid::grobWidth(tg), unit, TRUE)
+      w <- grid::convertWidth(grid::grobWidth(tg), unit, TRUE)
+      if (x$fullheight) {
+        w <- w + (grid::convertWidth(grid::grobDescent(tg), unit, TRUE) *
+          sin(text$angle * (pi / 180)))
+      }
+      w
     }
     tgHeight <- function(tg, unit = "npc") {
       h <- grid::convertHeight(grid::grobHeight(tg), unit, TRUE)
       if (x$fullheight) {
-        d <- grid::convertHeight(grid::grobDescent(tg), unit, TRUE)
+        h <- h + (grid::convertHeight(grid::grobDescent(tg), unit, TRUE) *
+          cos(text$angle * (pi / 180)))
       }
+      h
     }
 
     # Get starting textGrob dimensions, in npc
@@ -496,13 +503,20 @@ makeContent.fittexttree <- function(x) {
 
     # First, we need the dimensions of the unrotated text in absolute units (mm)
     tg$rot <- 0
-    tg_width_abs <- tgWidth(tg, "mm")
-    tg_height_abs <- tgHeight(tg, "mm")
+    tg_width_abs <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+    tg_height_abs <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+    if (x$fullheight) {
+      tg_descent_abs <- grid::convertHeight(grid::grobDescent(tg), "mm", TRUE)
+    }
     tg$rot <- text$angle
 
     # We can use these values to calculate the distance from the centre point to
     # the anchor point, using the Pythagorean identity
-    AB <- (tg_height_abs * tg$vjust) - (tg_height_abs * 0.5)
+    if (x$fullheight) {
+      AB <- (tg_height_abs * tg$vjust) - ((tg_height_abs + tg_descent_abs) * 0.5)
+    } else {
+      AB <- (tg_height_abs * tg$vjust) - (tg_height_abs * 0.5)
+    }
     CB <- (tg_width_abs * tg$hjust) - (tg_width_abs * 0.5)
     CA <- sqrt((AB ^ 2) + (CB ^ 2))
 
@@ -562,11 +576,11 @@ makeContent.fittexttree <- function(x) {
       tg$x <- xmax - (tg_width / 2) + x_offset
     }
     if (x$place %in% c("topleft", "top", "topright")) {
-      tg$y <- ymax - (tg_height / 2) - y_offset
+      tg$y <- ymax - (tg_height / 2) + y_offset
     } else if (x$place %in% c("left", "centre", "right")) {
-      tg$y <- ((ymin + ymax) / 2) - y_offset
+      tg$y <- ((ymin + ymax) / 2) + y_offset
     } else if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-      tg$y <- ymin + (tg_height / 2) - y_offset
+      tg$y <- ymin + (tg_height / 2) + y_offset
     }
 
     # Convert x and y coordinates to unit objects
