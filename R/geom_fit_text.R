@@ -384,36 +384,39 @@ makeContent.fittexttree <- function(x) {
       )
     )
 
-    # Functions to get textgrob dimensions
-    tgWidth <- function(tg, unit = "npc") {
-      w <- grid::convertWidth(grid::grobWidth(tg), unit, TRUE)
+    # Functions to get textgrob dimensions, in absolute units (mm)
+    tgWidth <- function(tg) {
+      w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
       if (x$fullheight) {
-        w <- w + abs(grid::convertWidth(grid::grobDescent(tg), unit, TRUE) *
+        w <- w + abs(grid::convertWidth(grid::grobDescent(tg), "mm", TRUE) *
           sin(text$angle * (pi / 180)))
       }
       w
     }
-    tgHeight <- function(tg, unit = "npc") {
-      h <- grid::convertHeight(grid::grobHeight(tg), unit, TRUE)
+    tgHeight <- function(tg) {
+      h <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
       if (x$fullheight) {
-        h <- h + abs(grid::convertHeight(grid::grobDescent(tg), unit, TRUE) *
+        h <- h + abs(grid::convertHeight(grid::grobDescent(tg), "mm", TRUE) *
           cos(text$angle * (pi / 180)))
       }
       h
     }
 
-    # Get starting textGrob dimensions, in npc
+    # Get starting textGrob dimensions, in mm
     tg_width <- tgWidth(tg)
     tg_height <- tgHeight(tg)
 
-    # Get dimensions of bounding box, in npc
-    xdim <- abs(text$xmin - text$xmax) - (2 * padding.x)
-    ydim <- abs(text$ymin - text$ymax) - (2 * padding.y)
-
-    # Get the absolute bounding box dimensions (in mm), necessary to accurately
-    # calculate the on-screen aspect ratio
-    xdim_abs <- grid::convertWidth(grid::unit(xdim, "npc"), "mm", TRUE)
-    ydim_abs <- grid::convertHeight(grid::unit(ydim, "npc"), "mm", TRUE)
+    # Get dimensions of bounding box, in mm
+    xdim <- grid::convertWidth(
+      grid::unit(abs(text$xmin - text$xmax) - (2 * padding.x), "npc"),
+      "mm",
+      TRUE
+    )
+    ydim <- grid::convertHeight(
+      grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
+      "mm",
+      TRUE
+    )
 
     # Reflow the text, if reflow = TRUE and either the text doesn't currently
     # fit or grow = TRUE
@@ -435,13 +438,13 @@ makeContent.fittexttree <- function(x) {
           collapse = "\n"
         )
         
-        # Calculate aspect ratio of text grob using absolute units and update
-        # if this is the new best ratio
-        tg_width_abs <- tgWidth(tg, "mm")
-        tg_height_abs <- tgHeight(tg, "mm")
-        aspect_ratio <- tg_width_abs / tg_height_abs
-        diff_from_box_ratio <- abs(aspect_ratio - (xdim_abs / ydim_abs))
-        best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim_abs / ydim_abs))
+        # Recalculate aspect ratio of textGrob using and update if this is the
+        # new best ratio
+        tg_width <- tgWidth(tg)
+        tg_height <- tgHeight(tg)
+        aspect_ratio <- tg_width / tg_height
+        diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
+        best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
         if (diff_from_box_ratio < best_diff_from_box_ratio) {
           best_aspect_ratio <- aspect_ratio
           best_width <- w
@@ -449,7 +452,7 @@ makeContent.fittexttree <- function(x) {
 
         # If the text now fits the bounding box (and we are not trying to grow
         # the text), good to stop here
-        if (tg_width_abs < xdim_abs & tg_height_abs < ydim_abs & !x$grow) break
+        if (tg_width < xdim & tg_height < ydim & !x$grow) break
       }
 
       # If all reflow widths have been tried and none is smaller than the box
@@ -461,11 +464,11 @@ makeContent.fittexttree <- function(x) {
           stringi::stri_wrap(label, best_width, normalize = FALSE),
           collapse = "\n"
         )
+        # Update the textGrob dimensions
+        tg_width <- tgWidth(tg)
+        tg_height <- tgHeight(tg)
       }
 
-      # Update the textGrob dimensions
-      tg_width <- tgWidth(tg)
-      tg_height <- tgHeight(tg)
     }
 
     # Resize text to fit bounding box if it doesn't fit
@@ -501,7 +504,7 @@ makeContent.fittexttree <- function(x) {
 
     # === Calculate vector from geometric centre of text to anchor point
 
-    # First, we need the dimensions of the unrotated text in absolute units (mm)
+    # First, we need the dimensions of the unrotated text in mm
     tg$rot <- 0
     tg_width_abs <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
     tg_height_abs <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
@@ -513,7 +516,7 @@ makeContent.fittexttree <- function(x) {
     # We can use these values to calculate the distance from the centre point to
     # the anchor point, using the Pythagorean identity
     if (x$fullheight) {
-      AB <- (tg_height_abs * tg$vjust) - ((tg_height_abs - tg_descent_abs) * 0.5)
+      AB <- (tg_height_abs * tg$vjust) - ((tg_height_abs + tg_descent_abs) * 0.5)
     } else {
       AB <- (tg_height_abs * tg$vjust) - (tg_height_abs * 0.5)
     }
@@ -561,11 +564,15 @@ makeContent.fittexttree <- function(x) {
       TRUE
     )
 
-    # Specify the bounding box limits
+    # Specify the bounding box limits in npc coordinates
     xmin <- text$xmin + padding.x
     xmax <- text$xmax - padding.x
     ymin <- text$ymin + padding.y
     ymax <- text$ymax - padding.y
+
+    # Convert the textGrob dimensions into npc
+    tg_width <- grid::convertWidth(grid::unit(tg_width, "mm"), "npc", TRUE)
+    tg_height <- grid::convertHeight(grid::unit(tg_height, "mm"), "npc", TRUE)
 
     # Place the text
     if (x$place %in% c("topleft", "left", "bottomleft")) {
