@@ -360,10 +360,9 @@ makeContent.fittexttree <- function(x) {
       x$vjust <- 0.5
     }
 
-    # If fullheight has not been set, set an appropriate value based on place
-    # and grow
+    # If fullheight has not been set, set an appropriate value
     if (is.null(x$fullheight)) {
-      x$fullheight <- x$place == "middle" | x$grow
+      x$fullheight <- x$grow
     }
 
     # Create textGrob
@@ -385,26 +384,21 @@ makeContent.fittexttree <- function(x) {
     )
 
     # Functions to get textgrob dimensions, in absolute units (mm)
-    tgWidth <- function(tg) {
-      w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+    tgDimensions <- function(tg) {
+      width <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+      height <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
       if (x$fullheight) {
-        w <- w + abs(grid::convertWidth(grid::grobDescent(tg), "mm", TRUE) *
-          sin(text$angle * (pi / 180)))
+        descent <- grid::grobDescent(tg)
+        width <- width + abs(grid::convertWidth(descent, "mm", TRUE) * 
+                             sin(text$angle * (pi / 180)))
+        height <- height + abs(grid::convertHeight(descent, "mm", TRUE) * 
+                               cos(text$angle * (pi / 180)))
       }
-      w
-    }
-    tgHeight <- function(tg) {
-      h <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
-      if (x$fullheight) {
-        h <- h + abs(grid::convertHeight(grid::grobDescent(tg), "mm", TRUE) *
-          cos(text$angle * (pi / 180)))
-      }
-      h
+      list(width = width, height = height)
     }
 
     # Get starting textGrob dimensions, in mm
-    tg_width <- tgWidth(tg)
-    tg_height <- tgHeight(tg)
+    tgdim <- tgDimensions(tg)
 
     # Get dimensions of bounding box, in mm
     xdim <- grid::convertWidth(
@@ -420,7 +414,7 @@ makeContent.fittexttree <- function(x) {
 
     # Reflow the text, if reflow = TRUE and either the text doesn't currently
     # fit or grow = TRUE
-    if (x$reflow & (x$grow | tg_width > xdim | tg_height > ydim)) {
+    if (x$reflow & (x$grow | tgdim$width > xdim | tgdim$height > ydim)) {
 
       # Try reducing the text width, one character at a time, and see if it
       # fits the bounding box
@@ -440,9 +434,8 @@ makeContent.fittexttree <- function(x) {
         
         # Recalculate aspect ratio of textGrob using and update if this is the
         # new best ratio
-        tg_width <- tgWidth(tg)
-        tg_height <- tgHeight(tg)
-        aspect_ratio <- tg_width / tg_height
+        tgdim <- tgDimensions(tg)
+        aspect_ratio <- tgdim$width / tgdim$height
         diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
         best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
         if (diff_from_box_ratio < best_diff_from_box_ratio) {
@@ -452,21 +445,20 @@ makeContent.fittexttree <- function(x) {
 
         # If the text now fits the bounding box (and we are not trying to grow
         # the text), good to stop here
-        if (tg_width < xdim & tg_height < ydim & !x$grow) break
+        if (tgdim$width < xdim & tgdim$height < ydim & !x$grow) break
       }
 
       # If all reflow widths have been tried and none is smaller than the box
       # (i.e. some shrinking is still required), or if we are trying to grow
       # the text, pick the reflow width that produces the aspect ratio closest
       # to that of the bounding box
-      if (tg_width > xdim | tg_height > ydim | x$grow) {
+      if (tgdim$width > xdim | tgdim$height > ydim | x$grow) {
         tg$label <- paste(
           stringi::stri_wrap(label, best_width, normalize = FALSE),
           collapse = "\n"
         )
         # Update the textGrob dimensions
-        tg_width <- tgWidth(tg)
-        tg_height <- tgHeight(tg)
+        tgdim <- tgDimensions(tg)
       }
 
     }
@@ -474,17 +466,18 @@ makeContent.fittexttree <- function(x) {
     # Resize text to fit bounding box if it doesn't fit
     if (
       # Standard condition - is text too big for box?
-      (tg_width > xdim | tg_height > ydim) |
+      (tgdim$width > xdim | tgdim$height > ydim) |
       # grow = TRUE condition - is text too small for box?
-      (x$grow & tg_width < xdim & tg_height < ydim)
+      (x$grow & tgdim$width < xdim & tgdim$height < ydim)
     ) {
 
       # Get the slopes of the relationships between font size and label
       # dimensions
       fs1 <- tg$gp$fontsize
       tg$gp$fontsize <- tg$gp$fontsize * 2
-      slopew <- fs1 / (tgWidth(tg) - tg_width)
-      slopeh <- fs1 / (tgHeight(tg) - tg_height)
+      new_dimensions <- tgDimensions(tg)
+      slopew <- fs1 / (new_dimensions$width - tgdim$width)
+      slopeh <- fs1 / (new_dimensions$height - tgdim$height)
 
       # Calculate the target font size required to fit text to box along each
       # dimension
@@ -494,17 +487,19 @@ makeContent.fittexttree <- function(x) {
       # Set to smaller of target font sizes
       tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
 
-      # Update the textGrob dimensions
-      tg_width <- tgWidth(tg)
-      tg_height <- tgHeight(tg)
-    }
+      # Hide if below minimum font size
+      if (tg$gp$fontsize < x$min.size) { return() }
 
-    # Hide if below minimum font size
-    if (tg$gp$fontsize < x$min.size) { return() }
+      # Update the textGrob dimensions. We can save a little time here by
+      # cheating and using the known relationships between font size and
+      # dimensions, rather than recalculating
+      tgdim$width <- tg$gp$fontsize / slopew
+      tgdim$height <- tg$gp$fontsize / slopeh
+    }
 
     # === Calculate vector from geometric centre of text to anchor point
 
-    # First, we need the dimensions of the unrotated text in mm For some
+    # First, we need the dimensions of the unrotated text in mm. For some
     # reason, we don't get accurate values if we do this with the original
     # textGrob so we create a copy
     unrot <- tg
@@ -575,23 +570,23 @@ makeContent.fittexttree <- function(x) {
     ymax <- text$ymax - padding.y
 
     # Convert the textGrob dimensions into npc
-    tg_width <- grid::convertWidth(grid::unit(tg_width, "mm"), "npc", TRUE)
-    tg_height <- grid::convertHeight(grid::unit(tg_height, "mm"), "npc", TRUE)
+    tgdim$width <- grid::convertWidth(grid::unit(tgdim$width, "mm"), "npc", TRUE)
+    tgdim$height <- grid::convertHeight(grid::unit(tgdim$height, "mm"), "npc", TRUE)
 
     # Place the text
     if (x$place %in% c("topleft", "left", "bottomleft")) {
-      tg$x <- xmin + (tg_width / 2) + x_offset
+      tg$x <- xmin + (tgdim$width / 2) + x_offset
     } else if (x$place %in% c("top", "centre", "bottom")) {
       tg$x <- ((xmin + xmax) / 2) + x_offset
     } else if (x$place %in% c("topright", "right", "bottomright")) {
-      tg$x <- xmax - (tg_width / 2) + x_offset
+      tg$x <- xmax - (tgdim$width / 2) + x_offset
     }
     if (x$place %in% c("topleft", "top", "topright")) {
-      tg$y <- ymax - (tg_height / 2) + y_offset
+      tg$y <- ymax - (tgdim$height / 2) + y_offset
     } else if (x$place %in% c("left", "centre", "right")) {
       tg$y <- ((ymin + ymax) / 2) + y_offset
     } else if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-      tg$y <- ymin + (tg_height / 2) + y_offset
+      tg$y <- ymin + (tgdim$height / 2) + y_offset
     }
 
     # Convert x and y coordinates to unit objects
