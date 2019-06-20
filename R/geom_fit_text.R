@@ -504,62 +504,66 @@ makeContent.fittexttree <- function(x) {
 
     # === Calculate vector from geometric centre of text to anchor point
 
-    # First, we need the dimensions of the unrotated text in mm
-    tg$rot <- 0
-    tg_width_abs <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
-    tg_height_abs <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+    # First, we need the dimensions of the unrotated text in mm For some
+    # reason, we don't get accurate values if we do this with the original
+    # textGrob so we create a copy
+    unrot <- tg
+    unrot$rot <- 0
+    tg_width_unrot <- grid::convertWidth(grid::grobWidth(unrot), "mm", TRUE)
+    tg_height_unrot <- grid::convertHeight(grid::grobHeight(unrot), "mm", TRUE)
     if (x$fullheight) {
-      tg_descent_abs <- grid::convertHeight(grid::grobDescent(tg), "mm", TRUE)
+      tg_descent_unrot <- grid::convertHeight(grid::grobDescent(unrot), "mm", TRUE)
     }
-    tg$rot <- text$angle
 
-    # We can use these values to calculate the distance from the centre point to
-    # the anchor point, using the Pythagorean identity
+    # We can use these values to calculate the magnitude of the vector from the
+    # centre point to the anchor point, using the Pythagorean identity
     if (x$fullheight) {
-      AB <- (tg_height_abs * tg$vjust) - ((tg_height_abs + tg_descent_abs) * 0.5)
+      rise <- ((tg_height_unrot * tg$vjust) + tg_descent_unrot) - 
+                ((tg_height_unrot + tg_descent_unrot) * 0.5)
     } else {
-      AB <- (tg_height_abs * tg$vjust) - (tg_height_abs * 0.5)
+      rise <- (tg_height_unrot * tg$vjust) - (tg_height_unrot * 0.5)
     }
-    CB <- (tg_width_abs * tg$hjust) - (tg_width_abs * 0.5)
-    CA <- sqrt((AB ^ 2) + (CB ^ 2))
+    run <- (tg_width_unrot * tg$hjust) - (tg_width_unrot * 0.5)
+    magnitude <- sqrt((rise ^ 2) + (run ^ 2))
 
-    # The angle ACB can be calculated from the known sides AC and BC
-    ACB <- asin(abs(AB) / abs(CA)) * (180 / pi)
+    # The angle between the baseline and the vector can be calculated from the
+    # known rise and run
+    baseline_angle <- asin(abs(rise) / abs(magnitude)) * (180 / pi)
 
-    # To express the vector CA relative to the baseline angle, we correct for the
-    # quadrant then add the rotation of the entire textGrob modulo 360. There's
-    # almost certainly a clever trigonometry way to do this but I can't figure it
-    # out
-    if (sign(AB) == 1 & sign(CB) == 1) {
-      CA_abs_angle <- ACB
-    } else if (sign(AB) == 1 & sign(CB) == 0) {
-      CA_abs_angle <- 90
-    } else if (sign(AB) == 1 & sign(CB) == -1) {
-      CA_abs_angle <- 180 - ACB
-    } else if (sign(AB) == 0 & sign(CB) == -1) {
-      CA_abs_angle <- 180
-    } else if (sign(AB) == -1 & sign(CB) == -1) {
-      CA_abs_angle <- 180 + ACB
-    } else if (sign(AB) == -1 & sign(CB) == 0) {
-      CA_abs_angle <- 270
-    } else if (sign(AB) == -1 & sign(CB) == 1) {
-      CA_abs_angle <- 360 - ACB
-    } else if (sign(AB) == 0 & sign(CB) == 1) {
-      CA_abs_angle <- 0
-    } else if (sign(AB) == 0 & sign(CB) == 0) {
-      CA_abs_angle <- 0
+    # To find the 'direction angle' of the vector (expressed in degrees
+    # anti-clockwise from east), we correct for the quadrant then add the
+    # rotation of the entire textGrob modulo 360. There's almost certainly a
+    # clever trigonometry way to do this but I can't figure it out
+    if (sign(rise) == 1 & sign(run) == 1) {
+      direction_angle <- baseline_angle
+    } else if (sign(rise) == 1 & sign(run) == 0) {
+      direction_angle <- 90
+    } else if (sign(rise) == 1 & sign(run) == -1) {
+      direction_angle <- 180 - baseline_angle
+    } else if (sign(rise) == 0 & sign(run) == -1) {
+      direction_angle <- 180
+    } else if (sign(rise) == -1 & sign(run) == -1) {
+      direction_angle <- 180 + baseline_angle
+    } else if (sign(rise) == -1 & sign(run) == 0) {
+      direction_angle <- 270
+    } else if (sign(rise) == -1 & sign(run) == 1) {
+      direction_angle <- 360 - baseline_angle
+    } else if (sign(rise) == 0 & sign(run) == 1) {
+      direction_angle <- 0
+    } else if (sign(rise) == 0 & sign(run) == 0) {
+      direction_angle <- 0
     }
-    CA_abs_angle <- (CA_abs_angle + tg$rot) %% 360
+    direction_angle <- (direction_angle + tg$rot) %% 360
 
     # We can now use these to calculate the x and y offsets of the anchor point
     # from the centre point. For convenience, we will convert these to npc
     x_offset <- grid::convertWidth(
-      grid::unit(CA * cos(CA_abs_angle * (pi / 180)), "mm"),
+      grid::unit(magnitude * cos(direction_angle * (pi / 180)), "mm"),
       "npc",
       TRUE
     )
     y_offset <- grid::convertHeight(
-      grid::unit(CA * sin(CA_abs_angle * (pi / 180)), "mm"),
+      grid::unit(magnitude * sin(direction_angle * (pi / 180)), "mm"),
       "npc",
       TRUE
     )
