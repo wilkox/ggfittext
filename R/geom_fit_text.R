@@ -51,7 +51,7 @@
 #' - size
 #'
 #' @param padding.x,padding.y Amount of horizontal and vertical padding around
-#' the text, expressed as `grid::unit()` objects. Both default to 2 mm.
+#' the text, expressed as `grid::unit()` objects. Both default to 1 mm.
 #' @param min.size Minimum font size, in points. If provided, text that would
 #' need to be shrunk below this size to fit the box will not be drawn. Defaults
 #' to 4 pt.
@@ -92,8 +92,8 @@ geom_fit_text <- function(
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE,
-  padding.x = grid::unit(2, "mm"),
-  padding.y = grid::unit(2, "mm"),
+  padding.x = grid::unit(1, "mm"),
+  padding.y = grid::unit(1, "mm"),
   min.size = 4,
   place = "centre",
   grow = FALSE,
@@ -239,7 +239,7 @@ GeomFitText <- ggplot2::ggproto(
     data,
     panel_scales,
     coord,
-    padding.x = grid::unit(2, "mm"),
+    padding.x = grid::unit(1, "mm"),
     padding.y = grid::unit(2, "mm"),
     min.size = 4,
     grow = FALSE,

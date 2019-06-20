@@ -1,10 +1,14 @@
 # ggfittext 0.8.0
 
-# Major changes
+## Major changes
 
 - New `hjust` and `vjust` arguments that can be controlled independent of `place`
 - Full support for angled text
 - Faster for many common uses
+
+## Minor changes
+
+- `padding.x` and `padding.y` now both default to 1 mm
 
 ## Bug fixes
 
