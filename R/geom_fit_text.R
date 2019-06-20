@@ -393,8 +393,10 @@ makeContent.fittexttree <- function(x) {
                              sin(text$angle * (pi / 180)))
         height <- height + abs(grid::convertHeight(descent, "mm", TRUE) * 
                                cos(text$angle * (pi / 180)))
+      } else {
+        descent <- NULL
       }
-      list(width = width, height = height)
+      list(width = width, height = height, descent = descent)
     }
 
     # Get starting textGrob dimensions, in mm
@@ -489,26 +491,39 @@ makeContent.fittexttree <- function(x) {
       tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
 
       # Hide if below minimum font size
-      if (tg$gp$fontsize < x$min.size) { return() }
+      if (tg$gp$fontsize < x$min.size) return()
 
-      # Update the textGrob dimensions. We can save a little time here by
-      # cheating and using the known relationships between font size and
-      # dimensions, rather than recalculating
-      tgdim$width <- tg$gp$fontsize / slopew
-      tgdim$height <- tg$gp$fontsize / slopeh
+      # Update the textGrob dimensions
+      tgdim <- tgDimensions(tg)
     }
 
-    # === Calculate vector from geometric centre of text to anchor point
-
-    # First, we need the dimensions of the unrotated text in mm. For some
-    # reason, we don't get accurate values if we do this with the original
-    # textGrob so we create a copy
-    unrot <- tg
-    unrot$rot <- 0
-    tg_width_unrot <- grid::convertWidth(grid::grobWidth(unrot), "mm", TRUE)
-    tg_height_unrot <- grid::convertHeight(grid::grobHeight(unrot), "mm", TRUE)
-    if (x$fullheight) {
-      tg_descent_unrot <- grid::convertHeight(grid::grobDescent(unrot), "mm", TRUE)
+    # To calculate the vector from the geometric centre of the text to the
+    # anchor point, we first need the dimensions of the unrotated text in mm.
+    # For the common use case of an orthogonal rotation, we can reuse the
+    # pre-calculated values to save time
+    if (tg$rot == 0 | tg$rot == 180) {
+      tg_width_unrot <- tgdim$width
+      tg_height_unrot <- tgdim$height
+      if (x$fullheight) {
+        tg_descent_unrot <- grid::convertHeight(tgdim$descent, "mm", TRUE)
+      }
+    } else if (tg$rot == 90 | tg$rot == 270) {
+      tg_width_unrot <- tgdim$height
+      tg_height_unrot <- tgdim$width
+      if (x$fullheight) {
+        tg_descent_unrot <- grid::convertWidth(tgdim$descent, "mm", TRUE)
+      }
+    } else {
+      # For some
+      # reason, we don't get accurate values if we do this with the original
+      # textGrob so we create a copy
+      unrot <- tg
+      unrot$rot <- 0
+      tg_width_unrot <- grid::convertWidth(grid::grobWidth(unrot), "mm", TRUE)
+      tg_height_unrot <- grid::convertHeight(grid::grobHeight(unrot), "mm", TRUE)
+      if (x$fullheight) {
+        tg_descent_unrot <- grid::convertHeight(grid::grobDescent(unrot), "mm", TRUE)
+      }
     }
 
     # We can use these values to calculate the magnitude of the vector from the
