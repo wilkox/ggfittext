@@ -413,8 +413,9 @@ makeContent.fittexttree <- function(x) {
     )
 
     # Reflow the text, if reflow = TRUE and either the text doesn't currently
-    # fit or grow = TRUE
-    if (x$reflow & (x$grow | tgdim$width > xdim | tgdim$height > ydim)) {
+    # fit or grow = TRUE and if text contains spaces
+    if (x$reflow & (x$grow | tgdim$width > xdim | tgdim$height > ydim) & 
+        stringi::stri_detect_regex(tg$label, "\\s")) {
 
       # Try reducing the text width, one character at a time, and see if it
       # fits the bounding box
