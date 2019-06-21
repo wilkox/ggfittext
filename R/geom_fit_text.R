@@ -298,6 +298,10 @@ makeContent.fittexttree <- function(x) {
 
   data <- x$data
 
+  # Handle missing parameters
+  if (is.null(x$contrast)) x$contrast <- FALSE
+  if (is.null(x$outside)) x$outside <- FALSE
+
   # Standardise the place argument
   if (x$place %in% c("middle", "center")) {
     x$place <- "centre"
