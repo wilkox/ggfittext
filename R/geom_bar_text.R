@@ -18,6 +18,7 @@ geom_bar_text <- function(
   width = NULL,
   height = NULL,
   formatter = NULL,
+  contrast = FALSE,
   ...
 ) {
   ggplot2::layer(
@@ -42,6 +43,7 @@ geom_bar_text <- function(
       width = width,
       height = height,
       formatter = formatter,
+      contrast = contrast,
       ...
     )
   )
@@ -124,6 +126,7 @@ GeomBarText <- ggplot2::ggproto(
     width = NULL,
     height = NULL,
     formatter = NULL,
+    contrast = FALSE,
     place = "top"
   ) {
 
@@ -144,6 +147,7 @@ GeomBarText <- ggplot2::ggproto(
         min.size = min.size,
         grow = grow,
         reflow = reflow,
+        contrast = contrast,
         cl = "fittexttree"
       )
       gtrees$positives <- positives_gt
@@ -178,6 +182,7 @@ GeomBarText <- ggplot2::ggproto(
         min.size = min.size,
         grow = grow,
         reflow = reflow,
+        contrast = contrast,
         cl = "fittexttree"
       )
       gtrees$negatives <- negatives_gt

@@ -105,6 +105,7 @@ geom_fit_text <- function(
   width = NULL,
   height = NULL,
   formatter = NULL,
+  contrast = FALSE,
   ...
 ) {
   ggplot2::layer(
@@ -130,6 +131,7 @@ geom_fit_text <- function(
       width = width,
       height = height,
       formatter = formatter,
+      contrast = FALSE,
       ...
     )
   )
@@ -252,6 +254,7 @@ GeomFitText <- ggplot2::ggproto(
     width = NULL,
     height = NULL,
     formatter = NULL,
+    contrast = FALSE,
     place = "centre",
     outside = FALSE
   ) {
@@ -272,6 +275,7 @@ GeomFitText <- ggplot2::ggproto(
       fullheight = fullheight,
       width = width,
       height = height,
+      contrast = contrast,
       cl = "fittexttree"
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
@@ -345,6 +349,14 @@ makeContent.fittexttree <- function(x) {
 
     # Convenience
     text <- data[i, ]
+
+    # Reverse colours if desired
+    if (x$contrast & "fill" %in% names(text)) {
+      if (shades::lightness(text$fill) < 50) {
+        complement <- shades::complement(shades::shade(text$colour))
+        text$colour <- as.character(complement)
+      }
+    }
 
     # Clean up angle
     text$angle <- text$angle %% 360
