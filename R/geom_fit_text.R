@@ -422,11 +422,6 @@ makeContent.fittexttree <- function(x) {
     # for the 'outside' argument
     reflow_and_resize <- function(tg, x, xdim, ydim, text) {
 
-      message("label is ", text$label)
-      message("place is ", x$place)
-      message("xdim is ", xdim)
-      message("ydim is ", ydim)
-
       # Reflow the text, if reflow = TRUE and either the text doesn't currently
       # fit or grow = TRUE and if text contains spaces
       if (x$reflow & (x$grow | tgdim$width > xdim | tgdim$height > ydim) & 
@@ -506,7 +501,6 @@ makeContent.fittexttree <- function(x) {
       # If the font size is too small and 'outside' has been set, try reflowing
       # and resizing again in the 'outside' position
       if (tg$gp$fontsize < x$min.size & x$outside) {
-        message("Uh oh, ", text$label, " is too small")
         if (x$place == "top") {
           text$ymin <- text$ymax
           text$ymax <- 1
@@ -514,7 +508,6 @@ makeContent.fittexttree <- function(x) {
         } else if (x$place == "bottom") {
           text$ymax <- text$ymin
           text$ymin <- 0
-          message("swapping to top")
           x$place <- "top"
         } else if (x$place == "right") {
           text$xmin <- text$xmax
@@ -525,8 +518,6 @@ makeContent.fittexttree <- function(x) {
           text$xmin <- 0
           x$place <- "right"
         }
-        message("xmin is ", text$xmin)
-        message("xmax is ", text$xmax)
         xdim <- grid::convertWidth(
           grid::unit(abs(text$xmin - text$xmax) - (2 * padding.x), "npc"),
           "mm",

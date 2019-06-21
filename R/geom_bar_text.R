@@ -127,50 +127,58 @@ GeomBarText <- ggplot2::ggproto(
     negatives <- subset(data, data$y < 0)
 
     # Draw positives with "place" as given
-    positives <- coord$transform(positives, panel_scales)
-    positives_gt <- grid::gTree(
-      data = positives,
-      padding.x = padding.x,
-      padding.y = padding.y,
-      place = place,
-      outside = TRUE,
-      min.size = min.size,
-      grow = grow,
-      reflow = reflow,
-      cl = "fittexttree"
-    )
+    gtrees <- list()
+    if (nrow(positives) > 0) {
+      positives <- coord$transform(positives, panel_scales)
+      positives_gt <- grid::gTree(
+        data = positives,
+        padding.x = padding.x,
+        padding.y = padding.y,
+        place = place,
+        outside = TRUE,
+        min.size = min.size,
+        grow = grow,
+        reflow = reflow,
+        cl = "fittexttree"
+      )
+      gtrees$positives <- positives_gt
+    }
 
     # Draw negatives with reversed place
-    negatives <- coord$transform(negatives, panel_scales)
-    if (place == "top") {
-      place <- "bottom"
-      negatives$ymax <- negatives$ymin
-      negatives$ymin <- negatives$y
-    } else if (place == "right") {
-      place <- "left"
-      negatives$xmax <- negatives$xmin
-      negatives$xmin <- negatives$x
-    } else if (place == "bottom") {
-      place <- "top"
-      negatives$ymax <- negatives$ymin
-      negatives$ymin <- negatives$y
-    } else if (place == "left") {
-      place <- "right"
-      negatives$xmax <- negatives$xmin
-      negatives$xmin <- negatives$x
+    if (nrow(negatives) > 0) {
+      negatives <- coord$transform(negatives, panel_scales)
+      if (place == "top") {
+        place <- "bottom"
+        negatives$ymax <- negatives$ymin
+        negatives$ymin <- negatives$y
+      } else if (place == "right") {
+        place <- "left"
+        negatives$xmax <- negatives$xmin
+        negatives$xmin <- negatives$x
+      } else if (place == "bottom") {
+        place <- "top"
+        negatives$ymax <- negatives$ymin
+        negatives$ymin <- negatives$y
+      } else if (place == "left") {
+        place <- "right"
+        negatives$xmax <- negatives$xmin
+        negatives$xmin <- negatives$x
+      }
+      negatives_gt <- grid::gTree(
+        data = negatives,
+        padding.x = padding.x,
+        padding.y = padding.y,
+        place = place,
+        outside = TRUE,
+        min.size = min.size,
+        grow = grow,
+        reflow = reflow,
+        cl = "fittexttree"
+      )
+      gtrees$negatives <- negatives_gt
     }
-    negatives_gt <- grid::gTree(
-      data = negatives,
-      padding.x = padding.x,
-      padding.y = padding.y,
-      place = place,
-      outside = TRUE,
-      min.size = min.size,
-      grow = grow,
-      reflow = reflow,
-      cl = "fittexttree"
-    )
-    gt <- grid::gTree(children = grid::gList(positives_gt, negatives_gt))
+
+    gt <- grid::gTree(children = do.call(grid::gList, gtrees))
     gt$name <- grid::grobName(gt, "geom_bar_text")
     gt
   }
