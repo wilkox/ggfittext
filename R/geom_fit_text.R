@@ -263,11 +263,6 @@ GeomFitText <- ggplot2::ggproto(
       min.size = min.size,
       grow = grow,
       reflow = reflow,
-      hjust = hjust,
-      vjust = vjust,
-      fullheight = fullheight,
-      width = width,
-      height = height,
       cl = "fittexttree"
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
@@ -281,20 +276,45 @@ makeContent.fittexttree <- function(x) {
 
   data <- x$data
 
+  grobs <- lapply(seq_len(nrow(data)), function(i) {
+      data <- data[i, ]
+      tg <- grid::gTree(
+        data = data,
+        padding.x = x$padding.x,
+        padding.y = x$padding.y,
+        place = x$place,
+        min.size = x$min.size,
+        grow = x$grow,
+        reflow = x$reflow,
+        hjust = x$hjust,
+        vjust = x$vjust,
+        fullheight = x$fullheight,
+        width = x$width,
+        height = x$height,
+        cl = "fittext"
+      )
+    tg
+  })
+
+  # Return the textGrob
+  x <- grid::setChildren(x, do.call(grid::gList, grobs))
+  x
+}
+
+#' @importFrom grid makeContent
+#' @export
+makeContent.fittext <- function(x) {
+
+  # Convenience
+  data <- x$data
+
   # Standardise the place argument
   if (x$place %in% c("middle", "center")) {
     x$place <- "centre"
   }
 
-  # Determine which aesthetics to use for the bounding box
-  # Rules: if xmin/xmax are available, use these in preference to x UNLESS
-  # xmin == xmax, because this probably indicates position = "stack"; in this
-  # case, use x if it is available
-
-  # If xmin/xmax are not provided, or all xmin == xmax, generate boundary box
-  # from width
-  if (!("xmin" %in% names(data)) | 
-      (all(data$xmin == data$xmax) & "x" %in% names(data))) {
+  # Generate bounding box using 'width' and 'height' if they were provided
+  if (! is.null(x$width)) {
     data$xmin <- data$x - (
       grid::convertWidth(
         grid::unit(x$width, "mm"),
@@ -310,12 +330,7 @@ makeContent.fittexttree <- function(x) {
       ) / 2
     )
   }
-
-  # If ymin/ymax are not provided, or all ymin == ymax, generate boundary box
-  # from height
-  if (!("ymin" %in% names(data)) | 
-      (all(data$ymin == data$ymax) & 
-       "y" %in% names(data))) {
+  if (! is.null(x$height)) {
     data$ymin <- data$y - (
       grid::convertHeight(
         grid::unit(x$height, "mm"),
@@ -336,285 +351,279 @@ makeContent.fittexttree <- function(x) {
   padding.x <- grid::convertWidth(x$padding.x, "npc", valueOnly = TRUE)
   padding.y <- grid::convertHeight(x$padding.y, "npc", valueOnly = TRUE)
 
-  # Prepare grob for each text label
-  grobs <- lapply(seq_len(nrow(data)), function(i) {
+  # Clean up angle
+  data$angle <- data$angle %% 360
 
-    # Convenience
-    text <- data[i, ]
-
-    # Clean up angle
-    text$angle <- text$angle %% 360
-
-    # If hjust and/or vjust have not been set, set an appropriate value based
-    # on place
-    if (is.null(x$hjust)) {
-      if (x$place %in% c("left", "bottomleft", "topleft")) {
-        x$hjust <- 0
-      } else if (x$place %in% c("right", "bottomright", "topright")) {
-        x$hjust <- 1
-      } else {
-        x$hjust <- 0.5
-      }
+  # If hjust and/or vjust have not been set, set an appropriate value based
+  # on place
+  if (is.null(x$hjust)) {
+    if (x$place %in% c("left", "bottomleft", "topleft")) {
+      x$hjust <- 0
+    } else if (x$place %in% c("right", "bottomright", "topright")) {
+      x$hjust <- 1
+    } else {
+      x$hjust <- 0.5
     }
-    if (is.null(x$vjust)) {
-      x$vjust <- 0.5
-    }
+  }
+  if (is.null(x$vjust)) {
+    x$vjust <- 0.5
+  }
 
-    # If fullheight has not been set, set an appropriate value
-    if (is.null(x$fullheight)) {
-      x$fullheight <- x$grow
-    }
+  # If fullheight has not been set, set an appropriate value
+  if (is.null(x$fullheight)) {
+    x$fullheight <- x$grow
+  }
 
-    # Create textGrob
-    tg <- grid::textGrob(
-      label = text$label,
-      x = 0.5,
-      y = 0.5,
-      default.units = "npc",
-      hjust = x$hjust,
-      vjust = x$vjust,
-      rot = text$angle,
-      gp = grid::gpar(
-        col = ggplot2::alpha(text$colour, text$alpha),
-        fontsize = text$size,
-        fontfamily = text$family,
-        fontface = text$fontface,
-        lineheight = text$lineheight
+  # Set up the textGrob
+  tg <- grid::textGrob(
+    label = data$label,
+    x = 0.5,
+    y = 0.5,
+    default.units = "npc",
+    hjust = x$hjust,
+    vjust = x$vjust,
+    rot = data$angle,
+    gp = grid::gpar(
+      col = ggplot2::alpha(data$colour, data$alpha),
+      fontsize = data$size,
+      fontfamily = data$family,
+      fontface = data$fontface,
+      lineheight = data$lineheight
+    )
+  )
+
+  # Set a name
+  tg$name <- grid::grobName(tg, "geom_fit_text")
+
+  # Functions to get textgrob dimensions, in absolute units (mm)
+  tgDimensions <- function(tg) {
+    width <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+    height <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+    if (x$fullheight) {
+      descent <- grid::grobDescent(tg)
+      width <- width + abs(grid::convertWidth(descent, "mm", TRUE) * 
+                           sin(data$angle * (pi / 180)))
+      height <- height + abs(grid::convertHeight(descent, "mm", TRUE) * 
+                             cos(data$angle * (pi / 180)))
+    } else {
+      descent <- NULL
+    }
+    list(width = width, height = height, descent = descent)
+  }
+
+  # Get starting textGrob dimensions, in mm
+  tgdim <- tgDimensions(tg)
+
+  # Get dimensions of bounding box, in mm
+  xdim <- grid::convertWidth(
+    grid::unit(abs(data$xmin - data$xmax) - (2 * padding.x), "npc"),
+    "mm",
+    TRUE
+  )
+  ydim <- grid::convertHeight(
+    grid::unit(abs(data$ymin - data$ymax) - (2 * padding.y), "npc"),
+    "mm",
+    TRUE
+  )
+
+  # Reflow the text, if reflow = TRUE and either the text doesn't currently
+  # fit or grow = TRUE and if text contains spaces
+  if (x$reflow & (x$grow | tgdim$width > xdim | tgdim$height > ydim) & 
+      stringi::stri_detect_regex(tg$label, "\\s")) {
+
+    # Try reducing the text width, one character at a time, and see if it
+    # fits the bounding box
+    best_aspect_ratio <- Inf
+    best_width <- stringi::stri_length(tg$label)
+    label <- unlist(stringi::stri_split(tg$label, regex = "\n"))
+    stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
+    for (w in (stringwidth):1) {
+
+      # Reflow text to this width
+      # By splitting the text on whitespace and passing normalize = F,
+      # line breaks in the original text are respected
+      tg$label <- paste(
+        stringi::stri_wrap(label, w, normalize = FALSE),
+        collapse = "\n"
       )
-    )
-
-    # Functions to get textgrob dimensions, in absolute units (mm)
-    tgDimensions <- function(tg) {
-      width <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
-      height <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
-      if (x$fullheight) {
-        descent <- grid::grobDescent(tg)
-        width <- width + abs(grid::convertWidth(descent, "mm", TRUE) * 
-                             sin(text$angle * (pi / 180)))
-        height <- height + abs(grid::convertHeight(descent, "mm", TRUE) * 
-                               cos(text$angle * (pi / 180)))
-      } else {
-        descent <- NULL
+      
+      # Recalculate aspect ratio of textGrob using and update if this is the
+      # new best ratio
+      tgdim <- tgDimensions(tg)
+      aspect_ratio <- tgdim$width / tgdim$height
+      diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
+      best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
+      if (diff_from_box_ratio < best_diff_from_box_ratio) {
+        best_aspect_ratio <- aspect_ratio
+        best_width <- w
       }
-      list(width = width, height = height, descent = descent)
+
+      # If the text now fits the bounding box (and we are not trying to grow
+      # the text), good to stop here
+      if (tgdim$width < xdim & tgdim$height < ydim & !x$grow) break
     }
 
-    # Get starting textGrob dimensions, in mm
-    tgdim <- tgDimensions(tg)
-
-    # Get dimensions of bounding box, in mm
-    xdim <- grid::convertWidth(
-      grid::unit(abs(text$xmin - text$xmax) - (2 * padding.x), "npc"),
-      "mm",
-      TRUE
-    )
-    ydim <- grid::convertHeight(
-      grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
-      "mm",
-      TRUE
-    )
-
-    # Reflow the text, if reflow = TRUE and either the text doesn't currently
-    # fit or grow = TRUE and if text contains spaces
-    if (x$reflow & (x$grow | tgdim$width > xdim | tgdim$height > ydim) & 
-        stringi::stri_detect_regex(tg$label, "\\s")) {
-
-      # Try reducing the text width, one character at a time, and see if it
-      # fits the bounding box
-      best_aspect_ratio <- Inf
-      best_width <- stringi::stri_length(tg$label)
-      label <- unlist(stringi::stri_split(tg$label, regex = "\n"))
-      stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
-      for (w in (stringwidth):1) {
-
-        # Reflow text to this width
-        # By splitting the text on whitespace and passing normalize = F,
-        # line breaks in the original text are respected
-        tg$label <- paste(
-          stringi::stri_wrap(label, w, normalize = FALSE),
-          collapse = "\n"
-        )
-        
-        # Recalculate aspect ratio of textGrob using and update if this is the
-        # new best ratio
-        tgdim <- tgDimensions(tg)
-        aspect_ratio <- tgdim$width / tgdim$height
-        diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
-        best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
-        if (diff_from_box_ratio < best_diff_from_box_ratio) {
-          best_aspect_ratio <- aspect_ratio
-          best_width <- w
-        }
-
-        # If the text now fits the bounding box (and we are not trying to grow
-        # the text), good to stop here
-        if (tgdim$width < xdim & tgdim$height < ydim & !x$grow) break
-      }
-
-      # If all reflow widths have been tried and none is smaller than the box
-      # (i.e. some shrinking is still required), or if we are trying to grow
-      # the text, pick the reflow width that produces the aspect ratio closest
-      # to that of the bounding box
-      if (tgdim$width > xdim | tgdim$height > ydim | x$grow) {
-        tg$label <- paste(
-          stringi::stri_wrap(label, best_width, normalize = FALSE),
-          collapse = "\n"
-        )
-        # Update the textGrob dimensions
-        tgdim <- tgDimensions(tg)
-      }
-
-    }
-
-    # Resize text to fit bounding box if it doesn't fit
-    if (
-      # Standard condition - is text too big for box?
-      (tgdim$width > xdim | tgdim$height > ydim) |
-      # grow = TRUE condition - is text too small for box?
-      (x$grow & tgdim$width < xdim & tgdim$height < ydim)
-    ) {
-
-      # Get the slopes of the relationships between font size and label
-      # dimensions
-      fs1 <- tg$gp$fontsize
-      tg$gp$fontsize <- tg$gp$fontsize * 2
-      new_dimensions <- tgDimensions(tg)
-      slopew <- fs1 / (new_dimensions$width - tgdim$width)
-      slopeh <- fs1 / (new_dimensions$height - tgdim$height)
-
-      # Calculate the target font size required to fit text to box along each
-      # dimension
-      targetfsw <- xdim * slopew
-      targetfsh <- ydim * slopeh
-
-      # Set to smaller of target font sizes
-      tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
-
-      # Hide if below minimum font size
-      if (tg$gp$fontsize < x$min.size) return()
-
+    # If all reflow widths have been tried and none is smaller than the box
+    # (i.e. some shrinking is still required), or if we are trying to grow
+    # the text, pick the reflow width that produces the aspect ratio closest
+    # to that of the bounding box
+    if (tgdim$width > xdim | tgdim$height > ydim | x$grow) {
+      tg$label <- paste(
+        stringi::stri_wrap(label, best_width, normalize = FALSE),
+        collapse = "\n"
+      )
       # Update the textGrob dimensions
       tgdim <- tgDimensions(tg)
     }
 
-    # To calculate the vector from the geometric centre of the text to the
-    # anchor point, we first need the dimensions of the unrotated text in mm.
-    # For the common use case of an orthogonal rotation, we can reuse the
-    # pre-calculated values to save time
-    if (tg$rot == 0 | tg$rot == 180) {
-      tg_width_unrot <- tgdim$width
-      tg_height_unrot <- tgdim$height
-      if (x$fullheight) {
-        tg_descent_unrot <- grid::convertHeight(tgdim$descent, "mm", TRUE)
-      }
-    } else if (tg$rot == 90 | tg$rot == 270) {
-      tg_width_unrot <- tgdim$height
-      tg_height_unrot <- tgdim$width
-      if (x$fullheight) {
-        tg_descent_unrot <- grid::convertWidth(tgdim$descent, "mm", TRUE)
-      }
-    } else {
-      # For some
-      # reason, we don't get accurate values if we do this with the original
-      # textGrob so we create a copy
-      unrot <- tg
-      unrot$rot <- 0
-      tg_width_unrot <- grid::convertWidth(grid::grobWidth(unrot), "mm", TRUE)
-      tg_height_unrot <- grid::convertHeight(grid::grobHeight(unrot), "mm", TRUE)
-      if (x$fullheight) {
-        tg_descent_unrot <- grid::convertHeight(grid::grobDescent(unrot), "mm", TRUE)
-      }
-    }
+  }
 
-    # We can use these values to calculate the magnitude of the vector from the
-    # centre point to the anchor point, using the Pythagorean identity
+  # Resize text to fit bounding box if it doesn't fit
+  if (
+    # Standard condition - is text too big for box?
+    (tgdim$width > xdim | tgdim$height > ydim) |
+    # grow = TRUE condition - is text too small for box?
+    (x$grow & tgdim$width < xdim & tgdim$height < ydim)
+  ) {
+
+    # Get the slopes of the relationships between font size and label
+    # dimensions
+    fs1 <- tg$gp$fontsize
+    tg$gp$fontsize <- tg$gp$fontsize * 2
+    new_dimensions <- tgDimensions(tg)
+    slopew <- fs1 / (new_dimensions$width - tgdim$width)
+    slopeh <- fs1 / (new_dimensions$height - tgdim$height)
+
+    # Calculate the target font size required to fit text to box along each
+    # dimension
+    targetfsw <- xdim * slopew
+    targetfsh <- ydim * slopeh
+
+    # Set to smaller of target font sizes
+    tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
+
+    # Hide if below minimum font size
+    if (tg$gp$fontsize < x$min.size) return(x)
+
+    # Update the textGrob dimensions
+    tgdim <- tgDimensions(tg)
+  }
+
+  # To calculate the vector from the geometric centre of the text to the
+  # anchor point, we first need the dimensions of the unrotated text in mm.
+  # For the common use case of an orthogonal rotation, we can reuse the
+  # pre-calculated values to save time
+  if (tg$rot == 0 | tg$rot == 180) {
+    tg_width_unrot <- tgdim$width
+    tg_height_unrot <- tgdim$height
     if (x$fullheight) {
-      rise <- ((tg_height_unrot * tg$vjust) + tg_descent_unrot) - 
-                ((tg_height_unrot + tg_descent_unrot) * 0.5)
-    } else {
-      rise <- (tg_height_unrot * tg$vjust) - (tg_height_unrot * 0.5)
+      tg_descent_unrot <- grid::convertHeight(tgdim$descent, "mm", TRUE)
     }
-    run <- (tg_width_unrot * tg$hjust) - (tg_width_unrot * 0.5)
-    magnitude <- sqrt((rise ^ 2) + (run ^ 2))
-
-    # The angle between the baseline and the vector can be calculated from the
-    # known rise and run
-    baseline_angle <- asin(abs(rise) / abs(magnitude)) * (180 / pi)
-
-    # To find the 'direction angle' of the vector (expressed in degrees
-    # anti-clockwise from east), we correct for the quadrant then add the
-    # rotation of the entire textGrob modulo 360. There's almost certainly a
-    # clever trigonometry way to do this but I can't figure it out
-    if (sign(rise) == 1 & sign(run) == 1) {
-      direction_angle <- baseline_angle
-    } else if (sign(rise) == 1 & sign(run) == 0) {
-      direction_angle <- 90
-    } else if (sign(rise) == 1 & sign(run) == -1) {
-      direction_angle <- 180 - baseline_angle
-    } else if (sign(rise) == 0 & sign(run) == -1) {
-      direction_angle <- 180
-    } else if (sign(rise) == -1 & sign(run) == -1) {
-      direction_angle <- 180 + baseline_angle
-    } else if (sign(rise) == -1 & sign(run) == 0) {
-      direction_angle <- 270
-    } else if (sign(rise) == -1 & sign(run) == 1) {
-      direction_angle <- 360 - baseline_angle
-    } else if (sign(rise) == 0 & sign(run) == 1) {
-      direction_angle <- 0
-    } else if (sign(rise) == 0 & sign(run) == 0) {
-      direction_angle <- 0
+  } else if (tg$rot == 90 | tg$rot == 270) {
+    tg_width_unrot <- tgdim$height
+    tg_height_unrot <- tgdim$width
+    if (x$fullheight) {
+      tg_descent_unrot <- grid::convertWidth(tgdim$descent, "mm", TRUE)
     }
-    direction_angle <- (direction_angle + tg$rot) %% 360
-
-    # We can now use these to calculate the x and y offsets of the anchor point
-    # from the centre point. For convenience, we will convert these to npc
-    x_offset <- grid::convertWidth(
-      grid::unit(magnitude * cos(direction_angle * (pi / 180)), "mm"),
-      "npc",
-      TRUE
-    )
-    y_offset <- grid::convertHeight(
-      grid::unit(magnitude * sin(direction_angle * (pi / 180)), "mm"),
-      "npc",
-      TRUE
-    )
-
-    # Specify the bounding box limits in npc coordinates
-    xmin <- text$xmin + padding.x
-    xmax <- text$xmax - padding.x
-    ymin <- text$ymin + padding.y
-    ymax <- text$ymax - padding.y
-
-    # Convert the textGrob dimensions into npc
-    tgdim$width <- grid::convertWidth(grid::unit(tgdim$width, "mm"), "npc", TRUE)
-    tgdim$height <- grid::convertHeight(grid::unit(tgdim$height, "mm"), "npc", TRUE)
-
-    # Place the text
-    if (x$place %in% c("topleft", "left", "bottomleft")) {
-      tg$x <- xmin + (tgdim$width / 2) + x_offset
-    } else if (x$place %in% c("top", "centre", "bottom")) {
-      tg$x <- ((xmin + xmax) / 2) + x_offset
-    } else if (x$place %in% c("topright", "right", "bottomright")) {
-      tg$x <- xmax - (tgdim$width / 2) + x_offset
+  } else {
+    # For some
+    # reason, we don't get accurate values if we do this with the original
+    # textGrob so we create a copy
+    unrot <- tg
+    unrot$rot <- 0
+    tg_width_unrot <- grid::convertWidth(grid::grobWidth(unrot), "mm", TRUE)
+    tg_height_unrot <- grid::convertHeight(grid::grobHeight(unrot), "mm", TRUE)
+    if (x$fullheight) {
+      tg_descent_unrot <- grid::convertHeight(grid::grobDescent(unrot), "mm", TRUE)
     }
-    if (x$place %in% c("topleft", "top", "topright")) {
-      tg$y <- ymax - (tgdim$height / 2) + y_offset
-    } else if (x$place %in% c("left", "centre", "right")) {
-      tg$y <- ((ymin + ymax) / 2) + y_offset
-    } else if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-      tg$y <- ymin + (tgdim$height / 2) + y_offset
-    }
+  }
 
-    # Convert x and y coordinates to unit objects
-    tg$x <- grid::unit(tg$x, "npc")
-    tg$y <- grid::unit(tg$y, "npc")
+  # We can use these values to calculate the magnitude of the vector from the
+  # centre point to the anchor point, using the Pythagorean identity
+  if (x$fullheight) {
+    rise <- ((tg_height_unrot * tg$vjust) + tg_descent_unrot) - 
+              ((tg_height_unrot + tg_descent_unrot) * 0.5)
+  } else {
+    rise <- (tg_height_unrot * tg$vjust) - (tg_height_unrot * 0.5)
+  }
+  run <- (tg_width_unrot * tg$hjust) - (tg_width_unrot * 0.5)
+  magnitude <- sqrt((rise ^ 2) + (run ^ 2))
 
-    # Return the textGrob
-    tg
-  })
+  # The angle between the baseline and the vector can be calculated from the
+  # known rise and run
+  baseline_angle <- asin(abs(rise) / abs(magnitude)) * (180 / pi)
 
-  class(grobs) <- "gList"
-  grid::setChildren(x, grobs)
+  # To find the 'direction angle' of the vector (expressed in degrees
+  # anti-clockwise from east), we correct for the quadrant then add the
+  # rotation of the entire textGrob modulo 360. There's almost certainly a
+  # clever trigonometry way to do this but I can't figure it out
+  if (sign(rise) == 1 & sign(run) == 1) {
+    direction_angle <- baseline_angle
+  } else if (sign(rise) == 1 & sign(run) == 0) {
+    direction_angle <- 90
+  } else if (sign(rise) == 1 & sign(run) == -1) {
+    direction_angle <- 180 - baseline_angle
+  } else if (sign(rise) == 0 & sign(run) == -1) {
+    direction_angle <- 180
+  } else if (sign(rise) == -1 & sign(run) == -1) {
+    direction_angle <- 180 + baseline_angle
+  } else if (sign(rise) == -1 & sign(run) == 0) {
+    direction_angle <- 270
+  } else if (sign(rise) == -1 & sign(run) == 1) {
+    direction_angle <- 360 - baseline_angle
+  } else if (sign(rise) == 0 & sign(run) == 1) {
+    direction_angle <- 0
+  } else if (sign(rise) == 0 & sign(run) == 0) {
+    direction_angle <- 0
+  }
+  direction_angle <- (direction_angle + tg$rot) %% 360
+
+  # We can now use these to calculate the x and y offsets of the anchor point
+  # from the centre point. For convenience, we will convert these to npc
+  x_offset <- grid::convertWidth(
+    grid::unit(magnitude * cos(direction_angle * (pi / 180)), "mm"),
+    "npc",
+    TRUE
+  )
+  y_offset <- grid::convertHeight(
+    grid::unit(magnitude * sin(direction_angle * (pi / 180)), "mm"),
+    "npc",
+    TRUE
+  )
+
+  # Specify the bounding box limits in npc coordinates
+  xmin <- data$xmin + padding.x
+  xmax <- data$xmax - padding.x
+  ymin <- data$ymin + padding.y
+  ymax <- data$ymax - padding.y
+
+  # Convert the textGrob dimensions into npc
+  tgdim$width <- grid::convertWidth(grid::unit(tgdim$width, "mm"), "npc", TRUE)
+  tgdim$height <- grid::convertHeight(grid::unit(tgdim$height, "mm"), "npc", TRUE)
+
+  # Place the text
+  if (x$place %in% c("topleft", "left", "bottomleft")) {
+    tg$x <- xmin + (tgdim$width / 2) + x_offset
+  } else if (x$place %in% c("top", "centre", "bottom")) {
+    tg$x <- ((xmin + xmax) / 2) + x_offset
+  } else if (x$place %in% c("topright", "right", "bottomright")) {
+    tg$x <- xmax - (tgdim$width / 2) + x_offset
+  }
+  if (x$place %in% c("topleft", "top", "topright")) {
+    tg$y <- ymax - (tgdim$height / 2) + y_offset
+  } else if (x$place %in% c("left", "centre", "right")) {
+    tg$y <- ((ymin + ymax) / 2) + y_offset
+  } else if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
+    tg$y <- ymin + (tgdim$height / 2) + y_offset
+  }
+
+  # Convert x and y coordinates to unit objects
+  tg$x <- grid::unit(tg$x, "npc")
+  tg$y <- grid::unit(tg$y, "npc")
+
+  # Return the textGrob
+  x <- grid::setChildren(x, grid::gList(tg))
+  x
 }
 
 #' geom_fit_text
