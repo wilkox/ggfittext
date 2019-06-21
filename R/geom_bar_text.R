@@ -50,7 +50,7 @@ geom_bar_text <- function(
 GeomBarText <- ggplot2::ggproto(
   "GeomBarText",
   ggplot2::Geom,
-  required_aes = c("x", "y", "label"),
+  required_aes = c("x", "y"),
   default_aes = ggplot2::aes(
     alpha = 1,
     angle = 0,
@@ -71,6 +71,11 @@ GeomBarText <- ggplot2::ggproto(
     data,
     params
   ) {
+
+    # If the label is missing, assume y is the label (as with stat_count)
+    if (! "label" %in% names(data)) {
+      data$label <- data$y
+    }
 
     # Set xmin and xmax using the method of geom_boxplot
     width <- ggplot2::resolution(data$x, FALSE) * 0.9
