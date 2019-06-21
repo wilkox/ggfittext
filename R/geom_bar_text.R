@@ -1,3 +1,5 @@
+#' @rdname geom_fit_text
+#'
 #' @export
 geom_bar_text <- function(
   mapping = NULL,

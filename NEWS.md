@@ -2,17 +2,15 @@
 
 ## Major changes
 
-- New `hjust` and `vjust` arguments that can be controlled independent of
-  `place`
-- Full support for angled text
-- Faster for many common uses
+- New `geom_bar_text()` convenience function for labelling of bars in bar plots
 - New `contrast` argument for automatically contrasting a background fill
   colour
-- New `fullheight` argument for finer control over the typographic dimensions
-  of the text
+- New `fullheight` argument for including or excluding descenders in text size
+- Faster for many common uses
+- New `hjust` and `vjust` arguments that can be controlled independent of
+  `place`
 - New `outside` argument to allow text that doesn't fit inside the box to be
   teleported outside of it 
-- New `geom_bar_text()` convenience function for labelling of bars in bar plots
 
 ## Minor changes
 
@@ -22,8 +20,9 @@
 
 - When reflowing text, calculation of the best aspect ratio now takes into
   account the output device's aspect ratio
-- When reflowing text, calculation of the best aspect ratio no longer refuses
+- When reflowing text, calculation oq the best aspect ratio no longer refuses
   to entertain the possibility that the original text might have the best ratio
+- Angled text is now placed correctly
 
 # ggfittext 0.7.0
 

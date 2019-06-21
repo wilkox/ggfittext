@@ -1,7 +1,9 @@
 #' A 'ggplot2' geom to fit text inside a box
 #'
-#' `geom_fit_text()` shrinks, grows or wraps text to fit inside a defined
-#' rectangular area.
+#' `geom_fit_text()` shrinks, grows and wraps text to fit inside a defined
+#' box.
+#' `geom_bar_text()` is a convenience wrapper around `geom_fit_text()` for
+#' labelling bar plots generated with `geom_col()` and `geom_bar()`.
 #'
 #' @details
 #'
@@ -9,33 +11,27 @@
 #' `ggplot2::geom_text()`.
 #'
 #' There are three ways to define the box in which you want the text to be
-#' drawn:
+#' drawn. The extents of the box on the x and y axes are independent, so any
+#' combination of these methods can be used:
 #' 
-#' 1. On a continuous axis, the limits of the box can be defined in the data
-#' using plot aesthetics: 'xmin' and 'xmax', and/or 'ymin' and 'ymax'.
-#' 2. Alternatively on a continuous axis, the centre of the box can be defined
-#' in the data with the 'x' and/or 'y' aesthetic, and the width and/or height
-#' of the box can be specified with a 'width' and/or 'height' argument. 'width'
-#' and 'height' should be provided as `grid::unit()` objects; if not, they will
-#' be assumed to use the native axis scale.
-#' 3. On a discrete (categorical) axis, the width or height will be determined
-#' automatically. This can be overridden if you wish using the 'width' and
-#' 'height' arguments.
+#' 1. If the `x` and/or `y` aesthetics are used to set the location of the box,
+#' the width or height will be set automatically based on the number of
+#' discrete values in `x` and/and `y`.
+#' 2. Alternatively, if `x` and/or `y` aesthetics are used, the width and/or
+#' height of the box can be overridden with a 'width' and/or 'height' argument.
+#' These should be `grid::unit()` objects; if not, they will be assumed to use
+#' the native axis scale.
+#' 3. The boundaries of the box can be set using the aesthetics 'xmin' and
+#' 'xmax', and/or 'ymin' and 'ymax'.
 #'
-#' By default, the text will be drawn as if with `geom_text()`, unless it is
-#' too big for the box, in which case it will be shrunk to fit the box. With
-#' `grow = TRUE`, the text will be made to fill the box completely whether
-#' that requires shrinking or growing.
+#' If the text is too big for the box, it will be shrunk to fit the box. With
+#' `grow = TRUE`, the text will be made to fill the box completely whether that
+#' requires shrinking or growing.
 #'
 #' `reflow = TRUE` will cause the text to be reflowed (wrapped) to better fit
-#' in the box. When `grow = FALSE` (default), text that fits the box will be
-#' drawn as if with `geom_text()`; text that doesn't fit the box will be
-#' reflowed until it does. If the text cannot be made to fit by reflowing
-#' alone, it will be reflowed to match the aspect ratio of the box as closely
-#' as possible, then be shrunk to fit the box. When `grow = TRUE`, the text
-#' will be reflowed to best match the aspect ratio of the box, then made to
-#' fill the box completely whether that requires growing or shrinking. Existing
-#' line breaks in the text will be respected when reflowing.
+#' in the box. If the text cannot be made to fit by reflowing alone, it will be
+#' reflowed then shrunk to fit the box.  Existing line breaks in the text will
+#' be respected when reflowing.
 #'
 #' @section Aesthetics:
 #'
@@ -50,28 +46,40 @@
 #' - lineheight
 #' - size
 #'
-#' @param padding.x,padding.y Amount of horizontal and vertical padding around
-#' the text, expressed as `grid::unit()` objects. Both default to 1 mm.
-#' @param min.size Minimum font size, in points. If provided, text that would
-#' need to be shrunk below this size to fit the box will not be drawn. Defaults
-#' to 4 pt.
+#' @param padding.x,padding.y Horizontal and vertical padding around the text,
+#' expressed in `grid::unit()` objects. Both default to 1 mm.
+#' @param min.size Minimum font size, in points. Text that would need to be
+#' shrunk below this size to fit the box will be hidden. Defaults to 4 pt.
 #' @param place Where inside the box to place the text. Default is 'centre';
-#' other options are 'topleft', 'top', 'topright', etc.
+#' other options are 'topleft', 'top', 'topright', 'right', 'bottomright',
+#' 'bottom', 'bottomleft', 'left', and 'center'/'middle' which are both
+#' synonyms for 'centre'.
+#' @param outside If `TRUE`, text placed in one of 'top', 'right', 'bottom' or
+#' 'left' that would need to be shrunk smaller than `min.size` to fit the box
+#' will be drawn outside the box if possible. This is mostly useful for drawing
+#' text inside bar/column geoms. Defaults to FALSE.
 #' @param grow If `TRUE`, text will be grown as well as shrunk to fill the box.
-#' See Details.
+#' Defaults to FALSE.
 #' @param reflow If `TRUE`, text will be reflowed (wrapped) to better fit the
-#' box. See Details.
-#' @param hjust,vjust Horizontal and vertical justification of text. By
-#' default, these are automatically set to appropriate values based on `place`
-#' and `angle`.
-#' @param width,height When using `x` and/or `y` aesthetics, these can be used
-#' to set the width and/or height of the box. These should be either
-#' numeric values on the `x` and `y` scales or `grid::unit()` objects.
+#' box. Defaults to FALSE.
+#' @param hjust,vjust Horizontal and vertical justification of the text. By
+#' default, these are automatically set to appropriate values based on `place`.
+#' @param fullheight If `TRUE`, descenders will be counted when resizing and
+#' placing text; if `FALSE`, only the x-height and ascenders will be counted.
+#' The main use for this option is for aligning text at the baseline (`FALSE`)
+#' or preventing descenders from spilling outside the box (`TRUE`). By default
+#' this is set automatically depending on `place` and `grow`. 
+#' @param width,height When using `x` and/or `y` aesthetics, these set the
+#' width and/or height of the box. These should be either `grid::unit()`
+#' objects or numeric values on the `x` and `y` scales.
 #' @param formatter A function that will be applied to the text before it is
-#' drawn. This can be useful when using `geom_fit_text()` in an automated
-#' context, such as with the 'gganimate' package. `formatter` will be applied
-#' serially to each element in the `label` column, so it does not need to be a
-#' vectorised function.
+#' drawn. This is useful when using `geom_fit_text()` in context involving
+#' interpolated variables, such as with the 'gganimate' package. `formatter`
+#' will be applied serially to each element in the `label` column, so it does
+#' not need to be a vectorised function.
+#' @param contrast If `TRUE` and in combination with a `fill` aesthetic, the
+#' colour of the text will be inverted for better contrast against dark
+#' background fills. `FALSE` by default.
 #' @param mapping `ggplot2::aes()` object as standard in 'ggplot2'. Note
 #' that aesthetics specifying the box must be provided. See Details.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
@@ -83,6 +91,7 @@
 #'     label = name, x = party)) +
 #'   geom_fit_text(grow = TRUE)
 #'
+#' @rdname geom_fit_text
 #' @export
 geom_fit_text <- function(
   mapping = NULL,
