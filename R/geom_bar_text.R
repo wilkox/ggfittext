@@ -1,3 +1,4 @@
+#' @export
 geom_bar_text <- function(
   mapping = NULL,
   data = NULL,

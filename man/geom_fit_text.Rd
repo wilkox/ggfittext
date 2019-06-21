@@ -7,9 +7,10 @@
 geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, padding.x = grid::unit(1, "mm"),
-  padding.y = grid::unit(1, "mm"), place = "centre", min.size = 4,
-  grow = FALSE, reflow = FALSE, width = NULL, height = NULL,
-  formatter = NULL, ...)
+  padding.y = grid::unit(1, "mm"), min.size = 4, place = "centre",
+  outside = FALSE, grow = FALSE, reflow = FALSE, hjust = NULL,
+  vjust = NULL, fullheight = NULL, width = NULL, height = NULL,
+  formatter = NULL, contrast = FALSE, ...)
 }
 \arguments{
 \item{mapping}{\code{ggplot2::aes()} object as standard in 'ggplot2'. Note
@@ -21,18 +22,22 @@ arguments as for \code{ggplot2::geom_text()}.}
 \item{padding.x, padding.y}{Amount of horizontal and vertical padding around
 the text, expressed as \code{grid::unit()} objects. Both default to 1 mm.}
 
-\item{place}{Where inside the box to place the text. Default is 'centre';
-other options are 'topleft', 'top', 'topright', etc.}
-
 \item{min.size}{Minimum font size, in points. If provided, text that would
 need to be shrunk below this size to fit the box will not be drawn. Defaults
 to 4 pt.}
+
+\item{place}{Where inside the box to place the text. Default is 'centre';
+other options are 'topleft', 'top', 'topright', etc.}
 
 \item{grow}{If \code{TRUE}, text will be grown as well as shrunk to fill the box.
 See Details.}
 
 \item{reflow}{If \code{TRUE}, text will be reflowed (wrapped) to better fit the
 box. See Details.}
+
+\item{hjust, vjust}{Horizontal and vertical justification of text. By
+default, these are automatically set to appropriate values based on \code{place}
+and \code{angle}.}
 
 \item{width, height}{When using \code{x} and/or \code{y} aesthetics, these can be used
 to set the width and/or height of the box. These should be either

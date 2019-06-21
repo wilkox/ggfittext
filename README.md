@@ -27,193 +27,166 @@ devtools::install_github("wilkox/ggfittext")
 ## Fitting text inside a box
 
 Sometimes you want to draw some text in a ggplot2 plot so that it fits
-inside a defined area. For example, you might want to label tiles in a
-heat map without letting the labels spill over into other tiles; or you
-might want to constrain some point labels to imaginary boxes so they
-don’t get too big. It’s possible to achieve this by manually fiddling
+inside a defined box. It’s possible to achieve this by manually fiddling
 with the text size, but this is both tedious and un-reproducible.
-
-ggfittext provides a special geom called `geom_fit_text()` that
-automates fitting text inside a box. It works more or less like
-`ggplot2::geom_text()`, but provides some additional aesthetics and
-options that let you specify the box in which the text is to fit and how
-to make it fit.
+ggfittext provides a geom called `geom_fit_text()` that automates
+fitting text inside a box. It works more or less like
+`ggplot2::geom_text()`, with some additional aesthetics and options:
 
 ``` r
-library(ggplot2)
-library(ggfittext)
-
-flyers <- data.frame(
-  vehicle = rep(c("kite", "jumbo jet", "space shuttle", "dyson sphere"), 2),
-  xmin = rep(c(52.5, 45, 30, 0), 2),
-  xmax = rep(c(67.5, 75, 90, 120), 2),
-  ymin = rep(c(0, 15, 35, 60), 2),
-  ymax = rep(c(10, 30, 55, 85), 2),
-  geom = factor(c(rep("geom_text", 4), rep("geom_fit_text", 4)),
-                levels = c("geom_text", "geom_fit_text"))
-)
-
-ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
-                   ymax = ymax)) + 
-  geom_rect() +
-  geom_text(data = subset(flyers, geom == "geom_text"),
-            aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)) +
-  geom_fit_text(data = subset(flyers, geom == "geom_fit_text")) +
-  facet_wrap( ~ geom) +
-  labs(x = "", y = "")
+ggplot(animals, aes(x = type, y = flies, label = animal)) +
+  geom_tile(fill = "white", colour = "black") +
+  geom_fit_text()
 ```
 
-![](man/figures/README-doesnt_fit-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-4-1.png)<!-- -->
 
-There are three different ways to define the box in which you want the
-text to be placed:
-
-1.  On a continuous axis, you can use `xmin`/`xmax` and/or `ymin`/`ymax`
-    aesthetics.
-2.  Alternatively on a continuous axis, you can define the horizontal
-    and/or vertical centre of the box with `x` and/or `y` respectively,
-    and fix the width and/or height of the box with the `width` and/or
-    `height` arguments. The values for `width` and `height` should be
-    `grid::unit()` objects; if not, they will be assumed to use the
-    native axis scale.
-3.  On a discrete (categorical) axis, `geom_fit_text()` will
-    automatically figure out the appropriate width or height. You can
-    override this with the `width` or `height` arguments if you want.
-
-You can specify where in the box to place the text with the `place`
-argument, and a minimum point size for the text with the `min.size`
-argument. (Any text that would need to be smaller than `min.size` to fit
-the box will be hidden.)
-
-``` r
-ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin,
-                   ymax = ymax)) + 
-  geom_rect() +
-  geom_text(data = subset(flyers, geom == "geom_text"),
-            aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)) +
-  geom_fit_text(data = subset(flyers, geom == "geom_fit_text"),
-                place = "top", min.size = 6) +
-  facet_wrap( ~ geom) +
-  labs(x = "", y = "")
-```
-
-![](man/figures/README-geom_fit_text_2-1.png)<!-- -->
-
-Text can be placed in any corner (‘topleft’, ‘topright’, …) or at the
-midpoint of any side (‘bottom’, ‘left’, …), as well as the default
-‘centre’.
-
-# Growing text
-
-With the `grow = TRUE` argument, text will be made to fill the box
-completely, whether that requires growing or shrinking it.
-
-``` r
-ggplot(flyers, aes(label = vehicle, xmin = xmin, xmax = xmax, ymin = ymin, 
-                   ymax = ymax)) +
-  geom_rect() +
-  geom_text(data = subset(flyers, geom == "geom_text"),
-            aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)) +
-  geom_fit_text(data = subset(flyers, geom == "geom_fit_text"), grow = TRUE) +
-  facet_wrap( ~ geom, ncol = 1) +
-  labs(x = "", y = "")
-```
-
-![](man/figures/README-geom_fit_text_3-1.png)<!-- -->
+As with `geom_text()`, the position of the text is set by the `x` and
+`y` aesthetics. `geom_fit_text()` automatically infers the width and
+height of the box in which the text is allowed to fit, and shrinks down
+any text that is too big.
 
 ## Reflowing text
 
-With the `reflow = TRUE` argument, text will be reflowed (wrapped) as
-needed to fit the box. Reflowing is preferred to shrinking; that is, if
-the text can be made to fit by reflowing it without shrinking it, it
-will be reflowed only.
+Another way to make the text fit in the box is by reflowing it; that is,
+wrapping it over multiple lines. With the `reflow = TRUE` argument,
+`geom_fit_text()` will reflow the text before shrinking it:
 
 ``` r
-poem <- data.frame(
-  text = rep(
-    "Whose words these are I think I know.\nHe would prefer that they reflow",
-    3
-  ),
-  xmin = rep(10, 3),
-  xmax = rep(90, 3),
-  ymin = rep(10, 3),
-  ymax = rep(90, 3),
-  fit = c("geom_text", "without reflow", "with reflow")
-)
-
-ggplot(poem, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
-                 label = text)) +
-  geom_rect() +
-  geom_text(
-    data = subset(poem, fit == "geom_text"),
-    aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)
-  ) +
-  geom_fit_text(data = subset(poem, fit == "without reflow"), min.size = 0) +
-  geom_fit_text(data = subset(poem, fit == "with reflow"), reflow = TRUE,
-                min.size = 0) +
-  lims(x = c(0, 100), y = c(0, 100)) +
-  labs(x = "", y = "") +
-  facet_wrap(~ fit)
+ggplot(animals, aes(x = type, y = flies, label = animal)) +
+  geom_tile(fill = "white", colour = "black") +
+  geom_fit_text(reflow = TRUE)
 ```
 
-![](man/figures/README-reflow-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-5-1.png)<!-- -->
 
-Note that existing line breaks in the text are respected.
+## Growing text
 
-With both `reflow = TRUE` and `grow = TRUE`, the text will be reflowed
-to a form that best matches the aspect ratio of the box, then made to
-fill the box whether that requires shrinking it or growing it.
+If you want the text to be as large as possible, the argument `grow =
+TRUE` will increase the text size to the maximum possible. This works
+well in conjunction with `reflow`:
 
 ``` r
-film <- data.frame(
-  text = rep("duck soup", 3),
-  xmin = rep(30, 3),
-  xmax = rep(70, 3),
-  ymin = rep(0, 3),
-  ymax = rep(100, 3),
-  fit = c("geom_text", "grow without reflow", "grow with reflow")
-)
-
-ggplot(film, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
-                 label = text)) +
-  geom_rect() +
-  geom_text(
-    data = subset(film, fit == "geom_text"),
-    aes(x = (xmin + xmax) / 2, y = (ymin + ymax) / 2)
-  ) +
-  geom_fit_text(data = subset(film, fit == "grow without reflow"), grow = TRUE) +
-  geom_fit_text(
-    data = subset(film, fit == "grow with reflow"),
-    grow = TRUE,
-    reflow = TRUE
-  ) +
-  lims(x = c(0, 100), y = c(0, 100)) +
-  labs(x = "", y = "") +
-  facet_wrap(~ fit, ncol = 1)
+ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
+  geom_tile(fill = "white", colour = "black") +
+  geom_fit_text(reflow = TRUE, grow = TRUE)
 ```
 
-![](man/figures/README-reflow_and_grow-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
 
-## Example: a heatmap
+## Placing text
+
+By default, text is placed in the centre of the box. However, you can
+place it in a corner or on a side of the box with the `place` argument,
+which takes values “top”, “topright”, “right”, “bottomright”, “bottom”,
+“bottomleft” and so on:
 
 ``` r
-tournament <- data.frame(
-  teamA = rep(c("Radon Canyon Raiders", "Desert Bluffs Destroyers",
-                "Old Town Orphans"), 3),
-  teamB = c(rep("Coyote Corners Carolers", 3),
-            rep("Sand Wastes Streetcleaners", 3),
-            rep("Dog park Devils", 3)),
-  venue = sample(c("Night Vale Stadium", "Big Rico's Sandlot With The Lot",
-                   "Elementary School Playground",
-                   "Night Vale Harbor and Waterfront Recreation Area"),
-                 9, replace = TRUE),
-  game_time_mins = sample(999, 9)
-  )
+ggplot(animals, aes(x = type, y = flies, label = animal)) +
+  geom_tile(fill = "white", colour = "black") +
+  geom_fit_text(place = "topleft", reflow = TRUE)
+```
 
-ggplot(tournament, aes(x = teamA, y = teamB, fill = game_time_mins,
-                       label = venue)) +
+![](man/figures/README-unnamed-chunk-7-1.png)<!-- -->
+
+## Bar plots
+
+ggfittext provides a convenience function `geom_bar_text()` for
+labelling bars in bar plots:
+
+``` r
+ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
+  geom_col() +
+  geom_bar_text()
+```
+
+![](man/figures/README-unnamed-chunk-8-1.png)<!-- -->
+
+`geom_bar_text()` also works with stacked bar plots (`position =
+"stack"`):
+
+``` r
+ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
+                    fill = ingredient)) +
+  geom_col(position = "stack") +
+  geom_bar_text(position = "stack", grow = TRUE, reflow = TRUE)
+```
+
+![](man/figures/README-unnamed-chunk-9-1.png)<!-- -->
+
+And with dodged bar plots, and `coord_flip()`:
+
+``` r
+ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
+                    fill = ingredient)) +
+  geom_col(position = "dodge") +
+  geom_bar_text(position = "dodge", grow = TRUE, reflow = TRUE, 
+                place = "left") +
+  coord_flip()
+```
+
+![](man/figures/README-unnamed-chunk-10-1.png)<!-- -->
+
+## Specifying the box coordinates
+
+If you want to specify exact limits for the box (instead of having them
+inferred from `x` and `y`), you can use `xmin` & `xmax` and/or `ymin` &
+`ymax`:
+
+``` r
+ggplot(presidential, aes(ymin = start, ymax = end, x = party, label = name)) +
+  geom_fit_text(grow = TRUE) +
+  geom_errorbar(alpha = 0.5)
+```
+
+![](man/figures/README-unnamed-chunk-11-1.png)<!-- -->
+
+Alternatively, you can manually specify the width and/or height with the
+`width` and/or `height` arguments, which should be `grid::unit()`
+objects. The horizontal and/or vertical centre of the box will be
+defined by `x` and/or `y`.
+
+## Other useful arguments
+
+All arguments to `geom_fit_text()` can also be used with
+`geom_bar_text()`.
+
+  - **`contrast`** can be used to automatically invert the colour of the
+    text so it contrasts against a background **`fill`**:
+
+<!-- end list -->
+
+``` r
+ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   geom_tile() +
-  geom_fit_text(reflow = TRUE, grow = TRUE, colour = "white")
+  geom_fit_text(reflow = TRUE, grow = TRUE, contrast = TRUE)
 ```
 
-![](man/figures/README-heatmap-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-12-1.png)<!-- -->
+
+  - **`padding.x`** and **`padding.y`** can be used to set the padding
+    between the text and the edge of the box. By default this is 1 mm.
+    These values must be given as `grid::unit()` objects.
+  - **`min.size`** sets the minimum font size in points, by default 4
+    pt. Text smaller than this will be hidden (see also `outside`).
+  - **`outside`** is FALSE by default. If TRUE, text that is placed at
+    “top”, “bottom”, “left” or “right” and must be shrunk smaller than
+    `min.size` to fit in the box will be flipped to the outside of the
+    box (if it fits there). This is mostly useful for drawing text
+    inside bars in a bar plot.
+  - **`hjust`** and **`vjust`** set the horizontal and vertical
+    justification of the text, scaled between 0 (left/bottom) and 1
+    (right/top). These are both 0.5 by default.
+  - **`formatter`** allows you to set a function that will be applied to
+    the text before it is drawn. This is mostly useful in contexts where
+    variables may be interpolated, such as when using
+    [gganimate](http://www.gganimate.com).
+  - **`fullheight`** is automatically set depending on place, but can be
+    overridden with this option. This is used to determine the bounding
+    box around the text. If FALSE, the bounding box includes the
+    x-height of the text and descenders, but not any descenders. If
+    TRUE, it extends from the top of the ascenders to the bottom of the
+    descenders. This is mostly useful in situations where you want to
+    ensure the baseline of text is consistent between labels
+    (`fullheight = TRUE`), or when you want to avoid descenders spilling
+    out of the bounding box (`fullheight = FALSE`).

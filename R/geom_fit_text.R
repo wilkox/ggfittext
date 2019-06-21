@@ -131,7 +131,7 @@ geom_fit_text <- function(
       width = width,
       height = height,
       formatter = formatter,
-      contrast = FALSE,
+      contrast = contrast,
       ...
     )
   )
@@ -244,7 +244,7 @@ GeomFitText <- ggplot2::ggproto(
     panel_scales,
     coord,
     padding.x = grid::unit(1, "mm"),
-    padding.y = grid::unit(2, "mm"),
+    padding.y = grid::unit(1, "mm"),
     min.size = 4,
     grow = FALSE,
     reflow = FALSE,
@@ -542,6 +542,11 @@ makeContent.fittexttree <- function(x) {
         )
         tg$gp$fontsize <- text$size
         x$outside <- FALSE
+        # If we're moving the text outside and contrast is true, set the text
+        # in contrast to the ggplot2 grey
+        if (x$contrast & "fill" %in% names(text)) {
+          tg$gp$col <- "#141414"
+        }
         return(reflow_and_resize(tg, x, xdim, ydim, text))
       }
       list(tg = tg, text = text, x = x)
