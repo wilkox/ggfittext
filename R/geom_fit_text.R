@@ -458,6 +458,7 @@ makeContent.fittexttree <- function(x) {
         best_width <- stringi::stri_length(tg$label)
         label <- unlist(stringi::stri_split(tg$label, regex = "\n"))
         stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
+        previous_reflow <- ""
         for (w in (stringwidth):1) {
 
           # Reflow text to this width
@@ -467,6 +468,13 @@ makeContent.fittexttree <- function(x) {
             stringi::stri_wrap(label, w, normalize = FALSE),
             collapse = "\n"
           )
+
+          # Skip if the text is unchanged
+          if (previous_reflow == tg$label) {
+            previous_reflow <- tg$label
+            next
+          }
+          previous_reflow <- tg$label
           
           # Recalculate aspect ratio of textGrob using and update if this is the
           # new best ratio
