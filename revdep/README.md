@@ -10,13 +10,13 @@
 |collate  |en_AU.UTF-8                  |
 |ctype    |en_AU.UTF-8                  |
 |tz       |Australia/Sydney             |
-|date     |2019-06-15                   |
+|date     |2019-06-23                   |
 
 # Dependencies
 
 |package   |old   |new   |Δ  |
 |:---------|:-----|:-----|:--|
-|ggfittext |0.7.0 |0.7.1 |*  |
+|ggfittext |0.7.0 |0.8.0 |*  |
 
 # Revdeps
 
