@@ -20,7 +20,7 @@
 
 - When reflowing text, calculation of the best aspect ratio now takes into
   account the output device's aspect ratio
-- When reflowing text, calculation oq the best aspect ratio no longer refuses
+- When reflowing text, calculation of the best aspect ratio no longer refuses
   to entertain the possibility that the original text might have the best ratio
 - Angled text is now placed correctly
 
