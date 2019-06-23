@@ -22,6 +22,7 @@ geom_bar_text <- function(
   height = NULL,
   formatter = NULL,
   contrast = FALSE,
+  outside = TRUE,
   ...
 ) {
   ggplot2::layer(
@@ -47,6 +48,7 @@ geom_bar_text <- function(
       height = height,
       formatter = formatter,
       contrast = contrast,
+      outside = outside,
       ...
     )
   )
@@ -130,7 +132,8 @@ GeomBarText <- ggplot2::ggproto(
     height = NULL,
     formatter = NULL,
     contrast = FALSE,
-    place = "top"
+    place = "top",
+    outside = TRUE
   ) {
 
     # Split data into negative and positive y values
@@ -146,7 +149,7 @@ GeomBarText <- ggplot2::ggproto(
         padding.x = padding.x,
         padding.y = padding.y,
         place = place,
-        outside = TRUE,
+        outside = outside,
         min.size = min.size,
         grow = grow,
         reflow = reflow,
@@ -181,7 +184,7 @@ GeomBarText <- ggplot2::ggproto(
         padding.x = padding.x,
         padding.y = padding.y,
         place = place,
-        outside = TRUE,
+        outside = outside,
         min.size = min.size,
         grow = grow,
         reflow = reflow,
