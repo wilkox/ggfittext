@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggfittext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -115,23 +115,38 @@
       <small>Source: <a href='https://github.com/wilkox/ggfittext/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="ggfittext-071" class="section level1">
+    <div id="ggfittext-080" class="section level1">
 <h1 class="page-header">
-<a href="#ggfittext-071" class="anchor"></a>ggfittext 0.7.1<small> Unreleased </small>
+<a href="#ggfittext-080" class="anchor"></a>ggfittext 0.8.0<small> Unreleased </small>
 </h1>
+<div id="major-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#major-changes" class="anchor"></a>Major changes</h2>
+<ul>
+<li>New <code><a href="../reference/geom_fit_text.html">geom_bar_text()</a></code> convenience function for labelling of bars in bar plots</li>
+<li>New <code>contrast</code> argument for automatically contrasting a background fill colour</li>
+<li>New <code>fullheight</code> argument for including or excluding descenders in text size</li>
+<li>Faster for many common uses</li>
+<li>New <code>hjust</code> and <code>vjust</code> arguments that can be controlled independent of <code>place</code>
+</li>
+<li>New <code>outside</code> argument to allow text that doesn’t fit inside the box to be teleported outside of it</li>
+</ul>
+</div>
 <div id="minor-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#minor-changes" class="anchor"></a>Minor changes</h2>
 <ul>
 <li>
-<code>padding.x</code> and <code>padding.y</code> now default to 1 mm</li>
+<code>padding.x</code> and <code>padding.y</code> now both default to 1 mm</li>
 </ul>
 </div>
 <div id="bug-fixes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h2>
 <ul>
-<li>Angled text is now placed correctly in places other than ‘centre’</li>
+<li>When reflowing text, calculation of the best aspect ratio now takes into account the output device’s aspect ratio</li>
+<li>When reflowing text, calculation of the best aspect ratio no longer refuses to entertain the possibility that the original text might have the best ratio</li>
+<li>Angled text is now placed correctly</li>
 </ul>
 </div>
 </div>
@@ -139,9 +154,9 @@
 <h1 class="page-header">
 <a href="#ggfittext-070" class="anchor"></a>ggfittext 0.7.0<small> 2019-05-29 </small>
 </h1>
-<div id="major-changes" class="section level2">
+<div id="major-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-1" class="anchor"></a>Major changes</h2>
 <ul>
 <li>Add support for automatic sizing of text on discrete (categorical) axes</li>
 <li>Fully deprecate ‘width’ and ‘height’ as aesthetics</li>
@@ -169,9 +184,9 @@
 <h1 class="page-header">
 <a href="#ggfittext-060" class="anchor"></a>ggfittext 0.6.0<small> 2018-07-06 </small>
 </h1>
-<div id="major-changes-1" class="section level2">
+<div id="major-changes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-1" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-2" class="anchor"></a>Major changes</h2>
 <ul>
 <li>Change <code>width</code> and <code>height</code> from aesthetics to arguments.</li>
 <li>Allow <code>width</code> and <code>height</code> arguments to be provided in native units (thanks to <a href='https://github.com/corybrunson'>@corybrunson</a>).</li>
@@ -271,9 +286,9 @@
 <h1 class="page-header">
 <a href="#ggfittext-04" class="anchor"></a>ggfittext 0.4<small> Unreleased </small>
 </h1>
-<div id="major-changes-2" class="section level2">
+<div id="major-changes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-2" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-3" class="anchor"></a>Major changes</h2>
 <ul>
 <li>Add ‘reflow’ option to <code>geom_fit_text</code>.</li>
 </ul>
@@ -290,9 +305,9 @@
 <h1 class="page-header">
 <a href="#ggfittext-03" class="anchor"></a>ggfittext 0.3<small> Unreleased </small>
 </h1>
-<div id="major-changes-3" class="section level2">
+<div id="major-changes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-3" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-4" class="anchor"></a>Major changes</h2>
 <ul>
 <li>Much faster text resizing algorithm.</li>
 <li>Rename arguments: ‘discrete.width’ and ‘discrete.height’ to ‘width’ and ‘height’; ‘fill.text’ to ‘grow’.</li>
@@ -303,9 +318,9 @@
 <h1 class="page-header">
 <a href="#ggfittext-02" class="anchor"></a>ggfittext 0.2<small> Unreleased </small>
 </h1>
-<div id="major-changes-4" class="section level2">
+<div id="major-changes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#major-changes-4" class="anchor"></a>Major changes</h2>
+<a href="#major-changes-5" class="anchor"></a>Major changes</h2>
 <ul>
 <li>
 <code>geom_shrink_text()</code> and <code>geom_fill_text()</code> replaced with single <code><a href="../reference/geom_fit_text.html">geom_fit_text()</a></code> with ‘fill_text’ option. (The old geoms still work, but as wrappers for <code><a href="../reference/geom_fit_text.html">geom_fit_text()</a></code>).</li>
@@ -332,7 +347,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#ggfittext-071">0.7.1</a></li>
+        <li><a href="#ggfittext-080">0.8.0</a></li>
         <li><a href="#ggfittext-070">0.7.0</a></li>
         <li><a href="#ggfittext-060">0.6.0</a></li>
         <li><a href="#ggfittext-050">0.5.0</a></li>

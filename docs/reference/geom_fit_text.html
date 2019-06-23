@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A 'ggplot2' geom to fit text inside a box — geom_fit_text • ggfittext</title>
+<title>A 'ggplot2' geom to fit text inside a box — geom_bar_text • ggfittext</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,10 +30,12 @@
 
 
 
-<meta property="og:title" content="A 'ggplot2' geom to fit text inside a box — geom_fit_text" />
+<meta property="og:title" content="A 'ggplot2' geom to fit text inside a box — geom_bar_text" />
 
-<meta property="og:description" content="geom_fit_text() shrinks, grows or wraps text to fit inside a defined
-rectangular area." />
+<meta property="og:description" content="geom_fit_text() shrinks, grows and wraps text to fit inside a defined
+box.
+geom_bar_text() is a convenience wrapper around geom_fit_text() for
+labelling bar plots generated with geom_col() and geom_bar()." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +66,7 @@ rectangular area." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggfittext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -116,109 +118,141 @@ rectangular area." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>A 'ggplot2' geom to fit text inside a box</h1>
-    <small class="dont-index">Source: <a href='https://github.com/wilkox/ggfittext/blob/master/R/geom_fit_text.R'><code>R/geom_fit_text.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/wilkox/ggfittext/blob/master/R/geom_bar_text.R'><code>R/geom_bar_text.R</code></a>, <a href='https://github.com/wilkox/ggfittext/blob/master/R/geom_fit_text.R'><code>R/geom_fit_text.R</code></a></small>
     <div class="hidden name"><code>geom_fit_text.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p><code>geom_fit_text()</code> shrinks, grows or wraps text to fit inside a defined
-rectangular area.</p>
+    <p><code>geom_fit_text()</code> shrinks, grows and wraps text to fit inside a defined
+box.
+<code>geom_bar_text()</code> is a convenience wrapper around <code>geom_fit_text()</code> for
+labelling bar plots generated with <code>geom_col()</code> and <code>geom_bar()</code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>geom_fit_text</span>(<span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>stat</span> <span class='kw'>=</span> <span class='st'>"identity"</span>,
+    <pre class="usage"><span class='fu'>geom_bar_text</span>(<span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>stat</span> <span class='kw'>=</span> <span class='st'>"identity"</span>,
   <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"identity"</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>padding.x</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>),
-  <span class='kw'>padding.y</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>), <span class='kw'>place</span> <span class='kw'>=</span> <span class='st'>"centre"</span>, <span class='kw'>min.size</span> <span class='kw'>=</span> <span class='fl'>4</span>,
-  <span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>formatter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>padding.y</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>), <span class='kw'>min.size</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>place</span> <span class='kw'>=</span> <span class='st'>"top"</span>,
+  <span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>hjust</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>vjust</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fullheight</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>formatter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>contrast</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>outside</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+
+<span class='fu'>geom_fit_text</span>(<span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>stat</span> <span class='kw'>=</span> <span class='st'>"identity"</span>,
+  <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"identity"</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>padding.x</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>),
+  <span class='kw'>padding.y</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>), <span class='kw'>min.size</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>place</span> <span class='kw'>=</span> <span class='st'>"centre"</span>,
+  <span class='kw'>outside</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>reflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>hjust</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>vjust</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fullheight</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>formatter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>contrast</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mapping</th>
-      <td><p><code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/aes'>ggplot2::aes()</a></code> object as standard in 'ggplot2'. Note
+      <td><p><code><a href='https://ggplot2.tidyverse.org/reference/aes.html'>ggplot2::aes()</a></code> object as standard in 'ggplot2'. Note
 that aesthetics specifying the box must be provided. See Details.</p></td>
     </tr>
     <tr>
       <th>data, stat, position, na.rm, show.legend, inherit.aes, ...</th>
       <td><p>Standard geom
-arguments as for <code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/geom_text'>ggplot2::geom_text()</a></code>.</p></td>
+arguments as for <code><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>ggplot2::geom_text()</a></code>.</p></td>
     </tr>
     <tr>
       <th>padding.x, padding.y</th>
-      <td><p>Amount of horizontal and vertical padding around
-the text, expressed as <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects. Both default to 1 mm.</p></td>
+      <td><p>Horizontal and vertical padding around the text,
+expressed in <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects. Both default to 1 mm.</p></td>
+    </tr>
+    <tr>
+      <th>min.size</th>
+      <td><p>Minimum font size, in points. Text that would need to be
+shrunk below this size to fit the box will be hidden. Defaults to 4 pt.</p></td>
     </tr>
     <tr>
       <th>place</th>
       <td><p>Where inside the box to place the text. Default is 'centre';
-other options are 'topleft', 'top', 'topright', etc.</p></td>
-    </tr>
-    <tr>
-      <th>min.size</th>
-      <td><p>Minimum font size, in points. If provided, text that would
-need to be shrunk below this size to fit the box will not be drawn. Defaults
-to 4 pt.</p></td>
+other options are 'topleft', 'top', 'topright', 'right', 'bottomright',
+'bottom', 'bottomleft', 'left', and 'center'/'middle' which are both
+synonyms for 'centre'.</p></td>
     </tr>
     <tr>
       <th>grow</th>
       <td><p>If <code>TRUE</code>, text will be grown as well as shrunk to fill the box.
-See Details.</p></td>
+Defaults to FALSE.</p></td>
     </tr>
     <tr>
       <th>reflow</th>
       <td><p>If <code>TRUE</code>, text will be reflowed (wrapped) to better fit the
-box. See Details.</p></td>
+box. Defaults to FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>hjust, vjust</th>
+      <td><p>Horizontal and vertical justification of the text. By
+default, these are automatically set to appropriate values based on <code>place</code>.</p></td>
+    </tr>
+    <tr>
+      <th>fullheight</th>
+      <td><p>If <code>TRUE</code>, descenders will be counted when resizing and
+placing text; if <code>FALSE</code>, only the x-height and ascenders will be counted.
+The main use for this option is for aligning text at the baseline (<code>FALSE</code>)
+or preventing descenders from spilling outside the box (<code>TRUE</code>). By default
+this is set automatically depending on <code>place</code> and <code>grow</code>.</p></td>
     </tr>
     <tr>
       <th>width, height</th>
-      <td><p>When using <code>x</code> and/or <code>y</code> aesthetics, these can be used
-to set the width and/or height of the box. These should be either
-numeric values on the <code>x</code> and <code>y</code> scales or <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects.</p></td>
+      <td><p>When using <code>x</code> and/or <code>y</code> aesthetics, these set the
+width and/or height of the box. These should be either <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code>
+objects or numeric values on the <code>x</code> and <code>y</code> scales.</p></td>
     </tr>
     <tr>
       <th>formatter</th>
       <td><p>A function that will be applied to the text before it is
-drawn. This can be useful when using <code>geom_fit_text()</code> in an automated
-context, such as with the 'gganimate' package. <code>formatter</code> will be applied
-serially to each element in the <code>label</code> column, so it does not need to be a
-vectorised function.</p></td>
+drawn. This is useful when using <code>geom_fit_text()</code> in context involving
+interpolated variables, such as with the 'gganimate' package. <code>formatter</code>
+will be applied serially to each element in the <code>label</code> column, so it does
+not need to be a vectorised function.</p></td>
+    </tr>
+    <tr>
+      <th>contrast</th>
+      <td><p>If <code>TRUE</code> and in combination with a <code>fill</code> aesthetic, the
+colour of the text will be inverted for better contrast against dark
+background fills. <code>FALSE</code> by default.</p></td>
+    </tr>
+    <tr>
+      <th>outside</th>
+      <td><p>If <code>TRUE</code>, text placed in one of 'top', 'right', 'bottom' or
+'left' that would need to be shrunk smaller than <code>min.size</code> to fit the box
+will be drawn outside the box if possible. This is mostly useful for drawing
+text inside bar/column geoms. Defaults to FALSE.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Except where noted, <code>geom_fit_text()</code> behaves more or less like
-<code><a href='https://www.rdocumentation.org/packages/ggplot2/topics/geom_text'>ggplot2::geom_text()</a></code>.</p>
+<code><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>ggplot2::geom_text()</a></code>.</p>
 <p>There are three ways to define the box in which you want the text to be
-drawn:</p><ol>
-<li><p>On a continuous axis, the limits of the box can be defined in the data
-using plot aesthetics: 'xmin' and 'xmax', and/or 'ymin' and 'ymax'.</p></li>
-<li><p>Alternatively on a continuous axis, the centre of the box can be defined
-in the data with the 'x' and/or 'y' aesthetic, and the width and/or height
-of the box can be specified with a 'width' and/or 'height' argument. 'width'
-and 'height' should be provided as <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects; if not, they will
-be assumed to use the native axis scale.</p></li>
-<li><p>On a discrete (categorical) axis, the width or height will be determined
-automatically. This can be overridden if you wish using the 'width' and
-'height' arguments.</p></li>
+drawn. The extents of the box on the x and y axes are independent, so any
+combination of these methods can be used:</p><ol>
+<li><p>If the <code>x</code> and/or <code>y</code> aesthetics are used to set the location of the box,
+the width or height will be set automatically based on the number of
+discrete values in <code>x</code> and/and <code>y</code>.</p></li>
+<li><p>Alternatively, if <code>x</code> and/or <code>y</code> aesthetics are used, the width and/or
+height of the box can be overridden with a 'width' and/or 'height' argument.
+These should be <code><a href='https://www.rdocumentation.org/packages/grid/topics/unit'>grid::unit()</a></code> objects; if not, they will be assumed to use
+the native axis scale.</p></li>
+<li><p>The boundaries of the box can be set using the aesthetics 'xmin' and
+'xmax', and/or 'ymin' and 'ymax'.</p></li>
 </ol>
-    <p>By default, the text will be drawn as if with <code>geom_text()</code>, unless it is
-too big for the box, in which case it will be shrunk to fit the box. With
-<code>grow = TRUE</code>, the text will be made to fill the box completely whether
-that requires shrinking or growing.</p>
+    <p>If the text is too big for the box, it will be shrunk to fit the box. With
+<code>grow = TRUE</code>, the text will be made to fill the box completely whether that
+requires shrinking or growing.</p>
 <p><code>reflow = TRUE</code> will cause the text to be reflowed (wrapped) to better fit
-in the box. When <code>grow = FALSE</code> (default), text that fits the box will be
-drawn as if with <code>geom_text()</code>; text that doesn't fit the box will be
-reflowed until it does. If the text cannot be made to fit by reflowing
-alone, it will be reflowed to match the aspect ratio of the box as closely
-as possible, then be shrunk to fit the box. When <code>grow = TRUE</code>, the text
-will be reflowed to best match the aspect ratio of the box, then made to
-fill the box completely whether that requires growing or shrinking. Existing
-line breaks in the text will be respected when reflowing.</p>
+in the box. If the text cannot be made to fit by reflowing alone, it will be
+reflowed then shrunk to fit the box.  Existing line breaks in the text will
+be respected when reflowing.</p>
     
     <h2 class="hasAnchor" id="aesthetics"><a class="anchor" href="#aesthetics"></a>Aesthetics</h2>
 
@@ -239,7 +273,7 @@ line breaks in the text will be respected when reflowing.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/ggplot'>ggplot</a></span>(<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/presidential'>presidential</a></span>, <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/ggplot2/topics/aes'>aes</a></span>(<span class='kw'>ymin</span> <span class='kw'>=</span> <span class='no'>start</span>, <span class='kw'>ymax</span> <span class='kw'>=</span> <span class='no'>end</span>,
+<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='no'><a href='https://ggplot2.tidyverse.org/reference/presidential.html'>presidential</a></span>, <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>ymin</span> <span class='kw'>=</span> <span class='no'>start</span>, <span class='kw'>ymax</span> <span class='kw'>=</span> <span class='no'>end</span>,
     <span class='kw'>label</span> <span class='kw'>=</span> <span class='no'>name</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>party</span>)) +
   <span class='fu'>geom_fit_text</span>(<span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='geom_fit_text-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>

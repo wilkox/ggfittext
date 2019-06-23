@@ -11,7 +11,7 @@ geom_bar_text(mapping = NULL, data = NULL, stat = "identity",
   padding.y = grid::unit(1, "mm"), min.size = 8, place = "top",
   grow = FALSE, reflow = FALSE, hjust = NULL, vjust = NULL,
   fullheight = NULL, width = NULL, height = NULL, formatter = NULL,
-  contrast = FALSE, ...)
+  contrast = FALSE, outside = TRUE, ...)
 
 geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,

@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 ggfittext provides a ggplot2 geom for fitting text inside a box
 
-```{r hero, echo = FALSE, message = FALSE}
+```{r hero, echo = FALSE, message = FALSE, fig.width = 4, fig.height = 4}
 yeats <- data.frame(
   xmin = c(0, 4, 6, 4, 4, 5, 5.5, 5,   5,    5.25, 5.25),
   xmax = c(4, 8, 8, 6, 5, 6, 6,   5.5, 5.25, 5.5,  5.5),
@@ -62,7 +62,7 @@ size, but this is both tedious and un-reproducible. ggfittext provides a geom
 called `geom_fit_text()` that automatically resizes text to fit inside a box.
 It works like this:
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
   geom_tile(fill = "white", colour = "black") +
   geom_fit_text()
@@ -80,7 +80,7 @@ wrapping it over multiple lines. With the `reflow = TRUE` argument,
 `geom_fit_text()` will reflow the text before (if still necessary) shrinking
 it:
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
   geom_tile(fill = "white", colour = "black") +
   geom_fit_text(reflow = TRUE)
@@ -92,7 +92,7 @@ If you want the text to be as large as possible, the argument `grow = TRUE`
 will increase the text size to the maximum that will fit in the box. This works
 well in conjunction with `reflow`:
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   geom_tile(fill = "white", colour = "black") +
   geom_fit_text(reflow = TRUE, grow = TRUE)
@@ -105,7 +105,7 @@ in a corner or on a side of the box with the `place` argument, which takes
 values "top", "topright", "right", "bottomright", "bottom", "bottomleft" and so
 on:
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
   geom_tile(fill = "white", colour = "black") +
   geom_fit_text(place = "topleft", reflow = TRUE)
@@ -116,7 +116,7 @@ ggplot(animals, aes(x = type, y = flies, label = animal)) +
 ggfittext provides a convenience function `geom_bar_text()` for labelling bars
 in bar plots:
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
   geom_col() +
   geom_bar_text()
@@ -124,7 +124,7 @@ ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
 
 `geom_bar_text()` also works with stacked bar plots (`position = "stack"`):
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
                     fill = ingredient)) +
   geom_col(position = "stack") +
@@ -133,7 +133,7 @@ ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
 
 And with dodged bar plots, and `coord_flip()`:
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
                     fill = ingredient)) +
   geom_col(position = "dodge") +
@@ -147,7 +147,7 @@ ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
 If you want to manually set the edges of the box (instead of having them
 inferred from `x` and `y`), you can use `xmin` & `xmax` and/or `ymin` & `ymax`:
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 ggplot(presidential, aes(ymin = start, ymax = end, x = party, label = name)) +
   geom_fit_text(grow = TRUE) +
   geom_errorbar(alpha = 0.5)
@@ -164,7 +164,7 @@ All arguments to `geom_fit_text()` can also be used with `geom_bar_text()`.
 - **`contrast`** can be used to automatically invert the colour of the text so
   it contrasts against a background `fill`:
 
-```{r}
+```{r, fig.width = 4, fig.height = 4}
 ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   geom_tile() +
   geom_fit_text(reflow = TRUE, grow = TRUE, contrast = TRUE)
