@@ -27,11 +27,10 @@ devtools::install_github("wilkox/ggfittext")
 ## Fitting text inside a box
 
 Sometimes you want to draw some text in a ggplot2 plot so that it fits
-inside a defined box. It’s possible to achieve this by manually fiddling
-with the text size, but this is both tedious and un-reproducible.
-ggfittext provides a geom called `geom_fit_text()` that automates
-fitting text inside a box. It works more or less like
-`ggplot2::geom_text()`, with some additional aesthetics and options:
+inside a defined area. It’s possible to achieve this by manually
+fiddling with the font size, but this is both tedious and
+un-reproducible. ggfittext provides a geom called `geom_fit_text()` that
+automatically resizes text to fit inside a box. It works like this:
 
 ``` r
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
@@ -50,7 +49,8 @@ any text that is too big.
 
 Another way to make the text fit in the box is by reflowing it; that is,
 wrapping it over multiple lines. With the `reflow = TRUE` argument,
-`geom_fit_text()` will reflow the text before shrinking it:
+`geom_fit_text()` will reflow the text before (if still necessary)
+shrinking it:
 
 ``` r
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
@@ -63,8 +63,8 @@ ggplot(animals, aes(x = type, y = flies, label = animal)) +
 ## Growing text
 
 If you want the text to be as large as possible, the argument `grow =
-TRUE` will increase the text size to the maximum possible. This works
-well in conjunction with `reflow`:
+TRUE` will increase the text size to the maximum that will fit in the
+box. This works well in conjunction with `reflow`:
 
 ``` r
 ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
@@ -129,7 +129,7 @@ ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
 
 ## Specifying the box coordinates
 
-If you want to specify exact limits for the box (instead of having them
+If you want to manually set the edges of the box (instead of having them
 inferred from `x` and `y`), you can use `xmin` & `xmax` and/or `ymin` &
 `ymax`:
 
@@ -141,10 +141,10 @@ ggplot(presidential, aes(ymin = start, ymax = end, x = party, label = name)) +
 
 ![](man/figures/README-unnamed-chunk-11-1.png)<!-- -->
 
-Alternatively, you can manually specify the width and/or height with the
-`width` and/or `height` arguments, which should be `grid::unit()`
-objects. The horizontal and/or vertical centre of the box will be
-defined by `x` and/or `y`.
+Alternatively, you can set the width and/or height with the `width`
+and/or `height` arguments, which should be `grid::unit()` objects. The
+horizontal and/or vertical centre of the box will be defined by `x`
+and/or `y`.
 
 ## Other useful arguments
 
@@ -152,7 +152,7 @@ All arguments to `geom_fit_text()` can also be used with
 `geom_bar_text()`.
 
   - **`contrast`** can be used to automatically invert the colour of the
-    text so it contrasts against a background **`fill`**:
+    text so it contrasts against a background `fill`:
 
 <!-- end list -->
 
@@ -169,11 +169,12 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
     These values must be given as `grid::unit()` objects.
   - **`min.size`** sets the minimum font size in points, by default 4
     pt. Text smaller than this will be hidden (see also `outside`).
-  - **`outside`** is FALSE by default. If TRUE, text that is placed at
-    “top”, “bottom”, “left” or “right” and must be shrunk smaller than
-    `min.size` to fit in the box will be flipped to the outside of the
-    box (if it fits there). This is mostly useful for drawing text
-    inside bars in a bar plot.
+  - **`outside`** is `FALSE` by default for `geom_fit_text()`. If
+    `TRUE`, text that is placed at “top”, “bottom”, “left” or “right”
+    and must be shrunk smaller than `min.size` to fit in the box will be
+    flipped to the outside of the box (if it fits there). This is mostly
+    useful for drawing text inside bars in a bar plot, so it is `TRUE`
+    by default for `geom_bar_text()`.
   - **`hjust`** and **`vjust`** set the horizontal and vertical
     justification of the text, scaled between 0 (left/bottom) and 1
     (right/top). These are both 0.5 by default.
@@ -183,7 +184,7 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
     [gganimate](http://www.gganimate.com).
   - **`fullheight`** is automatically set depending on place, but can be
     overridden with this option. This is used to determine the bounding
-    box around the text. If FALSE, the bounding box includes the
+    box around the text. If `FALSE`, the bounding box includes the
     x-height of the text and descenders, but not any descenders. If
     TRUE, it extends from the top of the ascenders to the bottom of the
     descenders. This is mostly useful in situations where you want to
