@@ -1,3 +1,5 @@
+# ggfittext (development version)
+
 # ggfittext 0.8.0
 
 ## Major changes
