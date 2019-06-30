@@ -1,5 +1,9 @@
 # ggfittext (development version)
 
+## Minor changes
+
+- Add 'vdiffr' test cases
+
 # ggfittext 0.8.0
 
 ## Major changes
