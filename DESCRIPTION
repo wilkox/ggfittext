@@ -19,7 +19,8 @@ URL: https://wilkox.org/ggfittext
 BugReports: https://github.com/wilkox/ggfittext/issues
 Suggests: knitr,
     rmarkdown,
-    testthat
+    testthat,
+    vdiffr
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
