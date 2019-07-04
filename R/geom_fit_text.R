@@ -456,7 +456,8 @@ makeContent.fittexttree <- function(x) {
       radius <- grid::convertHeight(grid::unit(text$r, "npc"), "mm", TRUE)
       circumference <- 2 * pi * radius
       arc <- abs((text$xmax + (2 * pi)) - text$xmin) %% (2 * pi)
-      xdim <- (arc / (2 * pi)) * circumference
+      xdim <- ((arc / (2 * pi)) * circumference) -
+        grid::convertWidth(grid::unit(2 * padding.x, "npc"), "mm", TRUE)
       ydim <- grid::convertHeight(
         grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
         "mm",
