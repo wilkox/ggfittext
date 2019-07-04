@@ -268,44 +268,24 @@ GeomFitText <- ggplot2::ggproto(
     outside = FALSE
   ) {
 
-    # If coordinates are polar, we need to generate x and y so we can get the
-    # centre of the box expressed in transformed polar coordinates
+    # For polar coordinates, pre-set x and y at the centre of the bounding box;
+    # this makes it easier to set the text position later
     is_polar <- "CoordPolar" %in% class(coord)
     if (is_polar) {
       data$x <- (data$xmin + data$xmax) / 2
       data$y <- (data$ymin + data$ymax) / 2
     }
 
-    dd <- data
     data <- coord$transform(data, panel_scales)
 
-    # xmin/xmax/ymin/ymax must be surreptitiously transformed to polar
-    # coordinates so that the dimensions of the box are correct
+    # For polar coordinates, we need to transform xmin/xmax & ymin/ymax into
+    # theta and r values respectively; these can be used later to accurately
+    # set the width and height of the bounding box in polar space
     if (is_polar) {
-
-      d <- dd
-      d$x <- d$xmin
-      d$y <- d$ymin
-      d <- coord$transform(d, panel_scales)
-      data$xmin <- d$x
-
-      d <- dd
-      d$x <- d$xmax
-      d$y <- d$ymin
-      d <- coord$transform(d, panel_scales)
-      data$xmax <- d$x
-
-      d <- dd
-      d$y <- d$ymin
-      d$x <- (d$xmin + d$xmax) / 2
-      d <- coord$transform(d, panel_scales)
-      data$ymin <- d$y
-
-      d <- dd
-      d$y <- d$ymax
-      d$x <- (d$xmin + d$xmax) / 2
-      d <- coord$transform(d, panel_scales)
-      data$ymax <- d$y
+      data$xmin <- ggplot2:::theta_rescale(coord, data$xmin, panel_scales)
+      data$xmax <- ggplot2:::theta_rescale(coord, data$xmax, panel_scales)
+      data$ymin <- ggplot2:::r_rescale(coord, data$ymin, panel_scales$r.range)
+      data$ymax <- ggplot2:::r_rescale(coord, data$ymax, panel_scales$r.range)
     }
 
     gt <- grid::gTree(
@@ -472,16 +452,28 @@ makeContent.fittexttree <- function(x) {
     tgdim <- tgDimensions(tg)
 
     # Get dimensions of bounding box, in mm
-    xdim <- grid::convertWidth(
-      grid::unit(abs(text$xmin - text$xmax) - (2 * padding.x), "npc"),
-      "mm",
-      TRUE
-    )
-    ydim <- grid::convertHeight(
-      grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
-      "mm",
-      TRUE
-    )
+    if (x$is_polar) {
+      radius <- grid::convertHeight(grid::unit(text$r, "npc"), "mm", TRUE)
+      circumference <- 2 * pi * radius
+      arc <- abs((text$xmax + (2 * pi)) - text$xmin) %% (2 * pi)
+      xdim <- (arc / (2 * pi)) * circumference
+      ydim <- grid::convertHeight(
+        grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
+        "mm",
+        TRUE
+      )
+    } else {
+      xdim <- grid::convertWidth(
+        grid::unit(abs(text$xmin - text$xmax) - (2 * padding.x), "npc"),
+        "mm",
+        TRUE
+      )
+      ydim <- grid::convertHeight(
+        grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
+        "mm",
+        TRUE
+      )
+    }
 
     # The reflowing and resizing steps are encapsulated in a function to allow
     # for the 'outside' argument
