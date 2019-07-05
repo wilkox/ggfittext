@@ -278,6 +278,16 @@ GeomFitText <- ggplot2::ggproto(
 
     data <- coord$transform(data, panel_scales)
 
+    # Reverse colours if desired
+    if (contrast & "fill" %in% names(data)) {
+      complement <- as.character(shades::complement(shades::shade(data$colour)))
+      data$colour <- ifelse(
+        shades::lightness(data$fill) < 50,
+        complement,
+        data$colour
+      )
+    }
+
     # For polar coordinates, we need to transform xmin/xmax & ymin/ymax into
     # theta and r values respectively; these can be used later to accurately
     # set the width and height of the bounding box in polar space
@@ -303,8 +313,7 @@ GeomFitText <- ggplot2::ggproto(
       width = width,
       height = height,
       contrast = contrast,
-      cl = "fittexttree",
-      is_polar = is_polar
+      cl = ifelse(is_polar, "fittexttreepolar", "fittexttree")
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
     gt
@@ -320,7 +329,6 @@ makeContent.fittexttree <- function(x) {
   # Handle missing parameters
   if (is.null(x$contrast)) x$contrast <- FALSE
   if (is.null(x$outside)) x$outside <- FALSE
-  if (is.null(x$is_polar)) x$is_polar <- FALSE
 
   # Standardise the place argument
   if (x$place %in% c("middle", "center")) {
@@ -383,14 +391,6 @@ makeContent.fittexttree <- function(x) {
     # Convenience
     text <- data[i, ]
 
-    # Reverse colours if desired
-    if (x$contrast & "fill" %in% names(text)) {
-      if (shades::lightness(text$fill) < 50) {
-        complement <- shades::complement(shades::shade(text$colour))
-        text$colour <- as.character(complement)
-      }
-    }
-
     # Clean up angle
     text$angle <- text$angle %% 360
 
@@ -452,29 +452,16 @@ makeContent.fittexttree <- function(x) {
     tgdim <- tgDimensions(tg)
 
     # Get dimensions of bounding box, in mm
-    if (x$is_polar) {
-      radius <- grid::convertHeight(grid::unit(text$r, "npc"), "mm", TRUE)
-      circumference <- 2 * pi * radius
-      arc <- abs((text$xmax + (2 * pi)) - text$xmin) %% (2 * pi)
-      xdim <- ((arc / (2 * pi)) * circumference) -
-        grid::convertWidth(grid::unit(2 * padding.x, "npc"), "mm", TRUE)
-      ydim <- grid::convertHeight(
-        grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
-        "mm",
-        TRUE
-      )
-    } else {
-      xdim <- grid::convertWidth(
-        grid::unit(abs(text$xmin - text$xmax) - (2 * padding.x), "npc"),
-        "mm",
-        TRUE
-      )
-      ydim <- grid::convertHeight(
-        grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
-        "mm",
-        TRUE
-      )
-    }
+    xdim <- grid::convertWidth(
+      grid::unit(abs(text$xmin - text$xmax) - (2 * padding.x), "npc"),
+      "mm",
+      TRUE
+    )
+    ydim <- grid::convertHeight(
+      grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
+      "mm",
+      TRUE
+    )
 
     # The reflowing and resizing steps are encapsulated in a function to allow
     # for the 'outside' argument
@@ -738,75 +725,222 @@ makeContent.fittexttree <- function(x) {
     tg$x <- grid::unit(tg$x, "npc")
     tg$y <- grid::unit(tg$y, "npc")
 
-    # Place the text in polar coordinates
-    if (x$is_polar) {
-
-      # Get basic values
-      angle <- 450 - (text$theta * (180 / pi))
-      r <- text$r
-      string <- as.character(text$label)
-      size <- tg$gp$fontsize
-
-      # Get absolute radius and circumference of the circle 
-      r <- grid::convertWidth(grid::unit(r, "npc"), "mm", TRUE)
-      c <- 2 * pi * r
-
-      # Get absolute width of string 
-      tg <- grid::textGrob(label = string, gp = grid::gpar(fontsize = size))
-      string_w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
-
-      # Split string into individual characters
-      chars <- strsplit(string, "")[[1]]
-
-      # Get absolute widths of individual characters
-      char_widths <- (grid::calcStringMetric(chars)$width / 
-                        sum(grid::calcStringMetric(chars)$width)) * string_w
-
-      # Convert to arcs in degrees
-      char_arcs <- 360 * char_widths / c
-
-      # Convert to theta position for each character
-      # hjust assumed to be 0.5
-      char_thetas <- angle - dplyr::lag(cumsum(char_arcs), default = 0) - 
-                       (char_arcs / 2) + (sum(char_arcs) / 2)
-
-      # Generate a textGrob for each character
-      tgs <- lapply(1:length(char_thetas), function(i) {
-
-        char <- chars[i]
-        theta <- char_thetas[i]
-        theta_rad <- theta * (pi / 180)
-
-        x <- r * cos(theta_rad)
-        x <- 0.5 + grid::convertWidth(grid::unit(x, "mm"), "npc", TRUE)
-        y <- r * sin(theta_rad)
-        y <- 0.5 + grid::convertHeight(grid::unit(y, "mm"), "npc", TRUE)
-
-        tg <- grid::textGrob(
-          label = char,
-          x = x,
-          y = y,
-          hjust = 0.5,
-          vjust = 0.5,
-          rot = theta - 90,
-          default.units = "npc",
-          gp = grid::gpar(
-            fontsize = size,
-            col = ggplot2::alpha(text$colour, text$alpha),
-            fontfamily = text$family,
-            fontface = text$fontface,
-            lineheight = text$lineheight
-          )
-        )
-        return(tg)
-      })
-
-      # Convert to a gTree
-      tg <- grid::gTree(children = do.call(grid::gList, tgs))
-    }
-
     # Return the textGrob
     tg
+  })
+
+  class(grobs) <- "gList"
+  grid::setChildren(x, grobs)
+}
+
+#' @importFrom grid makeContent
+#' @export
+makeContent.fittexttreepolar <- function(x) {
+
+  data <- x$data
+
+  # Handle parameters
+  if (is.null(x$contrast)) x$contrast <- FALSE
+  if (is.null(x$outside)) x$outside <- FALSE
+  if (x$outside) warning("Outside is not yet supported in polar coordinates")
+  if (x$reflow) warning("Reflowing is not yet supported in polar coordinates")
+
+  # Standardise the place argument
+  if (x$place %in% c("middle", "center")) {
+    x$place <- "centre"
+  }
+
+  # Convert padding.x and padding.y to npc units
+  padding.x <- grid::convertWidth(x$padding.x, "npc", valueOnly = TRUE)
+  padding.y <- grid::convertHeight(x$padding.y, "npc", valueOnly = TRUE)
+
+  # Prepare grob for each text label
+  grobs <- lapply(seq_len(nrow(data)), function(i) {
+
+    # Convenience
+    text <- data[i, ]
+
+    # Clean up angle
+    text$angle <- text$angle %% 360
+    if (! text$angle == 0) {
+      warning("Angled text is not yet supported in polar coordinates")
+    }
+
+    # Set hjust and vjust
+    x$hjust <- 0.5
+    x$vjust <- 0.2
+
+    # If fullheight has not been set, set an appropriate value
+    if (is.null(x$fullheight)) {
+      x$fullheight <- x$grow
+    }
+
+    # Create starting textGrob
+    tg <- grid::textGrob(
+      label = text$label,
+      x = 0.5,
+      y = 0.5,
+      default.units = "npc",
+      hjust = x$hjust,
+      vjust = x$vjust,
+      rot = text$angle,
+      gp = grid::gpar(
+        col = ggplot2::alpha(text$colour, text$alpha),
+        fontsize = text$size,
+        fontfamily = text$family,
+        fontface = text$fontface,
+        lineheight = text$lineheight
+      )
+    )
+
+    # Functions to get textgrob dimensions, in absolute units (mm)
+    tgDimensions <- function(tg) {
+      width <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+      height <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+      if (x$fullheight) {
+        descent <- grid::grobDescent(tg)
+        width <- width + abs(grid::convertWidth(descent, "mm", TRUE) * 
+                             sin(text$angle * (pi / 180)))
+        height <- height + abs(grid::convertHeight(descent, "mm", TRUE) * 
+                               cos(text$angle * (pi / 180)))
+      } else {
+        descent <- NULL
+      }
+      list(width = width, height = height, descent = descent)
+    }
+
+    # Get starting textGrob dimensions, in mm
+    tgdim <- tgDimensions(tg)
+
+    # Get dimensions of bounding box, in mm
+    radius <- grid::convertHeight(grid::unit(text$r, "npc"), "mm", TRUE)
+    circumference <- 2 * pi * radius
+    arc <- abs((text$xmax + (2 * pi)) - text$xmin) %% (2 * pi)
+    xdim <- ((arc / (2 * pi)) * circumference) -
+      grid::convertWidth(grid::unit(2 * padding.x, "npc"), "mm", TRUE)
+    ydim <- grid::convertHeight(
+      grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
+      "mm",
+      TRUE
+    )
+
+    # Resize text to fit bounding box if it doesn't fit
+    if (
+        # Standard condition - is text too big for box?
+        (tgdim$width > xdim | tgdim$height > ydim) |
+          # grow = TRUE condition - is text too small for box?
+          (x$grow & tgdim$width < xdim & tgdim$height < ydim)
+        ) {
+
+      # Get the slopes of the relationships between font size and label
+      # dimensions
+      # For the common case of rot = 0, we can take advantage of the fact that:
+      #   slopeh / slopew = width / height
+      # to calculate only one dimension of the resized label and derive the
+      # other, thus saving a time-expensive grid call
+      fs1 <- tg$gp$fontsize
+      tg$gp$fontsize <- tg$gp$fontsize * 2
+      if (tg$rot == 0) {
+        new_width <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+        slopew <- fs1 / (new_width - tgdim$width)
+        slopeh <- (slopew * tgdim$width) / tgdim$height
+      } else {
+        new_dimensions <- tgDimensions(tg)
+        slopew <- fs1 / (new_dimensions$width - tgdim$width)
+        slopeh <- fs1 / (new_dimensions$height - tgdim$height)
+      }
+
+      # Calculate the target font size required to fit text to box along each
+      # dimension
+      targetfsw <- xdim * slopew
+      targetfsh <- ydim * slopeh
+
+      # Set to smaller of target font sizes
+      tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
+    }
+
+    fitted <- reflow_and_resize(tg, x, xdim, ydim, text)
+    tg <- fitted$tg
+    text <- fitted$text
+    x <- fitted$x
+
+    # Hide if below minimum font size
+    if (tg$gp$fontsize < x$min.size) return()
+
+    # Update the textGrob dimensions
+    tgdim <- tgDimensions(tg)
+
+    # Convert the textGrob dimensions into npc
+    tgdim$width <- grid::convertWidth(grid::unit(tgdim$width, "mm"), "npc", TRUE)
+    tgdim$height <- grid::convertHeight(grid::unit(tgdim$height, "mm"), "npc", TRUE)
+
+    # ==== Placing the text
+
+    # Get basic values
+    angle <- 450 - (text$theta * (180 / pi))
+    r <- text$r
+    string <- as.character(text$label)
+    size <- tg$gp$fontsize
+
+    # Get absolute radius and circumference of the circle 
+    r <- grid::convertWidth(grid::unit(r, "npc"), "mm", TRUE)
+    c <- 2 * pi * r
+
+    # Get absolute width of string 
+    tg <- grid::textGrob(label = string, gp = grid::gpar(fontsize = size))
+    string_w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+
+    # Split string into individual characters
+    chars <- strsplit(string, "")[[1]]
+
+    # Get absolute widths of individual characters
+    char_widths <- (grid::calcStringMetric(chars)$width / 
+                      sum(grid::calcStringMetric(chars)$width)) * string_w
+
+    # Convert to arcs in degrees
+    char_arcs <- 360 * char_widths / c
+
+    # Convert to theta position for each character
+    # hjust assumed to be 0.5
+    char_thetas <- angle - dplyr::lag(cumsum(char_arcs), default = 0) - 
+                     (char_arcs / 2) + (sum(char_arcs) / 2)
+
+    # Generate a textGrob for each character
+    tgs <- lapply(1:length(char_thetas), function(i) {
+
+      char <- chars[i]
+      theta <- char_thetas[i]
+      theta_rad <- theta * (pi / 180)
+
+      x <- r * cos(theta_rad)
+      x <- 0.5 + grid::convertWidth(grid::unit(x, "mm"), "npc", TRUE)
+      y <- r * sin(theta_rad)
+      y <- 0.5 + grid::convertHeight(grid::unit(y, "mm"), "npc", TRUE)
+
+      tg <- grid::textGrob(
+        label = char,
+        x = x,
+        y = y,
+        hjust = 0.5,
+        vjust = 0.5,
+        rot = theta - 90,
+        default.units = "npc",
+        gp = grid::gpar(
+          fontsize = size,
+          col = ggplot2::alpha(text$colour, text$alpha),
+          fontfamily = text$family,
+          fontface = text$fontface,
+          lineheight = text$lineheight
+        )
+      )
+      return(tg)
+    })
+
+    # Convert to a gTree
+    gt <- grid::gTree(children = do.call(grid::gList, tgs))
+
+    # Return the gTree
+    gt
   })
 
   class(grobs) <- "gList"
