@@ -2,6 +2,7 @@ context("basic bar plots")
 
 test_that("simple bar plots and options do not produce errors", {
   expect_silent( {
+    library(ggplot2)
     p <- ggplot2::ggplot(altitudes, ggplot2::aes(x = craft, y = altitude, label = altitude)) +
       geom_col() +
       geom_bar_text()

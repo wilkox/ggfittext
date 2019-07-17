@@ -215,3 +215,16 @@ test_that("a `formatter` argument is accepted", {
     print(p)
   } )
 } )
+
+context("blank labels")
+
+test_that("a blank label should not result in an error", {
+  expect_silent( {
+    library(ggplot2)
+    presidential$name[1] <- ""
+    p <- ggplot(presidential, 
+       aes(ymin = start, ymax = end, label = name, x = party)) +
+        geom_fit_text(grow = TRUE)
+    print(p)
+  } )
+})

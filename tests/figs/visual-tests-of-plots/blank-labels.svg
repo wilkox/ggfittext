@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    line, polyline, polygon, path, rect, circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<defs>
+  <clipPath id='cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw=='>
+    <rect x='29.97' y='22.77' width='684.55' height='522.36' />
+  </clipPath>
+</defs>
+<rect x='29.97' y='22.77' width='684.55' height='522.36' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)' />
+<g clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)'><text x='182.78' y='455.63' style='font-size: 17.18px; font-family: Liberation Sans;' textLength='67.78px' lengthAdjust='spacingAndGlyphs'>Kennedy</text></g>
+<g clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)'><text x='128.24' y='437.68' style='font-size: 46.77px; font-family: Liberation Sans;' textLength='176.86px' lengthAdjust='spacingAndGlyphs'>Johnson</text></g>
+<g clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)'><text x='462.72' y='399.35' style='font-size: 50.93px; font-family: Liberation Sans;' textLength='130.22px' lengthAdjust='spacingAndGlyphs'>Nixon</text></g>
+<g clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)'><text x='509.40' y='358.48' style='font-size: 17.93px; font-family: Liberation Sans;' textLength='36.86px' lengthAdjust='spacingAndGlyphs'>Ford</text></g>
+<g clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)'><text x='168.89' y='340.13' style='font-size: 34.40px; font-family: Liberation Sans;' textLength='95.55px' lengthAdjust='spacingAndGlyphs'>Carter</text></g>
+<g clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)'><text x='422.67' y='298.37' style='font-size: 60.04px; font-family: Liberation Sans;' textLength='210.31px' lengthAdjust='spacingAndGlyphs'>Reagan</text></g>
+<g clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)'><text x='488.65' y='251.10' style='font-size: 34.38px; font-family: Liberation Sans;' textLength='78.36px' lengthAdjust='spacingAndGlyphs'>Bush</text></g>
+<g clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)'><text x='96.85' y='221.02' style='font-size: 76.99px; font-family: Liberation Sans;' textLength='239.64px' lengthAdjust='spacingAndGlyphs'>Clinton</text></g>
+<g clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)'><text x='440.22' y='161.62' style='font-size: 76.88px; font-family: Liberation Sans;' textLength='175.22px' lengthAdjust='spacingAndGlyphs'>Bush</text></g>
+<g clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)'><text x='90.59' y='102.27' style='font-size: 76.90px; font-family: Liberation Sans;' textLength='252.16px' lengthAdjust='spacingAndGlyphs'>Obama</text></g>
+<rect x='29.97' y='22.77' width='684.55' height='522.36' style='stroke-width: 1.07; stroke: #333333;' clip-path='url(#cpMjkuOTd8NzE0LjUyfDU0NS4xM3wyMi43Nw==)' />
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text x='5.48' y='472.87' style='font-size: 8.80px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='19.56px' lengthAdjust='spacingAndGlyphs'>1960</text></g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text x='5.48' y='324.48' style='font-size: 8.80px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='19.56px' lengthAdjust='spacingAndGlyphs'>1980</text></g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text x='5.48' y='176.08' style='font-size: 8.80px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='19.56px' lengthAdjust='spacingAndGlyphs'>2000</text></g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text x='5.48' y='27.68' style='font-size: 8.80px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='19.56px' lengthAdjust='spacingAndGlyphs'>2020</text></g>
+<polyline points='27.23,469.85 29.97,469.85 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)' />
+<polyline points='27.23,321.45 29.97,321.45 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)' />
+<polyline points='27.23,173.05 29.97,173.05 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)' />
+<polyline points='27.23,24.66 29.97,24.66 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)' />
+<polyline points='216.67,547.87 216.67,545.13 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)' />
+<polyline points='527.83,547.87 527.83,545.13 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)' />
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text x='194.43' y='556.11' style='font-size: 8.80px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='44.48px' lengthAdjust='spacingAndGlyphs'>Democratic</text></g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text x='505.82' y='556.11' style='font-size: 8.80px; fill: #4D4D4D; font-family: Liberation Sans;' textLength='44.02px' lengthAdjust='spacingAndGlyphs'>Republican</text></g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text x='360.01' y='568.24' style='font-size: 11.00px; font-family: Liberation Sans;' textLength='24.47px' lengthAdjust='spacingAndGlyphs'>party</text></g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA=)'><text x='29.97' y='14.56' style='font-size: 13.20px; font-family: Liberation Sans;' textLength='71.09px' lengthAdjust='spacingAndGlyphs'>Blank labels</text></g>
+</svg>

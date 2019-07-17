@@ -79,4 +79,10 @@ test_that("plots look the way they should", {
       geom_tile() +
       geom_fit_text(reflow = TRUE, grow = TRUE, contrast = TRUE, size = 48)
   })
+
+  vdiffr::expect_doppelganger("Blank labels", {
+    presidential$name[1] <- ""
+    ggplot(presidential, aes(ymin = start, ymax = end, label = name, x = party)) +
+        geom_fit_text(grow = TRUE)
+  })
 })

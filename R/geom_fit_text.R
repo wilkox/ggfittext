@@ -363,6 +363,11 @@ makeContent.fittexttree <- function(x) {
     # Convenience
     text <- data[i, ]
 
+    # If the label is blank, return an empty grob
+    if (text$label == "") {
+      return(grid::nullGrob())
+    }
+
     # Reverse colours if desired
     if (x$contrast & "fill" %in% names(text)) {
       if (shades::lightness(text$fill) < 50) {
