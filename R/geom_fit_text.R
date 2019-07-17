@@ -268,15 +268,18 @@ GeomFitText <- ggplot2::ggproto(
     outside = FALSE
   ) {
 
-    # For polar coordinates, pre-set x and y at the centre of the bounding box;
-    # this makes it easier to set the text position later
-    is_polar <- "CoordPolar" %in% class(coord)
-    if (is_polar) {
-      data$x <- (data$xmin + data$xmax) / 2
-      data$y <- (data$ymin + data$ymax) / 2
-    }
-
+    # Transform data to plot scales
     data <- coord$transform(data, panel_scales)
+
+    # For polar coordinates, we need to transform xmin/xmax & ymin/ymax into
+    # theta and r values respectively; these can be used later to accurately
+    # set the width and height of the bounding box in polar space
+    if ("CoordPolar" %in% class(coord)) {
+      data$xmin <- ggplot2:::theta_rescale(coord, data$xmin, panel_scales)
+      data$xmax <- ggplot2:::theta_rescale(coord, data$xmax, panel_scales)
+      data$ymin <- ggplot2:::r_rescale(coord, data$ymin, panel_scales$r.range)
+      data$ymax <- ggplot2:::r_rescale(coord, data$ymax, panel_scales$r.range)
+    }
 
     # Reverse colours if desired
     if (contrast & "fill" %in% names(data)) {
@@ -286,16 +289,6 @@ GeomFitText <- ggplot2::ggproto(
         complement,
         data$colour
       )
-    }
-
-    # For polar coordinates, we need to transform xmin/xmax & ymin/ymax into
-    # theta and r values respectively; these can be used later to accurately
-    # set the width and height of the bounding box in polar space
-    if (is_polar) {
-      data$xmin <- ggplot2:::theta_rescale(coord, data$xmin, panel_scales)
-      data$xmax <- ggplot2:::theta_rescale(coord, data$xmax, panel_scales)
-      data$ymin <- ggplot2:::r_rescale(coord, data$ymin, panel_scales$r.range)
-      data$ymax <- ggplot2:::r_rescale(coord, data$ymax, panel_scales$r.range)
     }
 
     gt <- grid::gTree(
@@ -812,17 +805,27 @@ makeContent.fittexttreepolar <- function(x) {
     # Get starting textGrob dimensions, in mm
     tgdim <- tgDimensions(tg)
 
-    # Get dimensions of bounding box, in mm
-    radius <- grid::convertHeight(grid::unit(text$r, "npc"), "mm", TRUE)
-    circumference <- 2 * pi * radius
-    arc <- abs((text$xmax + (2 * pi)) - text$xmin) %% (2 * pi)
-    xdim <- ((arc / (2 * pi)) * circumference) -
-      grid::convertWidth(grid::unit(2 * padding.x, "npc"), "mm", TRUE)
+    # Get dimensions of bounding box, in mm 
+    # In the polar coordinate system, the effective width of the box varies
+    # with the box height, radius and place. Why? That's just how circles
+    # work, I didn't invent them. The radius is the distance from the origin to
+    # the text baseline, which is set by vjust; however, this is ignored when
+    # calculating the box height which is strictly fixed by the y dimensions.
     ydim <- grid::convertHeight(
       grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
       "mm",
       TRUE
     )
+    if (x$place %in% c("topleft", "top", "topright") {
+      radius <- grid::convertHeight(grid::unit(text$ymax - padding.y, "npc"), 
+                  "mm", TRUE) - ((1 - x$vjust) * tgdim$height)
+      circumference <- 2 * pi * radius
+      arc <- abs((text$xmax + (2 * pi)) - text$xmin) %% (2 * pi)
+      xdim <- ((arc / (2 * pi)) * circumference) -
+        grid::convertWidth(grid::unit(2 * padding.x, "npc"), "mm", TRUE)
+    } else {
+      stop("Uh oh! Haven't figured out this placement yet")
+    }
 
     # Resize text to fit bounding box if it doesn't fit
     if (
