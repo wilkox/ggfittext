@@ -10,5 +10,6 @@ There were no ERRORs, WARNINGs or NOTEs.
 
 # Downstream dependencies
 
-R CMD check run on downstream dependencies with `devtools::revdep_check()`, no
-problems found.
+R CMD check run on downstream dependencies with `revdepcheck::revdep_check()`.
+One test failed for 'metacoder' however this appears to be a known longstanding
+bug (https://github.com/grunwaldlab/metacoder/issues/214). Otherwise all OK.
