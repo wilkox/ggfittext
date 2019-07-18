@@ -17,10 +17,13 @@ Imports:
 RoxygenNote: 6.1.1
 URL: https://wilkox.org/ggfittext
 BugReports: https://github.com/wilkox/ggfittext/issues
-Suggests: knitr,
+Suggests: 
+    knitr,
     rmarkdown,
     testthat,
-    vdiffr
+    vdiffr,
+    spelling
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
+Language: en-US
