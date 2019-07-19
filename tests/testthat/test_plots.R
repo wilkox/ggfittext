@@ -1,5 +1,4 @@
 library(ggplot2)
-library(ggfittext)
 
 yeats <- data.frame(
   xmin = c(0, 4, 6, 4, 4, 5, 5.5, 5,   5,    5.25, 5.25),
@@ -81,8 +80,9 @@ test_that("plots look the way they should", {
   })
 
   vdiffr::expect_doppelganger("Blank labels", {
-    presidential$name[1] <- ""
-    ggplot(presidential, aes(ymin = start, ymax = end, label = name, x = party)) +
+    pressies <- presidential
+    pressies$name[1] <- ""
+    ggplot(pressies, aes(ymin = start, ymax = end, label = name, x = party)) +
         geom_fit_text(grow = TRUE)
   })
 
@@ -90,5 +90,16 @@ test_that("plots look the way they should", {
     ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
       geom_col() +
       geom_bar_text(contrast = TRUE)
+  })
+
+  vdiffr::expect_doppelganger("Contrasting works with non-black text", {
+    ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
+      geom_tile() +
+      geom_fit_text(colour = "thistle", reflow = TRUE, grow = TRUE, 
+                    contrast = TRUE) +
+       scale_fill_gradientn(
+         colours = c("red","yellow","green","lightblue","darkblue"),
+         values = c(1.0,0.8,0.6,0.4,0.2,0)
+       ) 
   })
 })

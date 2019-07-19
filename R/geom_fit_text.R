@@ -370,16 +370,15 @@ makeContent.fittexttree <- function(x) {
     }
 
     # Reverse colours if desired
-    if (x$contrast & "fill" %in% names(text)) {
-      if (shades::lightness(text$fill) < 50) {
-        complement <- shades::complement(shades::shade(text$colour))
+    if (x$contrast) {
+      # If contrast is set but there is no fill aesthetic, assume the default
+      # ggplot2 dark grey fill
+      bg_colour <- ifelse("fill" %in% names(text), text$fill, "grey35")
+      text_colour <- ifelse("colour" %in% names(text), text$colour, "black")
+      if (abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50) {
+        complement <- shades::complement(shades::shade(text_colour))
         text$colour <- as.character(complement)
       }
-    # If contrast is set but there is no fill aesthetic, assume the default
-      # ggplot2 dark grey fill
-    } else if (x$contrast) {
-      complement <- shades::complement(shades::shade("grey35"))
-      text$colour <- as.character(complement)
     }
 
     # Clean up angle
@@ -587,7 +586,14 @@ makeContent.fittexttree <- function(x) {
         # If we're moving the text outside and contrast is true, set the text
         # in contrast to the default theme_grey panel colour
         if (x$contrast) {
-          complement <- shades::complement(shades::shade("grey92"))
+          bg_colour <- "grey92"
+          text_colour <- ifelse("colour" %in% names(text), text$colour, "black")
+          if (
+            abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50
+          ) {
+            complement <- shades::complement(shades::shade(text_colour))
+            text$colour <- as.character(complement)
+          }
           tg$gp$col <- as.character(complement)
         }
         return(reflow_and_resize(tg, x, xdim, ydim, text))
