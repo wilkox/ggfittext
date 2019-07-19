@@ -1,5 +1,9 @@
 # ggfittext (development version)
 
+## Bug fixes
+
+- Silently ignore NA values of 'label' rather than stopping with an error
+
 ## Minor changes
 
 - `contrast = TRUE` now assumes ggplot2 default colours for `fill` and

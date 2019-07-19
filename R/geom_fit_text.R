@@ -365,7 +365,7 @@ makeContent.fittexttree <- function(x) {
     text <- data[i, ]
 
     # If the label is blank, return an empty grob
-    if (text$label == "") {
+    if (text$label == "" | is.na(text$label)) {
       return(grid::nullGrob())
     }
 
