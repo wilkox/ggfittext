@@ -11,7 +11,7 @@ geom_bar_text(mapping = NULL, data = NULL, stat = "identity",
   padding.y = grid::unit(1, "mm"), min.size = 8, place = "top",
   grow = FALSE, reflow = FALSE, hjust = NULL, vjust = NULL,
   fullheight = NULL, width = NULL, height = NULL, formatter = NULL,
-  contrast = FALSE, outside = TRUE, ...)
+  contrast = TRUE, outside = TRUE, ...)
 
 geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
@@ -66,7 +66,8 @@ not need to be a vectorised function.}
 
 \item{contrast}{If \code{TRUE} and in combination with a \code{fill} aesthetic, the
 colour of the text will be inverted for better contrast against dark
-background fills. \code{FALSE} by default.}
+background fills. \code{FALSE} by default for \code{geom_fit_text()}, \code{TRUE} for
+\code{geom_bar_text()}.}
 
 \item{outside}{If \code{TRUE}, text placed in one of 'top', 'right', 'bottom' or
 'left' that would need to be shrunk smaller than \code{min.size} to fit the box

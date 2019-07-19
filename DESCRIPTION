@@ -1,6 +1,6 @@
 Package: ggfittext
 Title: Fit Text Inside a Box in 'ggplot2'
-Version: 0.8.0.9000
+Version: 0.8.1.9000
 Authors@R: person("David", "Wilkins", email = "david@wilkox.org",
                   role = c("aut", "cre"))
 Description: Provides 'ggplot2' geoms to fit text into a box by growing, shrinking
@@ -17,10 +17,13 @@ Imports:
 RoxygenNote: 6.1.1
 URL: https://wilkox.org/ggfittext
 BugReports: https://github.com/wilkox/ggfittext/issues
-Suggests: knitr,
+Suggests: 
+    knitr,
     rmarkdown,
     testthat,
-    vdiffr
+    vdiffr,
+    spelling
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
+Language: en-US

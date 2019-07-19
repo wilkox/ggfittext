@@ -21,7 +21,7 @@ geom_bar_text <- function(
   width = NULL,
   height = NULL,
   formatter = NULL,
-  contrast = FALSE,
+  contrast = TRUE,
   outside = TRUE,
   ...
 ) {
@@ -131,7 +131,7 @@ GeomBarText <- ggplot2::ggproto(
     width = NULL,
     height = NULL,
     formatter = NULL,
-    contrast = FALSE,
+    contrast = TRUE,
     place = "top",
     outside = TRUE
   ) {

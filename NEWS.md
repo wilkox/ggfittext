@@ -1,8 +1,24 @@
 # ggfittext (development version)
 
+## Bug fixes
+
+- Silently ignore NA values of 'label' rather than stopping with an error
+
+## Minor changes
+
+- `contrast = TRUE` now assumes ggplot2 default colours for `fill` and
+  `panel.background`, so it can be used in the absence of a `fill` aesthetic.
+- `geom_bar_text()` now defaults to `contrast = TRUE`.
+
+# ggfittext 0.8.1
+
 ## Minor changes
 
 - Add 'vdiffr' test cases
+
+## Bug fixes
+
+- Fix bug where a blank label causes an error
 
 # ggfittext 0.8.0
 

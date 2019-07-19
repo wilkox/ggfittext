@@ -79,7 +79,8 @@
 #' not need to be a vectorised function.
 #' @param contrast If `TRUE` and in combination with a `fill` aesthetic, the
 #' colour of the text will be inverted for better contrast against dark
-#' background fills. `FALSE` by default.
+#' background fills. `FALSE` by default for `geom_fit_text()`, `TRUE` for
+#' `geom_bar_text()`.
 #' @param mapping `ggplot2::aes()` object as standard in 'ggplot2'. Note
 #' that aesthetics specifying the box must be provided. See Details.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
@@ -384,6 +385,23 @@ makeContent.fittexttree <- function(x) {
     # Convenience
     text <- data[i, ]
 
+    # If the label is blank, return an empty grob
+    if (text$label == "" | is.na(text$label)) {
+      return(grid::nullGrob())
+    }
+
+    # Reverse colours if desired
+    if (x$contrast) {
+      # If contrast is set but there is no fill aesthetic, assume the default
+      # ggplot2 dark grey fill
+      bg_colour <- ifelse("fill" %in% names(text), text$fill, "grey35")
+      text_colour <- ifelse("colour" %in% names(text), text$colour, "black")
+      if (abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50) {
+        complement <- shades::complement(shades::shade(text_colour))
+        text$colour <- as.character(complement)
+      }
+    }
+
     # Clean up angle
     text$angle <- text$angle %% 360
 
@@ -587,9 +605,17 @@ makeContent.fittexttree <- function(x) {
         tg$gp$fontsize <- text$size
         x$outside <- FALSE
         # If we're moving the text outside and contrast is true, set the text
-        # in contrast to the ggplot2 grey
-        if (x$contrast & "fill" %in% names(text)) {
-          tg$gp$col <- "#141414"
+        # in contrast to the default theme_grey panel colour
+        if (x$contrast) {
+          bg_colour <- "grey92"
+          text_colour <- ifelse("colour" %in% names(text), text$colour, "black")
+          if (
+            abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50
+          ) {
+            complement <- shades::complement(shades::shade(text_colour))
+            text$colour <- as.character(complement)
+          }
+          tg$gp$col <- as.character(complement)
         }
         return(reflow_and_resize(tg, x, xdim, ydim, text))
       }
