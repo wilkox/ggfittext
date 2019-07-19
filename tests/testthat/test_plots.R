@@ -85,4 +85,10 @@ test_that("plots look the way they should", {
     ggplot(presidential, aes(ymin = start, ymax = end, label = name, x = party)) +
         geom_fit_text(grow = TRUE)
   })
+
+  vdiffr::expect_doppelganger("Contrast against default bar colour", {
+    ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
+      geom_col() +
+      geom_bar_text(contrast = TRUE)
+  })
 })
