@@ -275,7 +275,8 @@ GeomFitText <- ggplot2::ggproto(
     # For polar coordinates, we need to transform xmin/xmax & ymin/ymax into
     # theta and r values respectively; these can be used later to accurately
     # set the width and height of the bounding box in polar space
-    if ("CoordPolar" %in% class(coord)) {
+    is_polar <- "CoordPolar" %in% class(coord)
+    if (is_polar) {
       data$xmin <- ggplot2:::theta_rescale(coord, data$xmin, panel_scales)
       data$xmax <- ggplot2:::theta_rescale(coord, data$xmax, panel_scales)
       data$ymin <- ggplot2:::r_rescale(coord, data$ymin, panel_scales$r.range)
@@ -842,7 +843,7 @@ makeContent.fittexttreepolar <- function(x) {
       "mm",
       TRUE
     )
-    if (x$place %in% c("topleft", "top", "topright") {
+    if (x$place %in% c("topleft", "top", "topright")) {
       radius <- grid::convertHeight(grid::unit(text$ymax - padding.y, "npc"), 
                   "mm", TRUE) - ((1 - x$vjust) * tgdim$height)
       circumference <- 2 * pi * radius
@@ -888,11 +889,6 @@ makeContent.fittexttreepolar <- function(x) {
       tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
     }
 
-    fitted <- reflow_and_resize(tg, x, xdim, ydim, text)
-    tg <- fitted$tg
-    text <- fitted$text
-    x <- fitted$x
-
     # Hide if below minimum font size
     if (tg$gp$fontsize < x$min.size) return()
 
@@ -906,6 +902,7 @@ makeContent.fittexttreepolar <- function(x) {
     # ==== Placing the text
 
     # Get basic values
+    message("theta is ", text$theta)
     angle <- 450 - (text$theta * (180 / pi))
     r <- text$r
     string <- as.character(text$label)

@@ -17,5 +17,6 @@ ggplot(d, aes(label = word, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax))
     aes(x = 1, y = 1),
     grow = TRUE,
     padding.x = grid::unit(0, "mm"),
-    padding.y = grid::unit(0, "mm")
+    padding.y = grid::unit(0, "mm"),
+    place = "top"
   )
