@@ -3,6 +3,9 @@
 ## Bug fixes
 
 - Silently ignore NA values of 'label' rather than stopping with an error
+- Skip drawing text when the box limits are outside the plot limits and emit a
+  warning, rather than stopping with an error (see #11, thanks
+  @alastairrushworth)
 
 ## Minor changes
 

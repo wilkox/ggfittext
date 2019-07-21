@@ -354,6 +354,18 @@ makeContent.fittexttree <- function(x) {
     )
   }
 
+  # Remove any rows with NA boundaries
+  na_rows <- which(is.na(data$xmin) | is.na(data$xmax) | is.na(data$ymin) | 
+                   is.na(data$ymax))
+  if (length(na_rows) > 0) {
+    data <- data[-na_rows, ]
+    warning(
+      length(na_rows),
+      " rows removed where box limits were outside plot limits",
+      .call = FALSE
+    )
+  }
+
   # Convert padding.x and padding.y to npc units
   padding.x <- grid::convertWidth(x$padding.x, "npc", valueOnly = TRUE)
   padding.y <- grid::convertHeight(x$padding.y, "npc", valueOnly = TRUE)
