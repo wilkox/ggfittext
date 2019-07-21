@@ -360,9 +360,10 @@ makeContent.fittexttree <- function(x) {
   if (length(na_rows) > 0) {
     data <- data[-na_rows, ]
     warning(
+      "Removed ",
       length(na_rows),
-      " rows removed where box limits were outside plot limits",
-      .call = FALSE
+      " rows where box limits were outside plot limits (geom_fit_text).",
+      call. = FALSE
     )
   }
 
