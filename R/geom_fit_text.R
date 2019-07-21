@@ -174,6 +174,9 @@ GeomFitText <- ggplot2::ggproto(
     params
   ) {
 
+    message("Here is the data before setup_data")
+    print(data)
+
     # Check that valid aesthetics have been supplied for each dimension
     if (!(
       ("xmin" %in% names(data) & "xmax" %in% names(data)) |
@@ -243,6 +246,9 @@ GeomFitText <- ggplot2::ggproto(
       }
       data$label <- formatted_labels
     }
+
+    message("Here is the data after setup_data")
+    print(data)
 
     data
   },
@@ -786,7 +792,8 @@ makeContent.fittexttreepolar <- function(x) {
       warning("Angled text is not yet supported in polar coordinates")
     }
 
-    # Set hjust and vjust
+    # Set hjust and vjust A vjust of 0.2 strikes a good visual balance in the
+    # kerning of characters in polar coordinates
     x$hjust <- 0.5
     x$vjust <- 0.2
 
@@ -843,16 +850,11 @@ makeContent.fittexttreepolar <- function(x) {
       "mm",
       TRUE
     )
-    if (x$place %in% c("topleft", "top", "topright")) {
-      radius <- grid::convertHeight(grid::unit(text$ymax - padding.y, "npc"), 
-                  "mm", TRUE) - ((1 - x$vjust) * tgdim$height)
-      circumference <- 2 * pi * radius
-      arc <- abs((text$xmax + (2 * pi)) - text$xmin) %% (2 * pi)
-      xdim <- ((arc / (2 * pi)) * circumference) -
-        grid::convertWidth(grid::unit(2 * padding.x, "npc"), "mm", TRUE)
-    } else {
-      stop("Uh oh! Haven't figured out this placement yet")
-    }
+    radius <- grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE)
+    circumference <- 2 * pi * radius
+    arc <- abs((text$xmax + (2 * pi)) - text$xmin) %% (2 * pi)
+    xdim <- ((arc / (2 * pi)) * circumference) -
+      grid::convertWidth(grid::unit(2 * padding.x, "npc"), "mm", TRUE)
 
     # Resize text to fit bounding box if it doesn't fit
     if (
@@ -902,9 +904,19 @@ makeContent.fittexttreepolar <- function(x) {
     # ==== Placing the text
 
     # Get basic values
-    message("theta is ", text$theta)
-    angle <- 450 - (text$theta * (180 / pi))
-    r <- text$r
+    theta <- ifelse(
+      text$xmax > text$xmin,
+      (text$xmin + text$xmax) / 2,
+      (text$xmin + text$xmax + pi + pi) / 2
+    )
+    angle <- 450 - (theta * (180 / pi))
+    if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
+      r <- text$ymin + x$padding.y + (x$vjust * tgdim$height)
+    } else if (x$place %in% c("left", "centre", "right")) {
+      r <- (text$ymin + text$ymax) / 2 - (x$vjust * tgdim$height)
+    } else if (x$place %in% c("topleft", "top", "topright")) {
+      r <- text$ymax - x$padding.y - ((1 - x$vjust) * tgdim$height)
+    }
     string <- as.character(text$label)
     size <- tg$gp$fontsize
 
@@ -938,17 +950,17 @@ makeContent.fittexttreepolar <- function(x) {
       theta <- char_thetas[i]
       theta_rad <- theta * (pi / 180)
 
-      x <- r * cos(theta_rad)
-      x <- 0.5 + grid::convertWidth(grid::unit(x, "mm"), "npc", TRUE)
-      y <- r * sin(theta_rad)
-      y <- 0.5 + grid::convertHeight(grid::unit(y, "mm"), "npc", TRUE)
+      x_pos <- r * cos(theta_rad)
+      x_pos <- 0.5 + grid::convertWidth(grid::unit(x_pos, "mm"), "npc", TRUE)
+      y_pos <- r * sin(theta_rad)
+      y_pos <- 0.5 + grid::convertHeight(grid::unit(y_pos, "mm"), "npc", TRUE)
 
       tg <- grid::textGrob(
         label = char,
-        x = x,
-        y = y,
-        hjust = 0.5,
-        vjust = 0.5,
+        x = x_pos,
+        y = y_pos,
+        hjust = x$hjust,
+        vjust = x$vjust,
         rot = theta - 90,
         default.units = "npc",
         gp = grid::gpar(
