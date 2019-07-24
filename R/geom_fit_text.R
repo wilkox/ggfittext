@@ -605,9 +605,8 @@ makeContent.fittexttree <- function(x) {
             abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50
           ) {
             complement <- shades::complement(shades::shade(text_colour))
-            text$colour <- as.character(complement)
+            tg$gp$col <- as.character(complement)
           }
-          tg$gp$col <- as.character(complement)
         }
         return(reflow_and_resize(tg, x, xdim, ydim, text))
       }
