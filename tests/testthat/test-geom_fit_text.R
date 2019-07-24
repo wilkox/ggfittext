@@ -1,4 +1,5 @@
 library(ggplot2)
+grid::current.viewport()
 testdata <- data.frame(
   vehicle = c("light plane", "jumbo jet", "space shuttle"),
   xmin = c(10, 20, 80),

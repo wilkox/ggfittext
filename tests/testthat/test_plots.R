@@ -1,4 +1,5 @@
 library(ggplot2)
+grid::current.viewport()
 
 yeats <- data.frame(
   xmin = c(0, 4, 6, 4, 4, 5, 5.5, 5,   5,    5.25, 5.25),
