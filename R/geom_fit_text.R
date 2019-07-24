@@ -315,8 +315,8 @@ makeContent.fittexttree <- function(x) {
 
   # If xmin/xmax are not provided, or all xmin == xmax, generate boundary box
   # from width
-  if (!("xmin" %in% names(data)) | 
-      (all(data$xmin == data$xmax) & "x" %in% names(data))) {
+  if (!("xmin" %in% names(data)) |
+      (identical(data$xmin, data$xmax) & "x" %in% names(data))) {
     data$xmin <- data$x - (
       grid::convertWidth(
         grid::unit(x$width, "mm"),
@@ -335,8 +335,8 @@ makeContent.fittexttree <- function(x) {
 
   # If ymin/ymax are not provided, or all ymin == ymax, generate boundary box
   # from height
-  if (!("ymin" %in% names(data)) | 
-      (all(data$ymin == data$ymax) & 
+  if (!("ymin" %in% names(data)) |
+      (identical(data$ymin, data$ymax) &
        "y" %in% names(data))) {
     data$ymin <- data$y - (
       grid::convertHeight(
