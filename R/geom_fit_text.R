@@ -174,9 +174,6 @@ GeomFitText <- ggplot2::ggproto(
     params
   ) {
 
-    message("Here is the data before setup_data")
-    print(data)
-
     # Check that valid aesthetics have been supplied for each dimension
     if (!(
       ("xmin" %in% names(data) & "xmax" %in% names(data)) |
@@ -246,9 +243,6 @@ GeomFitText <- ggplot2::ggproto(
       }
       data$label <- formatted_labels
     }
-
-    message("Here is the data after setup_data")
-    print(data)
 
     data
   },
@@ -850,7 +844,21 @@ makeContent.fittexttreepolar <- function(x) {
       "mm",
       TRUE
     )
-    radius <- grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE)
+    if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
+      radius <- grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE)
+    } else if (x$place %in% c("left", "centre", "right")) {
+      radius <- grid::convertHeight(
+        grid::unit(text$ymin + ((text$ymax - text$ymax) * x$vjust), "npc"),
+        "mm",
+        TRUE
+      )
+    } else if (x$place %in% c("topleft", "top", "topright")) {
+      radius <- grid::convertHeight(
+        grid::unit(text$ymin + ((text$ymax - text$ymax) * x$vjust), "npc"),
+        "mm",
+        TRUE
+      )
+    }
     circumference <- 2 * pi * radius
     arc <- abs((text$xmax + (2 * pi)) - text$xmin) %% (2 * pi)
     xdim <- ((arc / (2 * pi)) * circumference) -
@@ -904,19 +912,19 @@ makeContent.fittexttreepolar <- function(x) {
     # ==== Placing the text
 
     # Get basic values
-    theta <- ifelse(
-      text$xmax > text$xmin,
-      (text$xmin + text$xmax) / 2,
-      (text$xmin + text$xmax + pi + pi) / 2
-    )
-    angle <- 450 - (theta * (180 / pi))
     if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-      r <- text$ymin + x$padding.y + (x$vjust * tgdim$height)
+      r <- text$ymin + padding.y + (x$vjust * tgdim$height)
     } else if (x$place %in% c("left", "centre", "right")) {
-      r <- (text$ymin + text$ymax) / 2 - (x$vjust * tgdim$height)
+      r <- ((text$ymin + text$ymax) / 2) - ((0.5 - x$vjust) * tgdim$height)
+      theta <- ifelse(
+        text$xmax > text$xmin,
+        (text$xmin + text$xmax) / 2,
+        (text$xmin + text$xmax + pi + pi) / 2
+      )
     } else if (x$place %in% c("topleft", "top", "topright")) {
-      r <- text$ymax - x$padding.y - ((1 - x$vjust) * tgdim$height)
+      r <- text$ymax - padding.y - ((1 - x$vjust) * tgdim$height)
     }
+    angle <- 450 - (theta * (180 / pi))
     string <- as.character(text$label)
     size <- tg$gp$fontsize
 
