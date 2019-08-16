@@ -293,6 +293,11 @@ GeomFitText <- ggplot2::ggproto(
       )
     }
 
+    # Standardise the place argument
+    if (place %in% c("middle", "center")) {
+      place <- "centre"
+    }
+
     gt <- grid::gTree(
       data = data,
       padding.x = padding.x,
@@ -324,11 +329,6 @@ makeContent.fittexttree <- function(x) {
   # Handle missing parameters
   if (is.null(x$contrast)) x$contrast <- FALSE
   if (is.null(x$outside)) x$outside <- FALSE
-
-  # Standardise the place argument
-  if (x$place %in% c("middle", "center")) {
-    x$place <- "centre"
-  }
 
   # Determine which aesthetics to use for the bounding box
   # Rules: if xmin/xmax are available, use these in preference to x UNLESS
@@ -777,11 +777,6 @@ makeContent.fittexttreepolar <- function(x) {
   if (x$outside) warning("Outside is not yet supported in polar coordinates")
   if (x$reflow) warning("Reflowing is not yet supported in polar coordinates")
 
-  # Standardise the place argument
-  if (x$place %in% c("middle", "center")) {
-    x$place <- "centre"
-  }
-
   # Convert padding.x and padding.y to npc units
   padding.x <- grid::convertWidth(x$padding.x, "npc", valueOnly = TRUE)
   padding.y <- grid::convertHeight(x$padding.y, "npc", valueOnly = TRUE)
@@ -798,15 +793,14 @@ makeContent.fittexttreepolar <- function(x) {
       warning("Angled text is not yet supported in polar coordinates")
     }
 
-    # Set hjust and vjust A vjust of 0.2 strikes a good visual balance in the
-    # kerning of characters in polar coordinates
+    # Set hjust and vjust 
+    # A vjust of 0.2 strikes a good visual balance in the kerning of characters
+    # in polar coordinates
     x$hjust <- 0.5
     x$vjust <- 0.2
 
     # If fullheight has not been set, set an appropriate value
-    if (is.null(x$fullheight)) {
-      x$fullheight <- x$grow
-    }
+    if (is.null(x$fullheight)) x$fullheight <- x$grow
 
     # Create starting textGrob
     tg <- grid::textGrob(
@@ -923,43 +917,67 @@ makeContent.fittexttreepolar <- function(x) {
 
     # ==== Placing the text
 
-    # Get basic values
+    # Set basic values
+
+    # r = the radius from the centre to the text anchor (which is not the
+    # typographic baseline but the line defined by vjust), initially calculated
+    # in npc
     if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
       r <- text$ymin + padding.y + (x$vjust * tgdim$height)
     } else if (x$place %in% c("left", "centre", "right")) {
       r <- ((text$ymin + text$ymax) / 2) - ((0.5 - x$vjust) * tgdim$height)
+    } else if (x$place %in% c("topleft", "top", "topright")) {
+      r <- text$ymax - padding.y - ((1 - x$vjust) * tgdim$height)
+    }
+
+    # string = the text label
+    string <- as.character(text$label)
+
+    # size = the font size of the text, in points
+    size <- tg$gp$fontsize
+
+    # Convert r to mm
+    r <- grid::convertWidth(grid::unit(r, "npc"), "mm", TRUE)
+
+    # c = the circumference of the baseline, in mm
+    c <- 2 * pi * r
+
+    # string_w = width of string, in mm
+    tg <- grid::textGrob(label = string, gp = grid::gpar(fontsize = size))
+    string_w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+
+    # char_widths = width of each character in the string, in mm
+    chars <- strsplit(string, "")[[1]]
+    char_widths <- (grid::calcStringMetric(chars)$width / 
+                      sum(grid::calcStringMetric(chars)$width)) * string_w
+
+    # char_arcs = arcwidth of each character, in degrees
+    char_arcs <- 360 * char_widths / c
+
+    # padding.x.arcrad = the arcwidth of padding.x, expressed in radians, at
+    # the anchor radius
+    padding.x.arcrad <- (grid::convertWidth(grid::unit(padding.x, "npc"), "mm", TRUE) / c) * 2 * pi
+
+    # theta = the radial angle to the text anchor of the entire label in the
+    # coordinate system, initial calculated in radians
+    if (x$place %in% c("bottomleft", "left", "topleft")) {
+      theta <- text$xmin + ((sum(char_arcs) * (pi / 180)) / 2) + padding.x.arcrad
+    } else if (x$place %in% c("bottom", "centre", "top")) {
       theta <- ifelse(
         text$xmax > text$xmin,
         (text$xmin + text$xmax) / 2,
         (text$xmin + text$xmax + pi + pi) / 2
       )
-    } else if (x$place %in% c("topleft", "top", "topright")) {
-      r <- text$ymax - padding.y - ((1 - x$vjust) * tgdim$height)
+    } else if (x$place %in% c("bottomright", "right", "topright")) {
+      theta <- text$xmax - ((sum(char_arcs) * (pi / 180)) / 2) - padding.x.arcrad
     }
+
+    # angle = ?? I can't even remember what this is supposed to do but it
+    # works. Converting from radians to degrees with some sort of correction?
     angle <- 450 - (theta * (180 / pi))
-    string <- as.character(text$label)
-    size <- tg$gp$fontsize
 
-    # Get absolute radius and circumference of the circle 
-    r <- grid::convertWidth(grid::unit(r, "npc"), "mm", TRUE)
-    c <- 2 * pi * r
-
-    # Get absolute width of string 
-    tg <- grid::textGrob(label = string, gp = grid::gpar(fontsize = size))
-    string_w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
-
-    # Split string into individual characters
-    chars <- strsplit(string, "")[[1]]
-
-    # Get absolute widths of individual characters
-    char_widths <- (grid::calcStringMetric(chars)$width / 
-                      sum(grid::calcStringMetric(chars)$width)) * string_w
-
-    # Convert to arcs in degrees
-    char_arcs <- 360 * char_widths / c
-
-    # Convert to theta position for each character
-    # hjust assumed to be 0.5
+    # char_thetas = theta position of the anchors for each character (assuming
+    # hjust = 0.5 for the textGrob representing this character), in degrees
     char_thetas <- angle - dplyr::lag(cumsum(char_arcs), default = 0) - 
                      (char_arcs / 2) + (sum(char_arcs) / 2)
 
