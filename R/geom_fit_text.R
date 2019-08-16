@@ -464,9 +464,9 @@ makeContent.fittexttree <- function(x) {
       if (x$fullheight) {
         descent <- grid::grobDescent(tg)
         width <- width + abs(grid::convertWidth(descent, "mm", TRUE) * 
-                             sin(text$angle * (pi / 180)))
+                             sin(deg2rad(text$angle)))
         height <- height + abs(grid::convertHeight(descent, "mm", TRUE) * 
-                               cos(text$angle * (pi / 180)))
+                               cos(deg2rad(text$angle)))
       } else {
         descent <- NULL
       }
@@ -687,7 +687,7 @@ makeContent.fittexttree <- function(x) {
 
     # The angle between the baseline and the vector can be calculated from the
     # known rise and run
-    baseline_angle <- asin(abs(rise) / abs(magnitude)) * (180 / pi)
+    baseline_angle <- asin(rad2deg(abs(rise) / abs(magnitude)))
 
     # To find the 'direction angle' of the vector (expressed in degrees
     # anti-clockwise from east), we correct for the quadrant then add the
@@ -717,12 +717,12 @@ makeContent.fittexttree <- function(x) {
     # We can now use these to calculate the x and y offsets of the anchor point
     # from the centre point. For convenience, we will convert these to npc
     x_offset <- grid::convertWidth(
-      grid::unit(magnitude * cos(direction_angle * (pi / 180)), "mm"),
+      grid::unit(magnitude * cos(deg2rad(direction_angle)), "mm"),
       "npc",
       TRUE
     )
     y_offset <- grid::convertHeight(
-      grid::unit(magnitude * sin(direction_angle * (pi / 180)), "mm"),
+      grid::unit(magnitude * sin(deg2rad(direction_angle)), "mm"),
       "npc",
       TRUE
     )
@@ -827,9 +827,9 @@ makeContent.fittexttreepolar <- function(x) {
       if (x$fullheight) {
         descent <- grid::grobDescent(tg)
         width <- width + abs(grid::convertWidth(descent, "mm", TRUE) * 
-                             sin(text$angle * (pi / 180)))
+                             sin(deg2rad(text$angle)))
         height <- height + abs(grid::convertHeight(descent, "mm", TRUE) * 
-                               cos(text$angle * (pi / 180)))
+                               cos(deg2rad(text$angle)))
       } else {
         descent <- NULL
       }
@@ -915,13 +915,9 @@ makeContent.fittexttreepolar <- function(x) {
     tgdim$width <- grid::convertWidth(grid::unit(tgdim$width, "mm"), "npc", TRUE)
     tgdim$height <- grid::convertHeight(grid::unit(tgdim$height, "mm"), "npc", TRUE)
 
-    # ==== Placing the text
-
-    # Set basic values
-
     # r = the radius from the centre to the text anchor (which is not the
-    # typographic baseline but the line defined by vjust), initially calculated
-    # in npc
+    # typographic baseline but the anchor defined by vjust), initially
+    # calculated in npc
     if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
       r <- text$ymin + padding.y + (x$vjust * tgdim$height)
     } else if (x$place %in% c("left", "centre", "right")) {
@@ -958,10 +954,10 @@ makeContent.fittexttreepolar <- function(x) {
     # the anchor radius
     padding.x.arcrad <- (grid::convertWidth(grid::unit(padding.x, "npc"), "mm", TRUE) / c) * 2 * pi
 
-    # theta = the radial angle to the text anchor of the entire label in the
+    # theta = the theta of the text anchor for the entire label in the
     # coordinate system, initial calculated in radians
     if (x$place %in% c("bottomleft", "left", "topleft")) {
-      theta <- text$xmin + ((sum(char_arcs) * (pi / 180)) / 2) + padding.x.arcrad
+      theta <- text$xmin + (deg2rad(sum(char_arcs)) / 2) + padding.x.arcrad
     } else if (x$place %in% c("bottom", "centre", "top")) {
       theta <- ifelse(
         text$xmax > text$xmin,
@@ -969,12 +965,12 @@ makeContent.fittexttreepolar <- function(x) {
         (text$xmin + text$xmax + pi + pi) / 2
       )
     } else if (x$place %in% c("bottomright", "right", "topright")) {
-      theta <- text$xmax - ((sum(char_arcs) * (pi / 180)) / 2) - padding.x.arcrad
+      theta <- text$xmax - (deg2rad(sum(char_arcs)) / 2) - padding.x.arcrad
     }
 
     # angle = ?? I can't even remember what this is supposed to do but it
     # works. Converting from radians to degrees with some sort of correction?
-    angle <- 450 - (theta * (180 / pi))
+    angle <- 450 - rad2deg(theta)
 
     # char_thetas = theta position of the anchors for each character (assuming
     # hjust = 0.5 for the textGrob representing this character), in degrees
@@ -986,7 +982,7 @@ makeContent.fittexttreepolar <- function(x) {
 
       char <- chars[i]
       theta <- char_thetas[i]
-      theta_rad <- theta * (pi / 180)
+      theta_rad <- deg2rad(theta)
 
       x_pos <- r * cos(theta_rad)
       x_pos <- 0.5 + grid::convertWidth(grid::unit(x_pos, "mm"), "npc", TRUE)
@@ -1034,3 +1030,8 @@ geom_grow_text <- function(...) {
 geom_shrink_text <- function(...) {
   .Deprecated("geom_fit_text(grow = F, ...)")
 }
+
+#' conversions between degrees and radians
+#' @noRd
+deg2rad <- function(deg) { deg * (pi / 180) }
+rad2deg <- function(rad) { rad * (180 / pi) }
