@@ -1,5 +1,6 @@
 context("basic bar plots")
 library(ggplot2)
+grid::current.viewport()
 
 test_that("simple bar plots and options do not produce errors", {
   expect_silent( {

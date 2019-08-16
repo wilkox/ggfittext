@@ -1,3 +1,5 @@
+library(ggplot2)
+grid::current.viewport()
 testdata <- data.frame(
   vehicle = c("light plane", "jumbo jet", "space shuttle"),
   xmin = c(10, 20, 80),
@@ -6,6 +8,7 @@ testdata <- data.frame(
   ymax = c(20, 95, 50),
   class = c("plane", "plane", "spaceship")
 )
+z <- data.frame(x = letters[1:5], y = 0:4, lb = 3)
 
 context("shrinking text")
 
@@ -220,7 +223,6 @@ context("blank labels")
 
 test_that("a blank label should not result in an error", {
   expect_silent( {
-    library(ggplot2)
     presidential$name[1] <- ""
     p <- ggplot(presidential, 
        aes(ymin = start, ymax = end, label = name, x = party)) +
@@ -228,3 +230,34 @@ test_that("a blank label should not result in an error", {
     print(p)
   } )
 })
+
+context("box limits out of plot limits")
+
+test_that("box limits outside of plot limits should produce a warning", {
+  expect_warning( {
+    p <- ggplot(z, aes(x = x, y = y, label = lb)) + 
+      geom_bar(stat = "identity", position = "dodge") + 
+      ylim(0.5, 3) + 
+      geom_fit_text()
+    print(p)
+  }, "box limits were outside plot limits")
+
+  expect_warning( {
+    p <- ggplot(z, aes(x = x, y = y, label = lb)) + 
+      geom_bar(stat = "identity", position = "dodge") + 
+      ylim(-0.1, 6) + 
+      geom_fit_text()
+    print(p)
+  }, "box limits were outside plot limits")
+
+  expect_warning( {
+    p <- ggplot(z, aes(x = y, y = x, label = lb)) + 
+      geom_bar(stat = "identity", position = "dodge") + 
+      xlim(-0.1, 6) + 
+      geom_fit_text()
+    print(p)
+  }, "box limits were outside plot limits")
+} )
+
+
+

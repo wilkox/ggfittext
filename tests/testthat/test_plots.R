@@ -1,4 +1,5 @@
 library(ggplot2)
+grid::current.viewport()
 
 yeats <- data.frame(
   xmin = c(0, 4, 6, 4, 4, 5, 5.5, 5,   5,    5.25, 5.25),
@@ -102,4 +103,5 @@ test_that("plots look the way they should", {
          values = c(1.0,0.8,0.6,0.4,0.2,0)
        ) 
   })
+
 })

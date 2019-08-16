@@ -337,8 +337,8 @@ makeContent.fittexttree <- function(x) {
 
   # If xmin/xmax are not provided, or all xmin == xmax, generate boundary box
   # from width
-  if (!("xmin" %in% names(data)) | 
-      (all(data$xmin == data$xmax) & "x" %in% names(data))) {
+  if (!("xmin" %in% names(data)) |
+      (identical(data$xmin, data$xmax) & "x" %in% names(data))) {
     data$xmin <- data$x - (
       grid::convertWidth(
         grid::unit(x$width, "mm"),
@@ -357,8 +357,8 @@ makeContent.fittexttree <- function(x) {
 
   # If ymin/ymax are not provided, or all ymin == ymax, generate boundary box
   # from height
-  if (!("ymin" %in% names(data)) | 
-      (all(data$ymin == data$ymax) & 
+  if (!("ymin" %in% names(data)) |
+      (identical(data$ymin, data$ymax) &
        "y" %in% names(data))) {
     data$ymin <- data$y - (
       grid::convertHeight(
@@ -373,6 +373,19 @@ makeContent.fittexttree <- function(x) {
         "npc",
         valueOnly = TRUE
       ) / 2
+    )
+  }
+
+  # Remove any rows with NA boundaries
+  na_rows <- which(is.na(data$xmin) | is.na(data$xmax) | is.na(data$ymin) | 
+                   is.na(data$ymax))
+  if (length(na_rows) > 0) {
+    data <- data[-na_rows, ]
+    warning(
+      "Removed ",
+      length(na_rows),
+      " rows where box limits were outside plot limits (geom_fit_text).",
+      call. = FALSE
     )
   }
 
@@ -614,9 +627,8 @@ makeContent.fittexttree <- function(x) {
             abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50
           ) {
             complement <- shades::complement(shades::shade(text_colour))
-            text$colour <- as.character(complement)
+            tg$gp$col <- as.character(complement)
           }
-          tg$gp$col <- as.character(complement)
         }
         return(reflow_and_resize(tg, x, xdim, ydim, text))
       }
