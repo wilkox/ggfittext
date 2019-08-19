@@ -1,4 +1,4 @@
-library(ggplot2)
+library(tidyverse)
 
 d <- data.frame(
   word = c("The", "falcon", "cannot", "hear", "the", "falconer"),
@@ -20,3 +20,15 @@ ggplot(d, aes(label = word, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax))
     padding.y = grid::unit(0, "mm"),
     place = "top"
   )
+
+d <- read_tsv("~/tmp/results.tsv")
+
+m <- select(d, fs, arcwidth) %>%
+  sample_n(50) %>%
+  as.matrix()
+
+c <- bezier::bezierCurveFit(m)
+bezier::bezier(1:100, c$p) %>%
+  as_tibble() %>%
+  ggplot(aes(x = V1, y = V2)) +
+    geom_point()
