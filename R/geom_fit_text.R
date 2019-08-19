@@ -777,7 +777,7 @@ makeContent.fittexttreepolar <- function(x) {
   if (x$outside) warning("Outside is not yet supported in polar coordinates")
   if (x$reflow) warning("Reflowing is not yet supported in polar coordinates")
 
-  # Convert padding.x and padding.y to npc units
+  # Convert padding.y to npc units
   padding.x <- grid::convertWidth(x$padding.x, "npc", valueOnly = TRUE)
   padding.y <- grid::convertHeight(x$padding.y, "npc", valueOnly = TRUE)
 
@@ -839,36 +839,49 @@ makeContent.fittexttreepolar <- function(x) {
     # Get starting textGrob dimensions, in mm
     tgdim <- tgDimensions(tg)
 
+    # Convert box coordinates to mm
+    ymin_mm <- grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE)
+    ymax_mm <- grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE)
+
     # Get dimensions of bounding box
-    # In the polar coordinate system, the effective width of the box varies
-    # with the box height, radius and place. Why? That's just how circles work,
-    # I didn't invent them. The radius is the distance from the origin to the
-    # text baseline, which is set by vjust; however, this is not relevant when
-    # calculating the box height which is strictly fixed by the y dimensions.
-    # 
-    # We can start by setting the y dimension; this can be expressed in mm.
+    # The y dimension will be given in mm, while the x dimension is given as
+    # arc length (radians). For convenience of comparing the textGrob to the
+    # bounding box on the x dimension, we will also calculate it in mm based on
+    # the text placement.
     ydim <- grid::convertHeight(
       grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
       "mm",
       TRUE
     )
-
-    # The x dimension will be expressed in arcwidth. For convenience we will
-    # express this in radians as this is how xmin/xmax are expressed. We will
-    # not include padding.x in the x dimension; instead, this will be factored
-    # in when checking whether the text is too wide on the x dimension.
     xdim <- ifelse(
       text$xmax > text$xmin,
       text$xmax - text$xmin,
       (text$xmax + pi + pi - text$xmin) %% (2 * pi)
     )
+    # TODO currently assuming padding.y is 0 for simplicity, need to update
+    # this later
+    if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
+      r <- grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE) +
+        (x$vjust * tgdim$height) +
+        grid::convertHeight(grid::unit(padding.y, "npc"), "mm", TRUE)
+        xdim_mm <- r * xdim
+    } else if (x$place %in% c("left", "centre", "right")) {
+      r <- ((grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE) +
+        grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE)) / 2) -
+        ((0.5 - x$vjust) * tgdim$height)
+    } else if (x$place %in% c("topleft", "top", "topright")) {
+      r <- grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE) -
+        grid::convertHeight(grid::unit(padding.y, "npc"), "mm", TRUE) -
+        ((1 - x$vjust) * tgdim$height)
+      xdim_mm <- r * xdim
+    }
 
     # Resize text to fit bounding box if it doesn't fit
     if (
         # Standard condition - is text too big for box?
-        (tgdim$arcwidth > xdim | tgdim$height > ydim) |
+        (tgdim$width > xdim | tgdim$height > ydim) |
           # grow = TRUE condition - is text too small for box?
-          (x$grow & tgdim$arcwidth < xdim & tgdim$height < ydim)
+          (x$grow & tgdim$width < xdim & tgdim$height < ydim)
         ) {
 
       # Get the relationships between font size and label dimensions
@@ -877,6 +890,7 @@ makeContent.fittexttreepolar <- function(x) {
       tg$gp$fontsize <- fs2
       new_width <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
       new_height <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+      slopew <- (fs2 - fs1) / (new_width - tgdim$width)
       slopeh <- (fs2 - fs1) / (new_height - tgdim$height)
 
       # Calculate the target font size required to make the text fit
@@ -884,27 +898,30 @@ makeContent.fittexttreepolar <- function(x) {
       targetfsh <- ydim * slopeh
 
       # Calculate the target font size required to make the text fit width-wise
-      # r = the radius of the text anchor, in mm
-      ymin_mm <- grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE)
-      ymax_mm <- grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE)
-      padding.y_mm <- grid::convertHeight(grid::unit(padding.y, "npc"), "mm", TRUE)
+      # TODO currently assuming padding.y is 0 for simplicity
       if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-        r <- ymin_mm + padding.y_mm + (x$vjust * height_mm)
+        w <- xdim * 
+          (ymin_mm + grid::convertHeight(grid::unit(padding.y, "npc"), "mm", TRUE))
+        targetfsw <- w * slopew
+
       } else if (x$place %in% c("left", "centre", "right")) {
-        r <- ((ymin_mm + ymax_mm) / 2) - ((0.5 - x$vjust) * height_mm)
+        k <- (tgdim$height * x$vjust) / tgdim$width
+        R <- (ymin_mm + ymax_mm) / 2
+        w <- ((xdim * R) / ((xdim * k) + 1)) -
+          (2 * (grid::convertWidth(grid::unit(padding.x, "npc"), "mm", TRUE)))
+        targetfsw <- w * slopew
+
       } else if (x$place %in% c("topleft", "top", "topright")) {
-        r <- ymax_mm - padding.y - ((1 - x$vjust) * height_mm)
+        k <- tgdim$height / tgdim$width
+        R <- grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE) -
+          grid::convertHeight(grid::unit(padding.y, "npc"), "mm", TRUE)
+        w <- ((xdim * R) / ((xdim * k) + 1)) -
+          (2 * (grid::convertWidth(grid::unit(padding.x, "npc"), "mm", TRUE)))
+        targetfsw <- w * slopew
       }
-      # c = the circumference of the circle at r, in mm
-      c <- 2 * pi * r
-      # The arcwidth of the textGrob is expressed in radians
-      arcwidth <- (width_mm / c) * 2 * pi
 
       # Set to smaller of target font sizes
-      tg$gp$fontsize <- ifelse(targetfsarcw < targetfsh, targetfsarcw, targetfsh)
-      limiting_dim <- ifelse(targetfsarcw < targetfsh, "arcwidth", "height")
-      message("limiting dimension is ", limiting_dim)
-      message("font size set to ", tg$gp$fontsize)
+      tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
     }
 
     # Hide if below minimum font size
