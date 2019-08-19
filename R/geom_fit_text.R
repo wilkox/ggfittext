@@ -561,21 +561,8 @@ makeContent.fittexttree <- function(x) {
 
         # Get the slopes of the relationships between font size and label
         # dimensions
-        # For the common case of rot = 0, we can take advantage of the fact that:
-        #   slopeh / slopew = width / height
-        # to calculate only one dimension of the resized label and derive the
-        # other, thus saving a time-expensive grid call
-        fs1 <- tg$gp$fontsize
-        tg$gp$fontsize <- tg$gp$fontsize * 2
-        if (tg$rot == 0) {
-          new_width <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
-          slopew <- fs1 / (new_width - tgdim$width)
-          slopeh <- (slopew * tgdim$width) / tgdim$height
-        } else {
-          new_dimensions <- tgDimensions(tg)
-          slopew <- fs1 / (new_dimensions$width - tgdim$width)
-          slopeh <- fs1 / (new_dimensions$height - tgdim$height)
-        }
+        slopew <- tg$gp$fontsize / tgdim$width
+        slopeh <- tg$gp$fontsize / tgdim$height
 
         # Calculate the target font size required to fit text to box along each
         # dimension
