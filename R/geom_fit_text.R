@@ -269,14 +269,20 @@ GeomFitText <- ggplot2::ggproto(
     outside = FALSE
   ) {
 
+    # Check if plot is in polar coordinates
+    is_polar <- "CoordPolar" %in% class(coord)
+
     # Transform data to plot scales
-    data <- coord$transform(data, panel_scales)
+    if (! is_polar) {
+      data <- coord$transform(data, panel_scales)
 
     # For polar coordinates, we need to transform xmin/xmax & ymin/ymax into
     # theta and r values respectively; these can be used later to accurately
     # set the width and height of the bounding box in polar space
-    is_polar <- "CoordPolar" %in% class(coord)
-    if (is_polar) {
+    } else if (is_polar) {
+      data$x <- 1
+      data$y <- 1
+      data <- coord$transform(data, panel_scales)
       data$xmin <- ggplot2:::theta_rescale(coord, data$xmin, panel_scales)
       data$xmax <- ggplot2:::theta_rescale(coord, data$xmax, panel_scales)
       data$ymin <- ggplot2:::r_rescale(coord, data$ymin, panel_scales$r.range)

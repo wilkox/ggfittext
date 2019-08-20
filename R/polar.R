@@ -118,7 +118,9 @@ makeContent.fittexttreepolar <- function(x) {
     tgdim <- tgDimensions(tg, x$fullheight, text$angle)
 
     # r = the radius from the centre to the text anchor (which is not the
-    # typographic baseline but is defined by vjust)
+    # typographic baseline but is defined by vjust). Note that the position of
+    # the text anchor does not take descenders into account, so these must be
+    # adjusted for if fullheight is true
     if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
       r <- ymin + padding.y + (x$vjust * tgdim$height)
     } else if (x$place %in% c("left", "centre", "right")) {
@@ -126,6 +128,7 @@ makeContent.fittexttreepolar <- function(x) {
     } else if (x$place %in% c("topleft", "top", "topright")) {
       r <- ymax - padding.y - ((1 - x$vjust) * tgdim$height)
     }
+    if (x$fullheight) r <- r + (grid::convertHeight(tgdim$descent, "mm", TRUE) * (1 - x$vjust))
 
     # c = the circumference of the baseline
     c <- 2 * pi * r
@@ -162,7 +165,8 @@ makeContent.fittexttreepolar <- function(x) {
 
     # char_thetas = theta position of the anchors for each character (assuming
     # hjust = 0.5 for the textGrob representing this character), in degrees
-    char_thetas <- angle - dplyr::lag(cumsum(char_arcs), default = 0) - 
+    lag_vector <- function(x) c(0, x[1:length(x) - 1])
+    char_thetas <- angle - lag_vector(cumsum(char_arcs)) - 
                      (char_arcs / 2) + (sum(char_arcs) / 2)
 
     # Generate a textGrob for each character

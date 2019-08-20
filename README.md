@@ -6,7 +6,7 @@ Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travi
 
 # ggfittext
 
-ggfittext provides a ggplot2 geom for fitting text inside a box
+ggfittext provides a ggplot2 geom for fitting text into boxes.
 
 ![](man/figures/README-hero-1.png)<!-- -->
 
@@ -146,6 +146,24 @@ and/or `height` arguments, which should be `grid::unit()` objects. The
 horizontal and/or vertical centre of the box will be defined by `x`
 and/or `y`.
 
+## Experimental feature: text in polar coordinates
+
+Text can be drawn in polar coordinates with `geom_fit_text()` simply by
+adding `coord_polar()` to the plot. This feature is experimental and
+currently only in the development version; any bug reports are very
+welcome.
+
+``` r
+ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
+                 label = label, fill = line)) +
+  geom_rect() +
+  coord_polar() +
+  geom_fit_text(min.size = 0, grow = TRUE) +
+  scale_fill_gradient(low = "#fee391", high = "#238443")
+```
+
+![](man/figures/README-unnamed-chunk-12-1.png)<!-- -->
+
 ## Other useful arguments
 
 All arguments to `geom_fit_text()` can also be used with
@@ -162,7 +180,7 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   geom_fit_text(reflow = TRUE, grow = TRUE, contrast = TRUE)
 ```
 
-![](man/figures/README-unnamed-chunk-12-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-13-1.png)<!-- -->
 
   - **`padding.x`** and **`padding.y`** can be used to set the padding
     between the text and the edge of the box. By default this is 1 mm.

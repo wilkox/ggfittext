@@ -27,3 +27,16 @@
 #'   \item{altitude}{the craft's normal cruising altitude in metres}
 #' }
 "altitudes"
+
+#' Robert Frost's poem *Nothing Gold Can Stay*
+#'
+#' @format A data frame with 8 rows and 5 variables:
+#' \describe{
+#'   \item{label}{a line from the poem} 
+#'   \item{xmin}{the xmin coordinate with which to draw the word} 
+#'   \item{xmax}{the xmax coordinate with which to draw the word} 
+#'   \item{ymin}{the ymin coordinate with which to draw the word} 
+#'   \item{ymax}{the ymax coordinate with which to draw the word} 
+#'   \item{line}{the line number} 
+#' }
+"gold"

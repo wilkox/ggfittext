@@ -20,13 +20,20 @@ test_that("basic plots in polar coordinates run without errors", {
       geom_rect(fill = "lightblue") +
       coord_polar(start = (pi / 2)) +
       geom_fit_text(
-        aes(x = 1, y = 1),
         grow = TRUE,
         padding.x = grid::unit(2, "mm"),
         padding.y = grid::unit(2, "mm"),
         place = "bottom",
         min.size = 0
       )
+    print(p)
+  } )
+
+  expect_silent( {
+    p <- ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = label)) +
+      geom_rect() +
+      geom_fit_text(aes(x = 1, y = 1), grow = TRUE, fullheight = TRUE) +
+      coord_polar()
     print(p)
   } )
 } )
@@ -81,5 +88,14 @@ test_that("plots look the way they should", {
         place = "bottom",
         min.size = 0
       )
+  } )
+
+  vdiffr::expect_doppelganger("frost poem", {
+    ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
+                     label = label, fill = 1:8)) +
+      geom_rect() +
+      coord_polar() +
+      geom_fit_text(grow = TRUE, fullheight = TRUE, place = "middle", min.size = 0) +
+      scale_fill_gradient(low = "#fee391", high = "#238443")
   } )
 } )

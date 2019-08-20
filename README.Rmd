@@ -20,9 +20,9 @@ knitr::opts_chunk$set(
 
 # ggfittext
 
-ggfittext provides a ggplot2 geom for fitting text inside a box
+ggfittext provides a ggplot2 geom for fitting text into boxes.
 
-```{r hero, echo = FALSE, message = FALSE, fig.width = 4, fig.height = 4}
+```{r hero, echo = FALSE, message = FALSE, fig.width = 8, fig.height = 4}
 yeats <- data.frame(
   xmin = c(0, 4, 6, 4, 4, 5, 5.5, 5,   5,    5.25, 5.25),
   xmax = c(4, 8, 8, 6, 5, 6, 6,   5.5, 5.25, 5.5,  5.5),
@@ -34,10 +34,32 @@ yeats <- data.frame(
 )
 library(ggplot2)
 library(ggfittext)
-ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
+library(patchwork)
+p1 <- ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
                   label, angle = angle)) +
   geom_rect(fill = "grey", colour = "black") +
   geom_fit_text(grow = TRUE, min.size = 0)
+
+polar_d <- data.frame(
+  word = c("The" , "falcon" , "cannot" , "hear" , "the" , "falconer") ,
+  xmin = c( 0.0  , 0.2      , 0.35      , 0.6    , 0.65   , 0.8)        ,
+  xmax = c( 0.2  , 0.35     , 0.6      , 0.65    , 0.8   , 1)        ,
+  ymin = rep(0, 6),
+  ymax = c( 0.95 , 0.85      , 0.75     , 0.65    , 0.45  , 0.35)
+)
+p2 <- ggplot(polar_d, aes(label = word, xmin = xmin, xmax = xmax, ymin =
+                         ymin, ymax = ymax)) +
+  geom_rect(aes(xmin = 0, xmax = 1, ymin = 0, ymax = 1)) +
+  geom_rect(fill = "lightblue", colour = "black") +
+  coord_polar() +
+  geom_fit_text(
+    grow = TRUE,
+    padding.x = grid::unit(1, "mm"),
+    padding.y = grid::unit(1, "mm"),
+    place = "top",
+    min.size = 0
+  )
+p1 + p2
 ```
 
 ## Installation
@@ -156,6 +178,21 @@ ggplot(presidential, aes(ymin = start, ymax = end, x = party, label = name)) +
 Alternatively, you can set the width and/or height with the `width` and/or
 `height` arguments, which should be `grid::unit()` objects. The horizontal
 and/or vertical centre of the box will be defined by `x` and/or `y`.
+
+## Experimental feature: text in polar coordinates
+
+Text can be drawn in polar coordinates with `geom_fit_text()` simply by adding
+`coord_polar()` to the plot. This feature is experimental and currently only in
+the development version; any bug reports are very welcome.
+
+```{r, fig.width = 4, fig.height = 4}
+ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
+                 label = label, fill = line)) +
+  geom_rect() +
+  coord_polar() +
+  geom_fit_text(min.size = 0, grow = TRUE) +
+  scale_fill_gradient(low = "#fee391", high = "#238443")
+```
 
 ## Other useful arguments
 

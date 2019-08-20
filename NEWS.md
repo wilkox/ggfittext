@@ -1,5 +1,9 @@
 # ggfittext (development version)
 
+## Major changes
+
+- Add experimental support for polar coordinates in `geom_fit_text()`
+
 ## Bug fixes
 
 - Silently ignore NA values of 'label' rather than stopping with an error
