@@ -674,7 +674,7 @@ makeContent.fittexttree <- function(x) {
 
     # The angle between the baseline and the vector can be calculated from the
     # known rise and run
-    baseline_angle <- asin(rad2deg(abs(rise) / abs(magnitude)))
+    baseline_angle <- asin(abs(rise) / abs(magnitude)) * (180 / pi)
 
     # To find the 'direction angle' of the vector (expressed in degrees
     # anti-clockwise from east), we correct for the quadrant then add the
