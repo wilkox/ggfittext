@@ -7,10 +7,11 @@ makeContent.fittexttreepolar <- function(x) {
   # Handle parameters
   if (is.null(x$contrast)) x$contrast <- FALSE
   if (is.null(x$outside)) x$outside <- FALSE
-  if (x$outside) warning("Outside is not yet supported in polar coordinates")
-  if (x$reflow) warning("Reflowing is not yet supported in polar coordinates")
-  if (! is.null(x$hjust)) warning("hjust is not yet supported in polar coordinates")
-  if (! is.null(x$vjust)) warning("vjust is not yet supported in polar coordinates")
+  if (is.null(x$fullheight)) x$fullheight <- x$grow
+  if (x$outside) warning("Outside is not supported in polar coordinates")
+  if (x$reflow) warning("Reflowing is not supported in polar coordinates")
+  if (! is.null(x$hjust)) warning("hjust is not supported in polar coordinates")
+  if (! is.null(x$vjust)) warning("vjust is not supported in polar coordinates")
 
   # Convert padding.x and padding.y to mm
   padding.x <- grid::convertWidth(x$padding.x, "mm", valueOnly = TRUE)
@@ -22,11 +23,8 @@ makeContent.fittexttreepolar <- function(x) {
     # Convenience
     text <- data[i, ]
 
-    # Clean up angle
-    text$angle <- text$angle %% 360
-    if (! text$angle == 0) {
-      warning("Angled text is not yet supported in polar coordinates")
-    }
+    # Handle angled text
+    if (! text$angle == 0) warning("Angled text is not supported in polar coordinates")
 
     # Set hjust and vjust 
     # A vjust of 0.2 strikes a good visual balance in the kerning of characters
@@ -34,26 +32,13 @@ makeContent.fittexttreepolar <- function(x) {
     x$hjust <- 0.5
     x$vjust <- 0.2
 
-    # If fullheight has not been set, set an appropriate value
-    if (is.null(x$fullheight)) x$fullheight <- x$grow
-
     # Create starting textGrob
-    tg <- grid::textGrob(
-      label = text$label,
-      x = 0.5,
-      y = 0.5,
-      default.units = "mm",
-      hjust = x$hjust,
-      vjust = x$vjust,
-      rot = text$angle,
-      gp = grid::gpar(
-        col = ggplot2::alpha(text$colour, text$alpha),
-        fontsize = text$size,
-        fontfamily = text$family,
-        fontface = text$fontface,
-        lineheight = text$lineheight
-      )
-    )
+    tg <- grid::textGrob(label = text$label, x = 0.5, y = 0.5, default.units = "mm", 
+                         hjust = x$hjust, vjust = x$vjust, rot = text$angle, 
+                         gp = grid::gpar(col = ggplot2::alpha(text$colour, text$alpha), 
+                                         fontsize = text$size, fontfamily = text$family, 
+                                         fontface = text$fontface, 
+                                         lineheight = text$lineheight))
 
     # Get starting textGrob dimensions
     tgdim <- tgDimensions(tg, x$fullheight, text$angle)
@@ -104,6 +89,7 @@ makeContent.fittexttreepolar <- function(x) {
       targetfsh <- ydim * slopeh
 
       # Calculate the target font size required to make the text fit width-wise
+      # See https://imgur.com/a/z5TvFST for explanation of geometry
       if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
         w <- xdim * (ymin + padding.y)
         targetfsw <- w * slopew
@@ -132,7 +118,7 @@ makeContent.fittexttreepolar <- function(x) {
     tgdim <- tgDimensions(tg, x$fullheight, text$angle)
 
     # r = the radius from the centre to the text anchor (which is not the
-    # typographic baseline but defined by vjust)
+    # typographic baseline but is defined by vjust)
     if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
       r <- ymin + padding.y + (x$vjust * tgdim$height)
     } else if (x$place %in% c("left", "centre", "right")) {
@@ -141,7 +127,7 @@ makeContent.fittexttreepolar <- function(x) {
       r <- ymax - padding.y - ((1 - x$vjust) * tgdim$height)
     }
 
-    # c = the circumference of the baseline, in mm
+    # c = the circumference of the baseline
     c <- 2 * pi * r
 
     # char_widths = widths of each character in the string
