@@ -12,11 +12,9 @@ makeContent.fittexttreepolar <- function(x) {
   if (! is.null(x$hjust)) warning("hjust is not yet supported in polar coordinates")
   if (! is.null(x$vjust)) warning("vjust is not yet supported in polar coordinates")
 
-  # Convert padding.x to mm
+  # Convert padding.x and padding.y to mm
   padding.x <- grid::convertWidth(x$padding.x, "mm", valueOnly = TRUE)
-
-  # Convert padding.y to npc
-  padding.y <- grid::convertHeight(x$padding.y, "npc", valueOnly = TRUE)
+  padding.y <- grid::convertHeight(x$padding.y, "mm", valueOnly = TRUE)
 
   # Prepare grob for each text label
   grobs <- lapply(seq_len(nrow(data)), function(i) {
@@ -44,7 +42,7 @@ makeContent.fittexttreepolar <- function(x) {
       label = text$label,
       x = 0.5,
       y = 0.5,
-      default.units = "npc",
+      default.units = "mm",
       hjust = x$hjust,
       vjust = x$vjust,
       rot = text$angle,
@@ -57,50 +55,44 @@ makeContent.fittexttreepolar <- function(x) {
       )
     )
 
-    # Get starting textGrob dimensions, in mm
+    # Get starting textGrob dimensions
     tgdim <- tgDimensions(tg, x$fullheight, text$angle)
 
-    # Convert box coordinates to mm
-    ymin_mm <- grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE)
-    ymax_mm <- grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE)
+    # Convert box y coordinates to mm
+    ymin <- grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE)
+    ymax <- grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE)
 
     # Get dimensions of bounding box
     # The y dimension will be given in mm, while the x dimension is given as
     # arc length (radians). For convenience of comparing the textGrob to the
     # bounding box on the x dimension, we will also calculate it in mm based on
     # the text placement.
-    ydim <- grid::convertHeight(
-      grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
-      "mm",
-      TRUE
-    )
+    ydim <- abs(ymin - ymax) - (2 * padding.y)
     xdim <- ifelse(
       text$xmax > text$xmin,
       text$xmax - text$xmin,
       (text$xmax + pi + pi - text$xmin) %% (2 * pi)
     )
+
     if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-      r <- grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE) +
-        (x$vjust * tgdim$height) +
-        grid::convertHeight(grid::unit(padding.y, "npc"), "mm", TRUE)
-        xdim_mm <- r * xdim
+      r <- ymin + (x$vjust * tgdim$height) + padding.y
+      xdim_mm <- r * xdim
+
     } else if (x$place %in% c("left", "centre", "right")) {
-      r <- ((grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE) +
-        grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE)) / 2) -
-        ((0.5 - x$vjust) * tgdim$height)
+      r <- ((ymin + ymax) / 2) - ((0.5 - x$vjust) * tgdim$height)
+      xdim_mm <- r * xdim
+
     } else if (x$place %in% c("topleft", "top", "topright")) {
-      r <- grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE) -
-        grid::convertHeight(grid::unit(padding.y, "npc"), "mm", TRUE) -
-        ((1 - x$vjust) * tgdim$height)
+      r <- ymax - padding.y - ((1 - x$vjust) * tgdim$height)
       xdim_mm <- r * xdim
     }
 
     # Resize text to fit bounding box if it doesn't fit
     if (
         # Standard condition - is text too big for box?
-        (tgdim$width > xdim | tgdim$height > ydim) |
+        (tgdim$width > xdim_mm | tgdim$height > ydim) |
           # grow = TRUE condition - is text too small for box?
-          (x$grow & tgdim$width < xdim & tgdim$height < ydim)
+          (x$grow & tgdim$width < xdim_mm & tgdim$height < ydim)
         ) {
 
       # Get the relationships between font size and label dimensions
@@ -113,23 +105,19 @@ makeContent.fittexttreepolar <- function(x) {
 
       # Calculate the target font size required to make the text fit width-wise
       if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-        w <- xdim * 
-          (ymin_mm + grid::convertHeight(grid::unit(padding.y, "npc"), "mm", TRUE))
+        w <- xdim * (ymin + padding.y)
         targetfsw <- w * slopew
 
       } else if (x$place %in% c("left", "centre", "right")) {
         k <- (tgdim$height * x$vjust) / tgdim$width
-        R <- (ymin_mm + ymax_mm) / 2
-        w <- ((xdim * R) / ((xdim * k) + 1)) -
-          (2 * padding.x)
+        R <- (ymin + ymax) / 2
+        w <- ((xdim * R) / ((xdim * k) + 1)) - (2 * padding.x)
         targetfsw <- w * slopew
 
       } else if (x$place %in% c("topleft", "top", "topright")) {
         k <- tgdim$height / tgdim$width
-        R <- grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE) -
-          grid::convertHeight(grid::unit(padding.y, "npc"), "mm", TRUE)
-        w <- ((xdim * R) / ((xdim * k) + 1)) -
-          (2 * padding.x)
+        R <- ymax - padding.y
+        w <- ((xdim * R) / ((xdim * k) + 1)) - (2 * padding.x)
         targetfsw <- w * slopew
       }
 
@@ -143,41 +131,23 @@ makeContent.fittexttreepolar <- function(x) {
     # Update the textGrob dimensions
     tgdim <- tgDimensions(tg, x$fullheight, text$angle)
 
-    # Convert the textGrob dimensions into npc
-    tgdim$width <- grid::convertWidth(grid::unit(tgdim$width, "mm"), "npc", TRUE)
-    tgdim$height <- grid::convertHeight(grid::unit(tgdim$height, "mm"), "npc", TRUE)
-
     # r = the radius from the centre to the text anchor (which is not the
-    # typographic baseline but the anchor defined by vjust), initially
-    # calculated in npc
+    # typographic baseline but defined by vjust)
     if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
-      r <- text$ymin + padding.y + (x$vjust * tgdim$height)
+      r <- ymin + padding.y + (x$vjust * tgdim$height)
     } else if (x$place %in% c("left", "centre", "right")) {
-      r <- ((text$ymin + text$ymax) / 2) - ((0.5 - x$vjust) * tgdim$height)
+      r <- ((ymin + ymax) / 2) - ((0.5 - x$vjust) * tgdim$height)
     } else if (x$place %in% c("topleft", "top", "topright")) {
-      r <- text$ymax - padding.y - ((1 - x$vjust) * tgdim$height)
+      r <- ymax - padding.y - ((1 - x$vjust) * tgdim$height)
     }
-
-    # string = the text label
-    string <- as.character(text$label)
-
-    # size = the font size of the text, in points
-    size <- tg$gp$fontsize
-
-    # Convert r to mm
-    r <- grid::convertWidth(grid::unit(r, "npc"), "mm", TRUE)
 
     # c = the circumference of the baseline, in mm
     c <- 2 * pi * r
 
-    # string_w = width of string, in mm
-    tg <- grid::textGrob(label = string, gp = grid::gpar(fontsize = size))
-    string_w <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
-
-    # char_widths = width of each character in the string, in mm
-    chars <- strsplit(string, "")[[1]]
+    # char_widths = widths of each character in the string
+    chars <- strsplit(as.character(text$label), "")[[1]]
     char_widths <- (grid::calcStringMetric(chars)$width / 
-                      sum(grid::calcStringMetric(chars)$width)) * string_w
+                      sum(grid::calcStringMetric(chars)$width)) * tgdim$width
 
     # char_arcs = arcwidth of each character, in degrees
     char_arcs <- 360 * char_widths / c
@@ -230,7 +200,7 @@ makeContent.fittexttreepolar <- function(x) {
         rot = theta - 90,
         default.units = "npc",
         gp = grid::gpar(
-          fontsize = size,
+          fontsize = tg$gp$fontsize,
           col = ggplot2::alpha(text$colour, text$alpha),
           fontfamily = text$family,
           fontface = text$fontface,
@@ -250,4 +220,3 @@ makeContent.fittexttreepolar <- function(x) {
   class(grobs) <- "gList"
   grid::setChildren(x, grobs)
 }
-
