@@ -4,6 +4,16 @@ makeContent.fittexttreepolar <- function(x) {
 
   data <- x$data
 
+  # If ymin/ymax are not provided, generate boundary box from height. A similar
+  # transformation will be performed for xmin/xmax for each grob individually
+  # later, as it needs to be done in the context of the y position of the grob.
+  if (!("ymin" %in% names(data))) {
+    data$ymin <- data$r - 
+      (grid::convertHeight(x$height, "npc", valueOnly = TRUE) / 2)
+    data$ymax <- data$r + 
+      (grid::convertHeight(x$height, "npc", valueOnly = TRUE) / 2)
+  }
+
   # Handle parameters
   if (is.null(x$contrast)) x$contrast <- FALSE
   if (is.null(x$outside)) x$outside <- FALSE
@@ -47,12 +57,28 @@ makeContent.fittexttreepolar <- function(x) {
     ymin <- grid::convertHeight(grid::unit(text$ymin, "npc"), "mm", TRUE)
     ymax <- grid::convertHeight(grid::unit(text$ymax, "npc"), "mm", TRUE)
 
-    # Get dimensions of bounding box
-    # The y dimension will be given in mm, while the x dimension is given as
-    # arc length (radians). For convenience of comparing the textGrob to the
-    # bounding box on the x dimension, we will also calculate it in mm based on
-    # the text placement.
+    # Get dimensions of bounding box. The y dimension will be given in mm, while
+    # the x dimension is given as arc length (radians). For convenience of
+    # comparing the textGrob to the bounding box on the x dimension, we will
+    # also calculate it in mm based on the text placement. If xmin/xmax are
+    # not provided, the boundary box will be generated from width.
     ydim <- abs(ymin - ymax) - (2 * padding.y)
+
+    if (!("xmin" %in% names(data))) {
+      if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
+        r <- ymin + (x$vjust * tgdim$height) + padding.y
+      } else if (x$place %in% c("left", "centre", "right")) {
+        r <- ((ymin + ymax) / 2) - ((0.5 - x$vjust) * tgdim$height)
+      } else if (x$place %in% c("topleft", "top", "topright")) {
+        r <- ymax - padding.y - ((1 - x$vjust) * tgdim$height)
+      }
+      c <- 2 * pi * r
+      text$xmin <- text$theta - 
+        (((grid::convertWidth(x$width, "mm", valueOnly = TRUE) / 2) / c) * 2 * pi)
+      text$xmax <- text$theta + 
+        (((grid::convertWidth(x$width, "mm", valueOnly = TRUE) / 2) / c) * 2 * pi)
+    }
+
     xdim <- ifelse(
       text$xmax > text$xmin,
       text$xmax - text$xmin,

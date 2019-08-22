@@ -280,13 +280,13 @@ GeomFitText <- ggplot2::ggproto(
     # theta and r values respectively; these can be used later to accurately
     # set the width and height of the bounding box in polar space
     } else if (is_polar) {
-      data$x <- 1
-      data$y <- 1
+      if (is.null(data$x)) data$x <- 1
+      if (is.null(data$y)) data$y <- 1
       data <- coord$transform(data, panel_scales)
-      data$xmin <- ggplot2:::theta_rescale(coord, data$xmin, panel_scales)
-      data$xmax <- ggplot2:::theta_rescale(coord, data$xmax, panel_scales)
-      data$ymin <- ggplot2:::r_rescale(coord, data$ymin, panel_scales$r.range)
-      data$ymax <- ggplot2:::r_rescale(coord, data$ymax, panel_scales$r.range)
+      if (! is.null(data$xmin)) data$xmin <- ggplot2:::theta_rescale(coord, data$xmin, panel_scales)
+      if (! is.null(data$xmax)) data$xmax <- ggplot2:::theta_rescale(coord, data$xmax, panel_scales)
+      if (! is.null(data$ymin)) data$ymin <- ggplot2:::r_rescale(coord, data$ymin, panel_scales$r.range)
+      if (! is.null(data$ymax)) data$ymax <- ggplot2:::r_rescale(coord, data$ymax, panel_scales$r.range)
     }
 
     # Reverse colours if desired

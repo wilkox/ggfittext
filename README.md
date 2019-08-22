@@ -155,9 +155,9 @@ welcome.
 
 ``` r
 ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
-                 label = label, fill = line)) +
-  geom_rect() +
+                 fill = line, label = label)) +
   coord_polar() +
+  geom_rect() +
   geom_fit_text(min.size = 0, grow = TRUE) +
   scale_fill_gradient(low = "#fee391", high = "#238443")
 ```
