@@ -207,8 +207,8 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
     it extends from the top of the ascenders to the bottom of the
     descenders. This is mostly useful in situations where you want to
     ensure the baseline of text is consistent between labels
-    (`fullheight = TRUE`), or when you want to avoid descenders spilling
-    out of the bounding box (`fullheight = FALSE`).
+    (`fullheight = FALSE`), or when you want to avoid descenders
+    spilling out of the bounding box (`fullheight = TRUE`).
 
 ![](man/figures/README-unnamed-chunk-14-1.png)<!-- -->
 
