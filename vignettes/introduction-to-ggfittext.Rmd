@@ -164,8 +164,24 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
 - **`fullheight`** is automatically set depending on place, but can be
   overridden with this option. This is used to determine the bounding box
   around the text. If `FALSE`, the bounding box includes the x-height of the
-  text and descenders, but not any descenders. If TRUE, it extends from the top
+  text and ascenders, but not any descenders. If TRUE, it extends from the top
   of the ascenders to the bottom of the descenders. This is mostly useful in
   situations where you want to ensure the baseline of text is consistent
   between labels (`fullheight = TRUE`), or when you want to avoid descenders
   spilling out of the bounding box (`fullheight = FALSE`).
+
+```{r echo = FALSE, fig.width = 4, fig.height = 0.5}
+ggplot(data.frame(label = "fullheight = TRUE", xmin = 0.25, xmax = 0.75, ymin = 0.25, ymax = 0.75), 
+       aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = label)) +
+  geom_rect() +
+  geom_fit_text(grow = TRUE, fullheight = TRUE, family = "mono") +
+  theme(axis.text = element_blank(), axis.ticks = element_blank(), panel.background = element_blank(), plot.title = element_text(hjust = 0.5))
+```
+
+```{r echo = FALSE, fig.width = 4, fig.height = 0.5}
+ggplot(data.frame(label = "fullheight = FALSE", xmin = 0.25, xmax = 0.75, ymin = 0.25, ymax = 0.75), 
+       aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = label)) +
+  geom_rect() +
+  geom_fit_text(grow = TRUE, fullheight = FALSE, family = "mono") +
+  theme(axis.text = element_blank(), axis.ticks = element_blank(), panel.background = element_blank(), plot.title = element_text(hjust = 0.5))
+```

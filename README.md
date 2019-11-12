@@ -203,9 +203,13 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   - **`fullheight`** is automatically set depending on place, but can be
     overridden with this option. This is used to determine the bounding
     box around the text. If `FALSE`, the bounding box includes the
-    x-height of the text and descenders, but not any descenders. If
-    TRUE, it extends from the top of the ascenders to the bottom of the
+    x-height of the text and ascenders, but not any descenders. If TRUE,
+    it extends from the top of the ascenders to the bottom of the
     descenders. This is mostly useful in situations where you want to
     ensure the baseline of text is consistent between labels
     (`fullheight = TRUE`), or when you want to avoid descenders spilling
     out of the bounding box (`fullheight = FALSE`).
+
+![](man/figures/README-unnamed-chunk-14-1.png)<!-- -->
+
+![](man/figures/README-unnamed-chunk-15-1.png)<!-- -->
