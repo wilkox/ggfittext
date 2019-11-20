@@ -22,9 +22,16 @@ geom_bar_text <- function(
   height = NULL,
   formatter = NULL,
   contrast = TRUE,
-  outside = TRUE,
+  outside = NULL,
   ...
 ) {
+
+  # If position is "identity", outside should be set to TRUE by default;
+  # otherwise, set to FALSE
+  if (is.null(outside)) {
+    outside = position == "identity"
+  }
+
   ggplot2::layer(
     geom = GeomBarText,
     mapping = mapping,
@@ -133,7 +140,7 @@ GeomBarText <- ggplot2::ggproto(
     formatter = NULL,
     contrast = TRUE,
     place = "top",
-    outside = TRUE
+    outside = NULL
   ) {
 
     # Split data into negative and positive y values

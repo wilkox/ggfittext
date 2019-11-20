@@ -15,7 +15,10 @@
 
 - `contrast = TRUE` now assumes ggplot2 default colours for `fill` and
   `panel.background`, so it can be used in the absence of a `fill` aesthetic.
-- `geom_bar_text()` now defaults to `contrast = TRUE`.
+- `geom_bar_text()` now defaults to `contrast = TRUE`
+- `outside` now defaults to FALSE with `geom_bar_text()` unless `position =
+  "identity"`
+- Add visual examples for `fullheight`
 
 # ggfittext 0.8.1
 

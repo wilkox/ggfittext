@@ -57,7 +57,8 @@
 #' @param outside If `TRUE`, text placed in one of 'top', 'right', 'bottom' or
 #' 'left' that would need to be shrunk smaller than `min.size` to fit the box
 #' will be drawn outside the box if possible. This is mostly useful for drawing
-#' text inside bar/column geoms. Defaults to FALSE.
+#' text inside bar/column geoms. Defaults to TRUE for `position = "identity"`
+#' when using `geom_bar_text()`, otherwise FALSE.
 #' @param grow If `TRUE`, text will be grown as well as shrunk to fill the box.
 #' Defaults to FALSE.
 #' @param reflow If `TRUE`, text will be reflowed (wrapped) to better fit the

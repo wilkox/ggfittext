@@ -216,7 +216,8 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   that is placed at "top", "bottom", "left" or "right" and must be shrunk
   smaller than `min.size` to fit in the box will be flipped to the outside of
   the box (if it fits there). This is mostly useful for drawing text inside
-  bars in a bar plot, so it is `TRUE` by default for `geom_bar_text()`.
+  bars in a bar plot, so it is `TRUE` by default for `geom_bar_text()` when
+  `position = "stacked"`.
 - **`hjust`** and **`vjust`** set the horizontal and vertical justification of
   the text, scaled between 0 (left/bottom) and 1 (right/top). These are both
   0.5 by default.
