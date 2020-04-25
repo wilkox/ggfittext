@@ -121,7 +121,7 @@ GeomBarText <- ggplot2::ggproto(
     data
   },
 
-  draw_key = ggplot2::draw_key_text,
+  draw_key = ggplot2::draw_key_label,
 
   draw_panel = function(
     data,

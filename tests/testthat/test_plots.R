@@ -35,7 +35,7 @@ test_that("plots look the way they should", {
   })
 
   vdiffr::expect_doppelganger("Reflowing and growing", {
-    ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
+    ggplot(animals, aes(x = type, y = flies, label = animal)) +
       geom_tile(fill = "white", colour = "black") +
       geom_fit_text(reflow = TRUE, grow = TRUE, size = 48)
   })

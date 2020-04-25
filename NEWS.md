@@ -10,6 +10,7 @@
 - Skip drawing text when the box limits are outside the plot limits and emit a
   warning, rather than stopping with an error (see #11, thanks
   @alastairrushworth)
+- Fix 'Ignoring unknown aesthetics: fill' error (#19, thanks @zilch42)
 
 ## Minor changes
 

@@ -5,21 +5,55 @@
 \alias{geom_fit_text}
 \title{A 'ggplot2' geom to fit text inside a box}
 \usage{
-geom_bar_text(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, padding.x = grid::unit(1, "mm"),
-  padding.y = grid::unit(1, "mm"), min.size = 8, place = "top",
-  grow = FALSE, reflow = FALSE, hjust = NULL, vjust = NULL,
-  fullheight = NULL, width = NULL, height = NULL, formatter = NULL,
-  contrast = TRUE, outside = TRUE, ...)
+geom_bar_text(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  padding.x = grid::unit(1, "mm"),
+  padding.y = grid::unit(1, "mm"),
+  min.size = 8,
+  place = "top",
+  grow = FALSE,
+  reflow = FALSE,
+  hjust = NULL,
+  vjust = NULL,
+  fullheight = NULL,
+  width = NULL,
+  height = NULL,
+  formatter = NULL,
+  contrast = TRUE,
+  outside = NULL,
+  ...
+)
 
-geom_fit_text(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, padding.x = grid::unit(1, "mm"),
-  padding.y = grid::unit(1, "mm"), min.size = 4, place = "centre",
-  outside = FALSE, grow = FALSE, reflow = FALSE, hjust = NULL,
-  vjust = NULL, fullheight = NULL, width = NULL, height = NULL,
-  formatter = NULL, contrast = FALSE, ...)
+geom_fit_text(
+  mapping = NULL,
+  data = NULL,
+  stat = "identity",
+  position = "identity",
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE,
+  padding.x = grid::unit(1, "mm"),
+  padding.y = grid::unit(1, "mm"),
+  min.size = 4,
+  place = "centre",
+  outside = FALSE,
+  grow = FALSE,
+  reflow = FALSE,
+  hjust = NULL,
+  vjust = NULL,
+  fullheight = NULL,
+  width = NULL,
+  height = NULL,
+  formatter = NULL,
+  contrast = FALSE,
+  ...
+)
 }
 \arguments{
 \item{mapping}{\code{ggplot2::aes()} object as standard in 'ggplot2'. Note
@@ -72,7 +106,8 @@ background fills. \code{FALSE} by default for \code{geom_fit_text()}, \code{TRUE
 \item{outside}{If \code{TRUE}, text placed in one of 'top', 'right', 'bottom' or
 'left' that would need to be shrunk smaller than \code{min.size} to fit the box
 will be drawn outside the box if possible. This is mostly useful for drawing
-text inside bar/column geoms. Defaults to FALSE.}
+text inside bar/column geoms. Defaults to TRUE for \code{position = "identity"}
+when using \code{geom_bar_text()}, otherwise FALSE.}
 }
 \description{
 \code{geom_fit_text()} shrinks, grows and wraps text to fit inside a defined

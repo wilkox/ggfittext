@@ -167,7 +167,8 @@ GeomFitText <- ggplot2::ggproto(
     xmin = NULL,
     xmax = NULL,
     ymin = NULL,
-    ymax = NULL
+    ymax = NULL,
+    fill = NULL
   ),
 
   setup_data = function(
@@ -248,7 +249,7 @@ GeomFitText <- ggplot2::ggproto(
     data
   },
 
-  draw_key = ggplot2::draw_key_text,
+  draw_key = ggplot2::draw_key_label,
 
   draw_panel = function(
     data,
