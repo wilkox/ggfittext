@@ -49,7 +49,8 @@
 #' @param padding.x,padding.y Horizontal and vertical padding around the text,
 #' expressed in `grid::unit()` objects. Both default to 1 mm.
 #' @param min.size Minimum font size, in points. Text that would need to be
-#' shrunk below this size to fit the box will be hidden. Defaults to 4 pt.
+#' shrunk below this size to fit the box will be hidden. Defaults to 4 pt (8 pt
+#' for `geom_bar_text()`)
 #' @param place Where inside the box to place the text. Default is 'centre';
 #' other options are 'topleft', 'top', 'topright', 'right', 'bottomright',
 #' 'bottom', 'bottomleft', 'left', and 'center'/'middle' which are both

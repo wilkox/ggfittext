@@ -4,11 +4,13 @@
 \name{altitudes}
 \alias{altitudes}
 \title{Some craft and their altitudes}
-\format{A data frame with 4 rows and 2 variables:
+\format{
+A data frame with 4 rows and 2 variables:
 \describe{
 \item{craft}{the name of the craft}
 \item{altitude}{the craft's normal cruising altitude in metres}
-}}
+}
+}
 \usage{
 altitudes
 }

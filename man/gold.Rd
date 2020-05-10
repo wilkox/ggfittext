@@ -4,7 +4,8 @@
 \name{gold}
 \alias{gold}
 \title{Robert Frost's poem \emph{Nothing Gold Can Stay}}
-\format{A data frame with 8 rows and 5 variables:
+\format{
+A data frame with 8 rows and 5 variables:
 \describe{
 \item{label}{a line from the poem}
 \item{xmin}{the xmin coordinate with which to draw the word}
@@ -12,7 +13,8 @@
 \item{ymin}{the ymin coordinate with which to draw the word}
 \item{ymax}{the ymax coordinate with which to draw the word}
 \item{line}{the line number}
-}}
+}
+}
 \usage{
 gold
 }

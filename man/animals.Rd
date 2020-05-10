@@ -4,13 +4,15 @@
 \name{animals}
 \alias{animals}
 \title{Six animals}
-\format{A data frame with 6 rows and 4 variables:
+\format{
+A data frame with 6 rows and 4 variables:
 \describe{
 \item{animal}{the name of the animal}
 \item{type}{the type of animal}
 \item{flies}{whether the animal can fly}
 \item{mass}{the average mass of the animal in grams}
-}}
+}
+}
 \usage{
 animals
 }

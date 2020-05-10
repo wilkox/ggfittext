@@ -66,7 +66,8 @@ arguments as for \code{ggplot2::geom_text()}.}
 expressed in \code{grid::unit()} objects. Both default to 1 mm.}
 
 \item{min.size}{Minimum font size, in points. Text that would need to be
-shrunk below this size to fit the box will be hidden. Defaults to 4 pt.}
+shrunk below this size to fit the box will be hidden. Defaults to 4 pt (8 pt
+for \code{geom_bar_text()})}
 
 \item{place}{Where inside the box to place the text. Default is 'centre';
 other options are 'topleft', 'top', 'topright', 'right', 'bottomright',
