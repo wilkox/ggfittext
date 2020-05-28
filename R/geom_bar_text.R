@@ -21,7 +21,7 @@ geom_bar_text <- function(
   width = NULL,
   height = NULL,
   formatter = NULL,
-  contrast = TRUE,
+  contrast = NULL,
   outside = NULL,
   ...
 ) {
@@ -142,6 +142,13 @@ GeomBarText <- ggplot2::ggproto(
     place = "top",
     outside = NULL
   ) {
+
+    # Set contrast if if wasn't set manually. If the text colour is all black,
+    # it's probably been left as the default so contrast should be on.
+    # Otherwise, it should be turned off
+    if (is.null(contrast)) {
+      contrast <- all(data$colour == "black")
+    }
 
     # Split data into negative and positive y values
     positives <- subset(data, data$y >= 0)

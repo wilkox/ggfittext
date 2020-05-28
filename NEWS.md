@@ -22,6 +22,9 @@
 - `outside` now defaults to FALSE with `geom_bar_text()` unless `position =
   "identity"`
 - Add visual examples for `fullheight`
+- Change default behaviour of `contrast` in `geom_bar_text()`; instead of
+  defaulting to TRUE, it defaults to true if the text colour is black but to
+  FALSE otherwise (#22, thanks @ds-jim)
 
 # ggfittext 0.8.1
 

@@ -25,7 +25,7 @@ geom_bar_text(
   width = NULL,
   height = NULL,
   formatter = NULL,
-  contrast = TRUE,
+  contrast = NULL,
   outside = NULL,
   ...
 )
@@ -101,8 +101,8 @@ not need to be a vectorised function.}
 
 \item{contrast}{If \code{TRUE} and in combination with a \code{fill} aesthetic, the
 colour of the text will be inverted for better contrast against dark
-background fills. \code{FALSE} by default for \code{geom_fit_text()}, \code{TRUE} for
-\code{geom_bar_text()}.}
+background fills. \code{FALSE} by default for \code{geom_fit_text()}, set
+heuristically for \code{geom_bar_text()}.}
 
 \item{outside}{If \code{TRUE}, text placed in one of 'top', 'right', 'bottom' or
 'left' that would need to be shrunk smaller than \code{min.size} to fit the box

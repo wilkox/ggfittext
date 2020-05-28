@@ -81,8 +81,8 @@
 #' not need to be a vectorised function.
 #' @param contrast If `TRUE` and in combination with a `fill` aesthetic, the
 #' colour of the text will be inverted for better contrast against dark
-#' background fills. `FALSE` by default for `geom_fit_text()`, `TRUE` for
-#' `geom_bar_text()`.
+#' background fills. `FALSE` by default for `geom_fit_text()`, set
+#' heuristically for `geom_bar_text()`.
 #' @param mapping `ggplot2::aes()` object as standard in 'ggplot2'. Note
 #' that aesthetics specifying the box must be provided. See Details.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
