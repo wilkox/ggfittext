@@ -12,6 +12,7 @@
   @alastairrushworth)
 - Fix 'Ignoring unknown aesthetics: fill' error (#19, thanks @zilch42)
 - Clarify defaults for `min.size` argument
+- Fix bug with using grid units for height or width
 
 ## Minor changes
 

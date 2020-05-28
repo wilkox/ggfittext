@@ -199,14 +199,14 @@ GeomFitText <- ggplot2::ggproto(
 
     # If 'width' is provided, but not as unit, interpret it as a numeric on the
     # x scale
-    if ((! is.null(params$width)) & class(params$width) != "unit") {
+    if ((! is.null(params$width)) & (! "unit" %in% class(params$width))) {
       data$xmin <- data$x - params$width / 2
       data$xmax <- data$x + params$width / 2
     }
 
     # If 'height' is provided, but not a unit, interpret it as a numeric on the
     # y scale
-    if ((! is.null(params$height)) & class(params$height) != "unit") {
+    if ((! is.null(params$height)) & (! "unit" %in% class(params$height))) {
       data$ymin <- data$y - params$height / 2
       data$ymax <- data$y + params$height / 2
     }
