@@ -33,6 +33,10 @@
 #' reflowed then shrunk to fit the box.  Existing line breaks in the text will
 #' be respected when reflowing.
 #'
+#' `geom_fit_text()` includes experimental support for drawing text in polar
+#' coordinates (by adding `coord_polar()` to the plot), however not all
+#' features are available when doing so.
+#'
 #' @section Aesthetics:
 #'
 #' - label (required)

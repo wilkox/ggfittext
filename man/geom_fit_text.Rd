@@ -143,6 +143,10 @@ requires shrinking or growing.
 in the box. If the text cannot be made to fit by reflowing alone, it will be
 reflowed then shrunk to fit the box.  Existing line breaks in the text will
 be respected when reflowing.
+
+\code{geom_fit_text()} includes experimental support for drawing text in polar
+coordinates (by adding \code{coord_polar()} to the plot), however not all
+features are available when doing so.
 }
 \section{Aesthetics}{
 
