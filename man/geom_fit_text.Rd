@@ -16,7 +16,7 @@ geom_bar_text(
   padding.x = grid::unit(1, "mm"),
   padding.y = grid::unit(1, "mm"),
   min.size = 8,
-  place = "top",
+  place = NULL,
   grow = FALSE,
   reflow = FALSE,
   hjust = NULL,
@@ -72,7 +72,8 @@ for \code{geom_bar_text()})}
 \item{place}{Where inside the box to place the text. Default is 'centre';
 other options are 'topleft', 'top', 'topright', 'right', 'bottomright',
 'bottom', 'bottomleft', 'left', and 'center'/'middle' which are both
-synonyms for 'centre'.}
+synonyms for 'centre'. For \code{geom_bar_text()}, will be set heuristically if
+not specified.}
 
 \item{grow}{If \code{TRUE}, text will be grown as well as shrunk to fill the box.
 Defaults to FALSE.}

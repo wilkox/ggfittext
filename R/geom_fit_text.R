@@ -58,7 +58,8 @@
 #' @param place Where inside the box to place the text. Default is 'centre';
 #' other options are 'topleft', 'top', 'topright', 'right', 'bottomright',
 #' 'bottom', 'bottomleft', 'left', and 'center'/'middle' which are both
-#' synonyms for 'centre'.
+#' synonyms for 'centre'. For `geom_bar_text()`, will be set heuristically if
+#' not specified.
 #' @param outside If `TRUE`, text placed in one of 'top', 'right', 'bottom' or
 #' 'left' that would need to be shrunk smaller than `min.size` to fit the box
 #' will be drawn outside the box if possible. This is mostly useful for drawing

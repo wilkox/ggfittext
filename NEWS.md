@@ -3,6 +3,9 @@
 ## Major changes
 
 - Add experimental support for polar coordinates in `geom_fit_text()`
+- Improvements to the behaviour of `geom_bar_text()` in flipped coordinates,
+  including support for the new bi-directional `geom_col()` in ggplot2 3.3.0
+  (#23, thanks @ds-jim)
 
 ## Bug fixes
 

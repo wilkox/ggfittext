@@ -12,7 +12,7 @@ geom_bar_text <- function(
   padding.x = grid::unit(1, "mm"),
   padding.y = grid::unit(1, "mm"),
   min.size = 8,
-  place = "top",
+  place = NULL,
   grow = FALSE,
   reflow = FALSE,
   hjust = NULL,
@@ -91,14 +91,30 @@ GeomBarText <- ggplot2::ggproto(
       data$label <- data$y
     }
 
-    # Set xmin and xmax using the method of geom_boxplot
-    width <- ggplot2::resolution(data$x, FALSE) * 0.9
-    data$xmin <- data$x - width / 2
-    data$xmax <- data$x + width / 2
+    # Detect if the bar is to be drawn with 'implied' flipped orientation as
+    # permitted in ggplot2 v3.3.0
+    implied_flip <- typeof(data$y) == "integer"
+    data$implied_flip <- implied_flip
 
-    # Set starting ymin and ymax
-    data$ymin <- 0
-    data$ymax <- data$y
+    # Set bar width using the method of geom_boxplot
+    if (implied_flip) {
+      height <- ggplot2::resolution(data$y, FALSE) * 0.9
+      data$ymin <- data$y - height / 2
+      data$ymax <- data$y + height / 2
+    } else {
+      width <- ggplot2::resolution(data$x, FALSE) * 0.9
+      data$xmin <- data$x - width / 2
+      data$xmax <- data$x + width / 2
+    }
+
+    # Set starting bar height/length
+    if (implied_flip) {
+      data$xmin <- 0
+      data$xmax <- data$x
+    } else {
+      data$ymin <- 0
+      data$ymax <- data$y
+    }
 
     # Apply a formatter function, if one was given
     if (! is.null(params$formatter)) {
@@ -139,9 +155,16 @@ GeomBarText <- ggplot2::ggproto(
     height = NULL,
     formatter = NULL,
     contrast = TRUE,
-    place = "top",
+    place = NULL,
     outside = NULL
   ) {
+
+    # Standardise the place argument
+    if (! is.null(place)) {
+      if (place %in% c("middle", "center")) {
+        place <- "centre"
+      }
+    }
 
     # Set contrast if if wasn't set manually. If the text colour is all black,
     # it's probably been left as the default so contrast should be on.
@@ -150,9 +173,25 @@ GeomBarText <- ggplot2::ggproto(
       contrast <- all(data$colour == "black")
     }
 
-    # Split data into negative and positive y values
-    positives <- subset(data, data$y >= 0)
-    negatives <- subset(data, data$y < 0)
+    # Detect flipped coordinate system, including the 'implied flip' from
+    # ggplot2 v3.3.0
+    implied_flip <- data$implied_flip[1]
+    is_flipped <- "CoordFlip" %in% class(coord) | implied_flip
+
+    # Set place if it wasn't set manually: top for normal coordinates, right for
+    # flipped coordinates
+    if (is.null(place)) {
+      place <- ifelse(is_flipped, "right", "top")
+    }
+
+    # Split data into negative and positive values
+    if (implied_flip) {
+      positives <- subset(data, data$x >= 0)
+      negatives <- subset(data, data$x < 0)
+    } else {
+      positives <- subset(data, data$y >= 0)
+      negatives <- subset(data, data$y < 0)
+    }
 
     # Draw positives with "place" as given
     gtrees <- list()
