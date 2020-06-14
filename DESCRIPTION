@@ -6,7 +6,7 @@ Authors@R: person("David", "Wilkins", email = "david@wilkox.org",
 Description: Provides 'ggplot2' geoms to fit text into a box by growing, shrinking
     or wrapping the text.
 Depends:
-    R (>= 3.6.3)
+    R (>= 3.6)
 License: GPL-2
 LazyData: true
 Imports:
