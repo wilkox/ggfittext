@@ -1,4 +1,4 @@
-# ggfittext (development version)
+# ggfittext 0.9.0
 
 ## Major changes
 
@@ -6,6 +6,18 @@
 - Improvements to the behaviour of `geom_bar_text()` in flipped coordinates,
   including support for the new bi-directional `geom_col()` in ggplot2 3.3.0
   (#23, thanks @ds-jim)
+
+## Minor changes
+
+- `contrast = TRUE` now assumes ggplot2 default colours for `fill` and
+  `panel.background`, so it can be used in the absence of a `fill` aesthetic.
+- Change default behaviour of `contrast` in `geom_bar_text()`; instead of
+  defaulting to TRUE, it defaults to true if the text colour is black but to
+  FALSE otherwise (#22, thanks @ds-jim)
+- `geom_bar_text()` now defaults to `contrast = TRUE`
+- `outside` now defaults to FALSE with `geom_bar_text()` unless `position =
+  "identity"`
+- Add visual examples for `fullheight`
 
 ## Bug fixes
 
@@ -15,19 +27,7 @@
   @alastairrushworth)
 - Fix 'Ignoring unknown aesthetics: fill' error (#19, thanks @zilch42)
 - Clarify defaults for `min.size` argument
-- Fix bug with using grid units for height or width
-
-## Minor changes
-
-- `contrast = TRUE` now assumes ggplot2 default colours for `fill` and
-  `panel.background`, so it can be used in the absence of a `fill` aesthetic.
-- `geom_bar_text()` now defaults to `contrast = TRUE`
-- `outside` now defaults to FALSE with `geom_bar_text()` unless `position =
-  "identity"`
-- Add visual examples for `fullheight`
-- Change default behaviour of `contrast` in `geom_bar_text()`; instead of
-  defaulting to TRUE, it defaults to true if the text colour is black but to
-  FALSE otherwise (#22, thanks @ds-jim)
+- Fix bug when using grid units for height or width
 
 # ggfittext 0.8.1
 
