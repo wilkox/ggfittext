@@ -1,6 +1,7 @@
-pandoc: 2.7.3
-pkgdown: 1.3.0
+pandoc: 2.9.2.1
+pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   introduction-to-ggfittext: introduction-to-ggfittext.html
+last_built: 2020-06-14T02:35Z
 
