@@ -3,7 +3,7 @@
 \docType{data}
 \name{animals}
 \alias{animals}
-\title{Six animals}
+\title{Some animals, their types and their masses}
 \format{
 A data frame with 6 rows and 4 variables:
 \describe{
@@ -17,6 +17,6 @@ A data frame with 6 rows and 4 variables:
 animals
 }
 \description{
-Six animals
+Some animals, their types and their masses
 }
 \keyword{datasets}

@@ -31,7 +31,7 @@ test_that("basic plots in polar coordinates run without errors", {
   } )
 
   expect_silent( {
-    p <- ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = label)) +
+    p <- ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = line)) +
       geom_rect() +
       geom_fit_text(aes(x = 1, y = 1), grow = TRUE, fullheight = TRUE) +
       coord_polar()
@@ -90,7 +90,7 @@ test_that("plots look the way they should", {
 
   expect_doppelganger("frost poem", {
     ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
-                     label = label, fill = 1:8)) +
+                     label = line, fill = 1:8)) +
       geom_rect() +
       coord_polar() +
       geom_fit_text(grow = TRUE, fullheight = TRUE, place = "middle", min.size = 0) +
@@ -101,9 +101,9 @@ test_that("plots look the way they should", {
     ggplot(gold) +
       coord_polar() +
       geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, 
-                    ymax = ymax, fill = line)) +
+                    ymax = ymax, fill = linenumber)) +
       geom_fit_text(
-        aes(label = label, xmin = xmin, xmax = xmax, y = (ymin + ymax) / 2),
+        aes(label = line, xmin = xmin, xmax = xmax, y = (ymin + ymax) / 2),
         min.size = 0, grow = TRUE, height = grid::unit(20, "mm")
       ) +
       scale_fill_gradient(low = "#fee391", high = "#238443")
@@ -113,9 +113,9 @@ test_that("plots look the way they should", {
     ggplot(gold) +
       coord_polar() +
       geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, 
-                    ymax = ymax, fill = line)) +
+                    ymax = ymax, fill = linenumber)) +
       geom_fit_text(
-        aes(label = label, xmin = xmin, xmax = xmax, y = (ymin + ymax) / 2),
+        aes(label = line, xmin = xmin, xmax = xmax, y = (ymin + ymax) / 2),
         min.size = 0, grow = TRUE, height = grid::unit(5, "mm")
       ) +
       scale_fill_gradient(low = "#fee391", high = "#238443")
@@ -125,9 +125,9 @@ test_that("plots look the way they should", {
     ggplot(gold) +
       coord_polar() +
       geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, 
-                    ymax = ymax, fill = line)) +
+                    ymax = ymax, fill = linenumber)) +
       geom_fit_text(
-        aes(label = label, ymin = ymin, ymax = ymax, x = (xmin + xmax) / 2),
+        aes(label = line, ymin = ymin, ymax = ymax, x = (xmin + xmax) / 2),
         min.size = 0, grow = TRUE, width = grid::unit(100, "mm")
       ) +
       scale_fill_gradient(low = "#fee391", high = "#238443")
@@ -137,9 +137,9 @@ test_that("plots look the way they should", {
     ggplot(gold) +
       coord_polar() +
       geom_rect(aes(xmin = xmin, xmax = xmax, ymin = ymin, 
-                    ymax = ymax, fill = line)) +
+                    ymax = ymax, fill = linenumber)) +
       geom_fit_text(
-        aes(label = label, ymin = ymin, ymax = ymax, x = (xmin + xmax) / 2),
+        aes(label = line, ymin = ymin, ymax = ymax, x = (xmin + xmax) / 2),
         min.size = 0, grow = TRUE, width = grid::unit(40, "mm")
       ) +
       scale_fill_gradient(low = "#fee391", high = "#238443")

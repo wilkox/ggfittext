@@ -12,7 +12,7 @@ test_that("simple bar plots and options do not produce errors", {
   } )
 
   expect_silent( {
-    p <- ggplot2::ggplot(coffees, ggplot2::aes(x = coffee, y = proportion, 
+    p <- ggplot2::ggplot(beverages, ggplot2::aes(x = beverage, y = proportion, 
                                                label = ingredient, fill = ingredient)) +
       geom_col(position = "stack") +
       geom_bar_text(position = "stack", grow = TRUE, reflow = TRUE)
@@ -20,7 +20,7 @@ test_that("simple bar plots and options do not produce errors", {
   } )
 
   expect_silent( {
-    p <- ggplot2::ggplot(coffees, ggplot2::aes(x = coffee, y = proportion, 
+    p <- ggplot2::ggplot(beverages, ggplot2::aes(x = beverage, y = proportion, 
                                                label = ingredient, fill = ingredient)) +
       geom_col(position = "dodge") +
       geom_bar_text(position = "dodge", grow = TRUE, reflow = TRUE, 

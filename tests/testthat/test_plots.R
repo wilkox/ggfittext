@@ -6,7 +6,7 @@ yeats <- data.frame(
   xmax = c(4, 8, 8, 6, 5, 6, 6,   5.5, 5.25, 5.5,  5.5),
   ymin = c(0, 4, 0, 0, 2, 3, 2,   2,   2.5,  2.75, 2.5),
   ymax = c(8, 8, 4, 2, 4, 4, 3,   2.5, 3,    3,    2.75),
-  label = c("Turning", "and", "turning", "in", "the", "widening", "gyre", "the",
+  line = c("Turning", "and", "turning", "in", "the", "widening", "gyre", "the",
             "falcon", "cannot", "hear"),
   angle = c(0, 315, 270, 225, 180, 135, 90, 45, 0, 315, 270)
 )
@@ -55,7 +55,7 @@ test_that("plots look the way they should", {
   })
 
   vdiffr::expect_doppelganger("coord_flip with dodge", {
-    ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
+    ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
                         fill = ingredient)) +
       geom_col(position = "dodge") +
       geom_bar_text(position = "dodge") +
@@ -63,7 +63,7 @@ test_that("plots look the way they should", {
   })
 
   vdiffr::expect_doppelganger("coord_flip with dodge and grow and reflow", {
-    ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
+    ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
                         fill = ingredient)) +
       geom_col(position = "dodge") +
       geom_bar_text(position = "dodge", grow = TRUE, reflow = TRUE, 
@@ -72,14 +72,14 @@ test_that("plots look the way they should", {
   })
 
   vdiffr::expect_doppelganger("implied flip with dodge", {
-    ggplot(coffees, aes(y = coffee, x = proportion, label = ingredient,
+    ggplot(beverages, aes(y = beverage, x = proportion, label = ingredient,
                         fill = ingredient)) +
       geom_col(position = "dodge") +
       geom_bar_text(position = "dodge")
   })
 
   vdiffr::expect_doppelganger("implied flip with dodge and grow and reflow", {
-    ggplot(coffees, aes(y = coffee, x = proportion, label = ingredient,
+    ggplot(beverages, aes(y = beverage, x = proportion, label = ingredient,
                         fill = ingredient)) +
       geom_col(position = "dodge") +
       geom_bar_text(position = "dodge", grow = TRUE, reflow = TRUE, 
@@ -88,9 +88,9 @@ test_that("plots look the way they should", {
 
 
   vdiffr::expect_doppelganger("implied doesn't misfire with integer y", {
-    c2 <- coffees
+    c2 <- beverages
     c2$proportion <- 1:6
-    ggplot(c2, aes(x = coffee, y = proportion, label = ingredient,
+    ggplot(c2, aes(x = beverage, y = proportion, label = ingredient,
                         fill = ingredient)) +
     geom_col(position = "dodge") +
     geom_bar_text(position = "dodge")
@@ -104,7 +104,7 @@ test_that("plots look the way they should", {
 
   vdiffr::expect_doppelganger("Angles and basic placement", {
     ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
-                  label, angle = angle)) +
+                  line, angle = angle)) +
     geom_rect(fill = "grey", colour = "black") +
     geom_fit_text(grow = TRUE, min.size = 0, size = 48)
   })
@@ -140,14 +140,14 @@ test_that("plots look the way they should", {
   })
 
   vdiffr::expect_doppelganger("Stacked bar plot", {
-    ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
+    ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
                         fill = ingredient)) +
       geom_col(position = "stack") +
       geom_bar_text(position = "stack", grow = TRUE, reflow = TRUE, size = 48)
   })
 
   vdiffr::expect_doppelganger("Dodged and flipped bar plot", {
-    ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
+    ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
                         fill = ingredient)) +
       geom_col(position = "dodge") +
       geom_bar_text(position = "dodge", grow = TRUE, reflow = TRUE, 

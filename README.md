@@ -6,7 +6,7 @@ Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travi
 
 # ggfittext
 
-ggfittext provides a ggplot2 geom for fitting text into boxes.
+ggfittext provides some ggplot2 geoms for fitting text into boxes.
 
 ![](man/figures/README-hero-1.png)<!-- -->
 
@@ -27,10 +27,10 @@ devtools::install_github("wilkox/ggfittext")
 ## Fitting text inside a box
 
 Sometimes you want to draw some text in a ggplot2 plot so that it fits
-inside a defined area. It’s possible to achieve this by manually
-fiddling with the font size, but this is both tedious and
-un-reproducible. ggfittext provides a geom called `geom_fit_text()` that
-automatically resizes text to fit inside a box. It works like this:
+inside a defined area. You can do this by manually fiddling with the
+font size, but this is tedious and un-reproducible. ggfittext provides a
+geom called `geom_fit_text()` that automatically resizes text to fit
+inside a box. It works like this:
 
 ``` r
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
@@ -41,9 +41,9 @@ ggplot(animals, aes(x = type, y = flies, label = animal)) +
 ![](man/figures/README-unnamed-chunk-4-1.png)<!-- -->
 
 As with `geom_text()`, the position of the text is set by the `x` and
-`y` aesthetics. `geom_fit_text()` automatically infers the width and
-height of the box in which the text is allowed to fit, and shrinks down
-any text that is too big.
+`y` aesthetics. `geom_fit_text()` tries to infer the width and height of
+the box in which the text is allowed to fit, and shrinks down any text
+that is too big.
 
 ## Reflowing text
 
@@ -67,7 +67,7 @@ TRUE` will increase the text size to the maximum that will fit in the
 box. This works well in conjunction with `reflow`:
 
 ``` r
-ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
+ggplot(animals, aes(x = type, y = flies, label = animal)) +
   geom_tile(fill = "white", colour = "black") +
   geom_fit_text(reflow = TRUE, grow = TRUE)
 ```
@@ -78,8 +78,7 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
 
 By default, text is placed in the centre of the box. However, you can
 place it in a corner or on a side of the box with the `place` argument,
-which takes values “top”, “topright”, “right”, “bottomright”, “bottom”,
-“bottomleft” and so on:
+which takes values like “top”, “topright”, “bottomleft” and so on:
 
 ``` r
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
@@ -91,8 +90,8 @@ ggplot(animals, aes(x = type, y = flies, label = animal)) +
 
 ## Bar plots
 
-ggfittext provides a convenience function `geom_bar_text()` for
-labelling bars in bar plots:
+ggfittext also provides a geom `geom_bar_text()` for labelling bars in
+bar plots:
 
 ``` r
 ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
@@ -102,22 +101,21 @@ ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
 
 ![](man/figures/README-unnamed-chunk-8-1.png)<!-- -->
 
-`geom_bar_text()` also works with stacked bar plots (`position =
-"stack"`):
+`geom_bar_text()` works with stacked bar plots:
 
 ``` r
-ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
+ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
                     fill = ingredient)) +
   geom_col(position = "stack") +
-  geom_bar_text(position = "stack", grow = TRUE, reflow = TRUE)
+  geom_bar_text(position = "stack", reflow = TRUE)
 ```
 
 ![](man/figures/README-unnamed-chunk-9-1.png)<!-- -->
 
-And with dodged bar plots, and `coord_flip()`:
+And it works with dodged bar plots, and with flipped bar plots:
 
 ``` r
-ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
+ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
                     fill = ingredient)) +
   geom_col(position = "dodge") +
   geom_bar_text(position = "dodge", grow = TRUE, reflow = TRUE, 
@@ -127,11 +125,11 @@ ggplot(coffees, aes(x = coffee, y = proportion, label = ingredient,
 
 ![](man/figures/README-unnamed-chunk-10-1.png)<!-- -->
 
-## Specifying the box coordinates
+## Specifying the box limits
 
-If you want to manually set the edges of the box (instead of having them
-inferred from `x` and `y`), you can use `xmin` & `xmax` and/or `ymin` &
-`ymax`:
+If you want to manually set the limits of the box (instead of having
+them inferred from `x` and `y`), you can use `xmin` & `xmax` and/or
+`ymin` & `ymax`:
 
 ``` r
 ggplot(presidential, aes(ymin = start, ymax = end, x = party, label = name)) +
@@ -149,13 +147,12 @@ and/or `y`.
 ## Experimental feature: text in polar coordinates
 
 Text can be drawn in polar coordinates with `geom_fit_text()` simply by
-adding `coord_polar()` to the plot. This feature is experimental and
-currently only in the development version; any bug reports are very
-welcome.
+adding `coord_polar()` to the plot. This feature is experimental and any
+bug reports are very welcome.
 
 ``` r
 ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
-                 fill = line, label = label)) +
+                 fill = linenumber, label = line)) +
   coord_polar() +
   geom_rect() +
   geom_fit_text(min.size = 0, grow = TRUE) +
@@ -191,14 +188,13 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
     `TRUE`, text that is placed at “top”, “bottom”, “left” or “right”
     and must be shrunk smaller than `min.size` to fit in the box will be
     flipped to the outside of the box (if it fits there). This is mostly
-    useful for drawing text inside bars in a bar plot, so it is `TRUE`
-    by default for `geom_bar_text()` when `position = "stacked"`.
+    useful for drawing text inside bars in a bar plot.
   - **`hjust`** and **`vjust`** set the horizontal and vertical
     justification of the text, scaled between 0 (left/bottom) and 1
     (right/top). These are both 0.5 by default.
-  - **`formatter`** allows you to set a function that will be applied to
-    the text before it is drawn. This is mostly useful in contexts where
-    variables may be interpolated, such as when using
+  - **`formatter`** allows you to provide a function that will be
+    applied to the text before it is drawn. This is mostly useful in
+    contexts where variables may be interpolated, such as when using
     [gganimate](http://www.gganimate.com).
   - **`fullheight`** is automatically set depending on place, but can be
     overridden with this option. This is used to determine the bounding

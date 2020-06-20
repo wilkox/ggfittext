@@ -1,3 +1,11 @@
+# ggfittext (development version)
+
+## Minor changes
+
+- Various minor copy-editing changes to the README and introductory vignette
+- `coffees` data frame renamed to `beverages`, some other minor changes to
+  example data frames
+
 # ggfittext 0.9.0
 
 ## Major changes

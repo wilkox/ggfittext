@@ -3,22 +3,22 @@
 \docType{data}
 \name{gold}
 \alias{gold}
-\title{Robert Frost's poem \emph{Nothing Gold Can Stay}}
+\title{Robert Frost's poem \emph{Nothing Gold Can Stay} (1923)}
 \format{
 A data frame with 8 rows and 5 variables:
 \describe{
-\item{label}{a line from the poem}
+\item{line}{a line from the poem}
 \item{xmin}{the xmin coordinate with which to draw the word}
 \item{xmax}{the xmax coordinate with which to draw the word}
 \item{ymin}{the ymin coordinate with which to draw the word}
 \item{ymax}{the ymax coordinate with which to draw the word}
-\item{line}{the line number}
+\item{linenumber}{the line number}
 }
 }
 \usage{
 gold
 }
 \description{
-Robert Frost's poem \emph{Nothing Gold Can Stay}
+Robert Frost's poem \emph{Nothing Gold Can Stay} (1923)
 }
 \keyword{datasets}
