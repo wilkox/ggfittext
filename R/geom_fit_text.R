@@ -344,15 +344,8 @@ makeContent.fittexttree <- function(x) {
   if (is.null(x$contrast)) x$contrast <- FALSE
   if (is.null(x$outside)) x$outside <- FALSE
 
-  # Determine which aesthetics to use for the bounding box
-  # Rules: if xmin/xmax are available, use these in preference to x UNLESS
-  # xmin == xmax, because this probably indicates position = "stack"; in this
-  # case, use x if it is available
-
-  # If xmin/xmax are not provided, or all xmin == xmax, generate boundary box
-  # from width
-  if (!("xmin" %in% names(data)) |
-      (identical(data$xmin, data$xmax) & "x" %in% names(data))) {
+  # If xmin/xmax are not provided, generate boundary box from width
+  if (!("xmin" %in% names(data))) {
     data$xmin <- data$x - (
       grid::convertWidth(
         grid::unit(x$width, "mm"),
@@ -369,11 +362,8 @@ makeContent.fittexttree <- function(x) {
     )
   }
 
-  # If ymin/ymax are not provided, or all ymin == ymax, generate boundary box
-  # from height
-  if (!("ymin" %in% names(data)) |
-      (identical(data$ymin, data$ymax) &
-       "y" %in% names(data))) {
+  # If ymin/ymax are not provided, generate boundary box from height
+  if (!("ymin" %in% names(data))) {
     data$ymin <- data$y - (
       grid::convertHeight(
         grid::unit(x$height, "mm"),

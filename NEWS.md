@@ -5,6 +5,9 @@
 - Various minor copy-editing changes to the README and introductory vignette
 - `coffees` data frame renamed to `beverages`, some other minor changes to
   example data frames
+- Change the heuristic for selecting between 'xmin/xmax' and 'width' (or
+  'ymin/ymax' and 'height'), as it was causing a bug with zero-height boxes
+  (#26)
 
 # ggfittext 0.9.0
 

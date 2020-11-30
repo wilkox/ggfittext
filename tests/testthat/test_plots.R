@@ -146,6 +146,23 @@ test_that("plots look the way they should", {
       geom_bar_text(position = "stack", grow = TRUE, reflow = TRUE, size = 48)
   })
 
+  vdiffr::expect_doppelganger("Stacked bar plot with '0' value", {
+    beverages2 <- beverages
+    beverages2[1, 3] <- 0
+    ggplot(beverages2, aes(x = beverage, y = proportion, label = ingredient,
+                        fill = ingredient)) +
+      geom_col(position = "stack") +
+      geom_bar_text(position = "stack", grow = TRUE, reflow = TRUE, size = 48)
+  })
+
+  vdiffr::expect_doppelganger("Stacked and flipped bar plot", {
+    ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
+                        fill = ingredient)) +
+      geom_col(position = "stack") +
+      geom_bar_text(position = "stack", grow = TRUE, reflow = TRUE, size = 48) +
+      coord_flip()
+  })
+
   vdiffr::expect_doppelganger("Dodged and flipped bar plot", {
     ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
                         fill = ingredient)) +

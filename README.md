@@ -62,9 +62,9 @@ ggplot(animals, aes(x = type, y = flies, label = animal)) +
 
 ## Growing text
 
-If you want the text to be as large as possible, the argument `grow =
-TRUE` will increase the text size to the maximum that will fit in the
-box. This works well in conjunction with `reflow`:
+If you want the text to be as large as possible, the argument
+`grow = TRUE` will increase the text size to the maximum that will fit
+in the box. This works well in conjunction with `reflow`:
 
 ``` r
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
@@ -166,10 +166,8 @@ ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
 All arguments to `geom_fit_text()` can also be used with
 `geom_bar_text()`.
 
-  - **`contrast`** can be used to automatically invert the colour of the
+-   **`contrast`** can be used to automatically invert the colour of the
     text so it contrasts against a background `fill`:
-
-<!-- end list -->
 
 ``` r
 ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
@@ -179,24 +177,24 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
 
 ![](man/figures/README-unnamed-chunk-13-1.png)<!-- -->
 
-  - **`padding.x`** and **`padding.y`** can be used to set the padding
+-   **`padding.x`** and **`padding.y`** can be used to set the padding
     between the text and the edge of the box. By default this is 1 mm.
     These values must be given as `grid::unit()` objects.
-  - **`min.size`** sets the minimum font size in points, by default 4
+-   **`min.size`** sets the minimum font size in points, by default 4
     pt. Text smaller than this will be hidden (see also `outside`).
-  - **`outside`** is `FALSE` by default for `geom_fit_text()`. If
+-   **`outside`** is `FALSE` by default for `geom_fit_text()`. If
     `TRUE`, text that is placed at “top”, “bottom”, “left” or “right”
     and must be shrunk smaller than `min.size` to fit in the box will be
     flipped to the outside of the box (if it fits there). This is mostly
     useful for drawing text inside bars in a bar plot.
-  - **`hjust`** and **`vjust`** set the horizontal and vertical
+-   **`hjust`** and **`vjust`** set the horizontal and vertical
     justification of the text, scaled between 0 (left/bottom) and 1
     (right/top). These are both 0.5 by default.
-  - **`formatter`** allows you to provide a function that will be
+-   **`formatter`** allows you to provide a function that will be
     applied to the text before it is drawn. This is mostly useful in
     contexts where variables may be interpolated, such as when using
     [gganimate](http://www.gganimate.com).
-  - **`fullheight`** is automatically set depending on place, but can be
+-   **`fullheight`** is automatically set depending on place, but can be
     overridden with this option. This is used to determine the bounding
     box around the text. If `FALSE`, the bounding box includes the
     x-height of the text and ascenders, but not any descenders. If TRUE,
