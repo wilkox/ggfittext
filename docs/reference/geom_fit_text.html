@@ -75,7 +75,7 @@ labelling bar plots generated with geom_col() and geom_bar()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggfittext</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
       </span>
     </div>
 
@@ -138,68 +138,68 @@ box.
 labelling bar plots generated with <code>geom_col()</code> and <code>geom_bar()</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>geom_bar_text</span>(
-  <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>stat</span> <span class='kw'>=</span> <span class='st'>"identity"</span>,
-  <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"identity"</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>padding.x</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>),
-  <span class='kw'>padding.y</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>),
-  <span class='kw'>min.size</span> <span class='kw'>=</span> <span class='fl'>8</span>,
-  <span class='kw'>place</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>reflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>hjust</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>vjust</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fullheight</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>formatter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>contrast</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>outside</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)
+    <pre class="usage"><span class='fu'>geom_bar_text</span><span class='op'>(</span>
+  mapping <span class='op'>=</span> <span class='cn'>NULL</span>,
+  data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  stat <span class='op'>=</span> <span class='st'>"identity"</span>,
+  position <span class='op'>=</span> <span class='st'>"identity"</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  show.legend <span class='op'>=</span> <span class='cn'>NA</span>,
+  inherit.aes <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  padding.x <span class='op'>=</span> <span class='fu'>grid</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='st'>"mm"</span><span class='op'>)</span>,
+  padding.y <span class='op'>=</span> <span class='fu'>grid</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='st'>"mm"</span><span class='op'>)</span>,
+  min.size <span class='op'>=</span> <span class='fl'>8</span>,
+  place <span class='op'>=</span> <span class='cn'>NULL</span>,
+  grow <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  reflow <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  hjust <span class='op'>=</span> <span class='cn'>NULL</span>,
+  vjust <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fullheight <span class='op'>=</span> <span class='cn'>NULL</span>,
+  width <span class='op'>=</span> <span class='cn'>NULL</span>,
+  height <span class='op'>=</span> <span class='cn'>NULL</span>,
+  formatter <span class='op'>=</span> <span class='cn'>NULL</span>,
+  contrast <span class='op'>=</span> <span class='cn'>NULL</span>,
+  outside <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
-<span class='fu'>geom_fit_text</span>(
-  <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>stat</span> <span class='kw'>=</span> <span class='st'>"identity"</span>,
-  <span class='kw'>position</span> <span class='kw'>=</span> <span class='st'>"identity"</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>inherit.aes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>padding.x</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>),
-  <span class='kw'>padding.y</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span>(<span class='fl'>1</span>, <span class='st'>"mm"</span>),
-  <span class='kw'>min.size</span> <span class='kw'>=</span> <span class='fl'>4</span>,
-  <span class='kw'>place</span> <span class='kw'>=</span> <span class='st'>"centre"</span>,
-  <span class='kw'>outside</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>reflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>hjust</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>vjust</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fullheight</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>formatter</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>contrast</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'>geom_fit_text</span><span class='op'>(</span>
+  mapping <span class='op'>=</span> <span class='cn'>NULL</span>,
+  data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  stat <span class='op'>=</span> <span class='st'>"identity"</span>,
+  position <span class='op'>=</span> <span class='st'>"identity"</span>,
+  na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  show.legend <span class='op'>=</span> <span class='cn'>NA</span>,
+  inherit.aes <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  padding.x <span class='op'>=</span> <span class='fu'>grid</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='st'>"mm"</span><span class='op'>)</span>,
+  padding.y <span class='op'>=</span> <span class='fu'>grid</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/grid/unit.html'>unit</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='st'>"mm"</span><span class='op'>)</span>,
+  min.size <span class='op'>=</span> <span class='fl'>4</span>,
+  place <span class='op'>=</span> <span class='st'>"centre"</span>,
+  outside <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  grow <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  reflow <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  hjust <span class='op'>=</span> <span class='cn'>NULL</span>,
+  vjust <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fullheight <span class='op'>=</span> <span class='cn'>NULL</span>,
+  width <span class='op'>=</span> <span class='cn'>NULL</span>,
+  height <span class='op'>=</span> <span class='cn'>NULL</span>,
+  formatter <span class='op'>=</span> <span class='cn'>NULL</span>,
+  contrast <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mapping</th>
-      <td><p><code><a href='https://rdrr.io/pkg/ggplot2/man/aes.html'>ggplot2::aes()</a></code> object as standard in 'ggplot2'. Note
+      <td><p><code><a href='https://ggplot2.tidyverse.org/reference/aes.html'>ggplot2::aes()</a></code> object as standard in 'ggplot2'. Note
 that aesthetics specifying the box must be provided. See Details.</p></td>
     </tr>
     <tr>
       <th>data, stat, position, na.rm, show.legend, inherit.aes, ...</th>
       <td><p>Standard geom
-arguments as for <code><a href='https://rdrr.io/pkg/ggplot2/man/geom_text.html'>ggplot2::geom_text()</a></code>.</p></td>
+arguments as for <code><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>ggplot2::geom_text()</a></code>.</p></td>
     </tr>
     <tr>
       <th>padding.x, padding.y</th>
@@ -277,7 +277,7 @@ when using <code>geom_bar_text()</code>, otherwise FALSE.</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Except where noted, <code>geom_fit_text()</code> behaves more or less like
-<code><a href='https://rdrr.io/pkg/ggplot2/man/geom_text.html'>ggplot2::geom_text()</a></code>.</p>
+<code><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>ggplot2::geom_text()</a></code>.</p>
 <p>There are three ways to define the box in which you want the text to be
 drawn. The extents of the box on the x and y axes are independent, so any
 combination of these methods can be used:</p><ol>
@@ -322,9 +322,10 @@ features are available when doing so.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/ggplot.html'>ggplot</a></span>(<span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/ggplot2/man/presidential.html'>presidential</a></span>, <span class='kw pkg'>ggplot2</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/ggplot2/man/aes.html'>aes</a></span>(<span class='kw'>ymin</span> <span class='kw'>=</span> <span class='no'>start</span>, <span class='kw'>ymax</span> <span class='kw'>=</span> <span class='no'>end</span>,
-    <span class='kw'>label</span> <span class='kw'>=</span> <span class='no'>name</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>party</span>)) +
-  <span class='fu'>geom_fit_text</span>(<span class='kw'>grow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='geom_fit_text-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'>ggplot2</span><span class='fu'>::</span><span class='va'><a href='https://ggplot2.tidyverse.org/reference/presidential.html'>presidential</a></span>, <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>ymin <span class='op'>=</span> <span class='va'>start</span>, ymax <span class='op'>=</span> <span class='va'>end</span>,
+    label <span class='op'>=</span> <span class='va'>name</span>, x <span class='op'>=</span> <span class='va'>party</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_fit_text</span><span class='op'>(</span>grow <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='img'><img src='geom_fit_text-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -341,7 +342,7 @@ features are available when doing so.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

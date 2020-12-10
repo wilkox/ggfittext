@@ -1,4 +1,4 @@
-# ggfittext (development version)
+# ggfittext 0.9.1
 
 ## Minor changes
 
@@ -8,6 +8,10 @@
 - Change the heuristic for selecting between 'xmin/xmax' and 'width' (or
   'ymin/ymax' and 'height'), as it was causing a bug with zero-height boxes
   (#26)
+
+## Bug fixes
+
+- Make vdiffr tests conditional
 
 # ggfittext 0.9.0
 
