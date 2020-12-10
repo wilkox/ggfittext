@@ -1,5 +1,4 @@
 library(ggplot2)
-library(vdiffr)
 grid::current.viewport()
 
 polar_d <- data.frame(
