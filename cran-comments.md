@@ -1,6 +1,6 @@
 # Test environments
 
-* local OS X install, R 4.0.0
+* local OS X install, R 4.0.3
 * ubuntu 16.04.6 (on travis-ci), 3.6.3, 4.0.0, and R-devel
 * win-builder (with `devtools::check_win_release()`)
 
@@ -8,8 +8,10 @@
 
 There were no ERRORs, WARNINGs or NOTEs.
 
-# Downstream dependencies
+# revdepcheck results
 
-R CMD check run on downstream dependencies with `revdepcheck::revdep_check()`.
-Two reverse dependencies (metacoder and ribosomeProfilingQC) generated errors
-but these do not seem to be related to changes to ggfittext.
+We checked 12 reverse dependencies (10 from CRAN + 2 from BioConductor),
+comparing R CMD check results across CRAN and dev versions of this package.
+
+* We saw 0 new problems
+* We failed to check 0 packages
