@@ -1,4 +1,3 @@
-library(ggplot2)
 grid::current.viewport()
 
 polar_d <- data.frame(
