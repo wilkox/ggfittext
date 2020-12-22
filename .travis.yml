@@ -12,5 +12,10 @@ r:
 r_packages:
 - ggplot2
 
+addons:
+  apt:
+    packages:
+      - libgit2-dev
+
 after_success:
   - Rscript -e 'covr::codecov()'
