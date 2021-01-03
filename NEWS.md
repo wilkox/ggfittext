@@ -12,6 +12,8 @@
 ## Bug fixes
 
 - Make vdiffr tests conditional
+- Give a warning, rather than stop with an error, when the `contrast = TRUE`
+  argument is used and the fill value is NA
 
 # ggfittext 0.9.0
 

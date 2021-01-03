@@ -408,12 +408,32 @@ makeContent.fittexttree <- function(x) {
       return(grid::nullGrob())
     }
 
-    # Reverse colours if desired
+    # If contrast is set, and the shade of the text colour is too close to the
+    # shade of the fill colour, change the text colour to its complement
     if (x$contrast) {
+
+      # If the fill is NA, emit a warning and set background to the default
+      # ggplot2 grey
+      if ("fill" %in% names(text)) {
+        if (is.na(text$fill)) {
+          warning(
+            "For label '", 
+            text$label, 
+            "', trying to contrast text against a fill of 'NA'",
+            call. = FALSE
+          )
+          text$fill <- "grey35"
+        }
+      }
+
+      # If the text colour is NA, set to black
+      if (is.na(text$colour)) text$colour <- "black"
+
       # If contrast is set but there is no fill aesthetic, assume the default
       # ggplot2 dark grey fill
       bg_colour <- ifelse("fill" %in% names(text), text$fill, "grey35")
       text_colour <- ifelse("colour" %in% names(text), text$colour, "black")
+
       if (abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50) {
         complement <- shades::complement(shades::shade(text_colour))
         text$colour <- as.character(complement)
