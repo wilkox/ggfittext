@@ -357,43 +357,19 @@ makeContent.fittexttree <- function(fttree) {
                               fttree$fullheight)
 
   # Convert padding.x and padding.y to npc units
-  padding.x <- grid::convertWidth(fttree$padding.x, "npc", valueOnly = TRUE)
-  padding.y <- grid::convertHeight(fttree$padding.y, "npc", valueOnly = TRUE)
+  padding.x <- wunit2npc(fttree$padding.x)
+  padding.y <- hunit2npc(fttree$padding.y)
 
   # If xmin/xmax are not provided, generate boundary box from width
   if (!("xmin" %in% names(data))) {
-    data$xmin <- data$x - (
-      grid::convertWidth(
-        grid::unit(fttree$width, "mm"),
-        "npc",
-        valueOnly = TRUE
-      ) / 2
-    )
-    data$xmax <- data$x + (
-      grid::convertWidth(
-        grid::unit(fttree$width, "mm"),
-        "npc",
-        valueOnly = TRUE
-      ) / 2
-    )
+    data$xmin <- data$x - (wmm2npc(fttree$width) / 2)
+    data$xmax <- data$x + (wmm2npc(fttree$width) / 2)
   }
 
   # If ymin/ymax are not provided, generate boundary box from height
   if (!("ymin" %in% names(data))) {
-    data$ymin <- data$y - (
-      grid::convertHeight(
-        grid::unit(fttree$height, "mm"),
-        "npc",
-        valueOnly = TRUE
-      ) / 2
-    )
-    data$ymax <- data$y + (
-      grid::convertHeight(
-        grid::unit(fttree$height, "mm"),
-        "npc",
-        valueOnly = TRUE
-      ) / 2
-    )
+    data$ymin <- data$y - (hmm2npc(fttree$height) / 2)
+    data$ymax <- data$y + (hmm2npc(fttree$height) / 2)
   }
 
   # Remove any rows with NA boundaries
@@ -409,16 +385,17 @@ makeContent.fittexttree <- function(fttree) {
     )
   }
 
+  # Remove any rows with blank labels
+  data <- data[which(! is.na(data$label) | data$label == ""), ]
+
+  # Clean up angles
+  data$angle <- data$angle %% 360
+
   # Prepare grob for each text label
   grobs <- lapply(seq_len(nrow(data)), function(i) {
 
     # Convenience
     text <- data[i, ]
-
-    # If the label is blank, return an empty grob
-    if (text$label == "" | is.na(text$label)) {
-      return(grid::nullGrob())
-    }
 
     # If contrast is set, and the shade of the text colour is too close to the
     # shade of the fill colour, change the text colour to its complement
@@ -461,9 +438,6 @@ makeContent.fittexttree <- function(fttree) {
       }
     }
 
-    # Clean up angle
-    text$angle <- text$angle %% 360
-
     # Create textGrob
     tg <- grid::textGrob(
       label = text$label,
@@ -486,16 +460,8 @@ makeContent.fittexttree <- function(fttree) {
     tgdim <- tgDimensions(tg, fttree$fullheight, text$angle)
 
     # Get dimensions of bounding box, in mm
-    xdim <- grid::convertWidth(
-      grid::unit(abs(text$xmin - text$xmax) - (2 * padding.x), "npc"),
-      "mm",
-      TRUE
-    )
-    ydim <- grid::convertHeight(
-      grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
-      "mm",
-      TRUE
-    )
+    xdim <- wnpc2mm(abs(text$xmin - text$xmax) - (2 * padding.x))
+    ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * padding.y))
 
     # The reflowing and resizing steps are encapsulated in a function to allow
     # for the 'outside' argument
@@ -602,16 +568,8 @@ makeContent.fittexttree <- function(fttree) {
           text$xmin <- 0
           fttree$place <- "right"
         }
-        xdim <- grid::convertWidth(
-          grid::unit(abs(text$xmin - text$xmax) - (2 * padding.x), "npc"),
-          "mm",
-          TRUE
-        )
-        ydim <- grid::convertHeight(
-          grid::unit(abs(text$ymin - text$ymax) - (2 * padding.y), "npc"),
-          "mm",
-          TRUE
-        )
+        xdim <- wnpc2mm(abs(text$xmin - text$xmax) - (2 * padding.x))
+        ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * padding.y))
         tg$gp$fontsize <- text$size
         fttree$outside <- FALSE
         # If we're moving the text outside and contrast is true, set the text
@@ -648,25 +606,21 @@ makeContent.fittexttree <- function(fttree) {
     if (tg$rot == 0 | tg$rot == 180) {
       tg_width_unrot <- tgdim$width
       tg_height_unrot <- tgdim$height
-      if (fttree$fullheight) {
-        tg_descent_unrot <- grid::convertHeight(tgdim$descent, "mm", TRUE)
-      }
+      if (fttree$fullheight) tg_descent_unrot <- hunit2mm(tgdim$descent)
     } else if (tg$rot == 90 | tg$rot == 270) {
       tg_width_unrot <- tgdim$height
       tg_height_unrot <- tgdim$width
       if (fttree$fullheight) {
-        tg_descent_unrot <- grid::convertWidth(tgdim$descent, "mm", TRUE)
+        tg_descent_unrot <- wunit2mm(tgdim$descent)
       }
     } else {
       # For some reason, we don't get accurate values if we do this with the
       # original textGrob so we create a copy
       unrot <- tg
       unrot$rot <- 0
-      tg_width_unrot <- grid::convertWidth(grid::grobWidth(unrot), "mm", TRUE)
-      tg_height_unrot <- grid::convertHeight(grid::grobHeight(unrot), "mm", TRUE)
-      if (fttree$fullheight) {
-        tg_descent_unrot <- grid::convertHeight(grid::grobDescent(unrot), "mm", TRUE)
-      }
+      tg_width_unrot <- wunit2mm(grid::grobWidth(unrot))
+      tg_height_unrot <- hunit2mm(grid::grobHeight(unrot))
+      if (fttree$fullheight) tg_descent_unrot <- hunit2mm(grid::grobDescent(unrot))
     }
 
     # We can use these values to calculate the magnitude of the vector from the
@@ -711,16 +665,8 @@ makeContent.fittexttree <- function(fttree) {
 
     # We can now use these to calculate the x and y offsets of the anchor point
     # from the centre point. For convenience, we will convert these to npc
-    x_offset <- grid::convertWidth(
-      grid::unit(magnitude * cos(deg2rad(direction_angle)), "mm"),
-      "npc",
-      TRUE
-    )
-    y_offset <- grid::convertHeight(
-      grid::unit(magnitude * sin(deg2rad(direction_angle)), "mm"),
-      "npc",
-      TRUE
-    )
+    x_offset <- wmm2npc(magnitude * cos(deg2rad(direction_angle)))
+    y_offset <- hmm2npc(magnitude * sin(deg2rad(direction_angle)))
 
     # Specify the bounding box limits in npc coordinates
     xmin <- text$xmin + padding.x
@@ -729,8 +675,8 @@ makeContent.fittexttree <- function(fttree) {
     ymax <- text$ymax - padding.y
 
     # Convert the textGrob dimensions into npc
-    tgdim$width <- grid::convertWidth(grid::unit(tgdim$width, "mm"), "npc", TRUE)
-    tgdim$height <- grid::convertHeight(grid::unit(tgdim$height, "mm"), "npc", TRUE)
+    tgdim$width <- wmm2npc(tgdim$width)
+    tgdim$height <- hmm2npc(tgdim$height)
 
     # Place the text
     if (fttree$place %in% c("topleft", "left", "bottomleft")) {
@@ -778,16 +724,15 @@ geom_shrink_text <- function(...) {
 deg2rad <- function(deg) { deg * (pi / 180) }
 rad2deg <- function(rad) { rad * (180 / pi) }
 
-#' Function to get textgrob dimensions, in absolute units (mm)
+#' Get textgrob dimensions, in absolute units (mm)
 #' 
 #' @noRd
 tgDimensions <- function(tg, fullheight, angle) {
-  width <- grid::convertWidth(grid::grobWidth(tg), "mm", TRUE)
+  width <- wunit2mm(grid::grobWidth(tg))
   height <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
   if (fullheight) {
     descent <- grid::grobDescent(tg)
-    width <- width + abs(grid::convertWidth(descent, "mm", TRUE) * 
-                         sin(deg2rad(angle)))
+    width <- width + abs(wunit2mm(descent) * sin(deg2rad(angle)))
     height <- height + abs(grid::convertHeight(descent, "mm", TRUE) * 
                            cos(deg2rad(angle)))
   } else {
@@ -796,3 +741,16 @@ tgDimensions <- function(tg, fullheight, angle) {
   list(width = width, height = height, descent = descent)
 }
 
+
+#' Width and height unit conversions
+#'
+#' @noRd
+wunit2npc <- function(w) grid::convertWidth(w, "npc", valueOnly = TRUE)
+wmm2npc <- function(w) wunit2npc(grid::unit(w, "mm"))
+wunit2mm <- function(w) grid::convertWidth(w, "mm", valueOnly = TRUE)
+wnpc2mm <- function(w) wunit2mm(grid::unit(w, "npc"))
+
+hunit2npc <- function(h) grid::convertHeight(h, "npc", valueOnly = TRUE)
+hmm2npc <- function(h) hunit2npc(grid::unit(h, "mm"))
+hunit2mm <- function(h) grid::convertHeight(h, "mm", valueOnly = TRUE)
+hnpc2mm <- function(h) hunit2mm(grid::unit(h, "npc"))
