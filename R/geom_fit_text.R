@@ -356,8 +356,8 @@ makeContent.fittexttree <- function(ftt) {
   ftt$fullheight <- ftt$fullheight %||% ftt$grow
 
   # Convert padding.x and padding.y to npc units
-  padding.x <- wunit2npc(ftt$padding.x)
-  padding.y <- hunit2npc(ftt$padding.y)
+  ftt$padding.x <- wunit2npc(ftt$padding.x)
+  ftt$padding.y <- hunit2npc(ftt$padding.y)
 
   # If xmin/xmax are not provided, generate boundary box from width
   if (!("xmin" %in% names(data))) {
@@ -459,8 +459,8 @@ makeContent.fittexttree <- function(ftt) {
     tgdim <- tgDimensions(tg, ftt$fullheight, text$angle)
 
     # Get dimensions of bounding box, in mm
-    xdim <- wnpc2mm(abs(text$xmin - text$xmax) - (2 * padding.x))
-    ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * padding.y))
+    xdim <- wnpc2mm(abs(text$xmin - text$xmax) - (2 * ftt$padding.x))
+    ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * ftt$padding.y))
 
     # The reflowing and resizing steps are encapsulated in a function to allow
     # for the 'outside' argument
@@ -567,8 +567,8 @@ makeContent.fittexttree <- function(ftt) {
           text$xmin <- 0
           ftt$place <- "right"
         }
-        xdim <- wnpc2mm(abs(text$xmin - text$xmax) - (2 * padding.x))
-        ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * padding.y))
+        xdim <- wnpc2mm(abs(text$xmin - text$xmax) - (2 * ftt$padding.x))
+        ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * ftt$padding.y))
         tg$gp$fontsize <- text$size
         ftt$outside <- FALSE
         # If we're moving the text outside and contrast is true, set the text
@@ -668,10 +668,10 @@ makeContent.fittexttree <- function(ftt) {
     y_offset <- hmm2npc(magnitude * sin(deg2rad(direction_angle)))
 
     # Specify the bounding box limits in npc coordinates
-    xmin <- text$xmin + padding.x
-    xmax <- text$xmax - padding.x
-    ymin <- text$ymin + padding.y
-    ymax <- text$ymax - padding.y
+    xmin <- text$xmin + ftt$padding.x
+    xmax <- text$xmax - ftt$padding.x
+    ymin <- text$ymin + ftt$padding.y
+    ymax <- text$ymax - ftt$padding.y
 
     # Convert the textGrob dimensions into npc
     tgdim$width <- wmm2npc(tgdim$width)
