@@ -1,7 +1,8 @@
 #' Default values
 #'
 #' @noRd
-"%||%" <- function(a, b) ifelse(is.null(a), b, a)
+"%||%" <- function(a, b) if (is.null(a)) b else a
+"%NA%" <- function(a, b) ifelse(is.na(a), b, a)
 
 #' Conversions between degrees and radians
 #'

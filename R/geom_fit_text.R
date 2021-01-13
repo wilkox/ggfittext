@@ -340,7 +340,7 @@ makeContent.fittexttree <- function(ftt) {
   # Extract data
   data <- ftt$data
 
-  # Set default parameters
+  # Set and check default parameters
   ftt$outside <- ftt$outside %||% FALSE
   ftt$contrast <- ftt$contrast %||% FALSE
   ftt$vjust <- ftt$vjust %||% 0.5
@@ -358,6 +358,10 @@ makeContent.fittexttree <- function(ftt) {
   # Convert padding.x and padding.y to npc units
   ftt$padding.x <- wunit2npc(ftt$padding.x)
   ftt$padding.y <- hunit2npc(ftt$padding.y)
+
+  # Default values for missing aesthetics
+  data$fill <- data$fill %||% "grey35"
+  data$colour <- data$colour %||% "black"
 
   # If xmin/xmax are not provided, generate boundary box from width
   if (!("xmin" %in% names(data))) {
@@ -390,52 +394,42 @@ makeContent.fittexttree <- function(ftt) {
   # Clean up angles
   data$angle <- data$angle %% 360
 
+  # If contrast is set, and the shade of a text colour is too close to the
+  # shade of the fill colour, change the colour to its complement
+  if (ftt$contrast) {
+
+    # If any fill value is NA, emit a warning and set to the default
+    # ggplot2 background grey
+    if ("fill" %in% names(data)) {
+      if (any(is.na(data$fill))) {
+        warning("NA values in fill", call. = FALSE)
+        data$fill <- data$fill %NA% "grey35"
+      }
+    }
+
+    # If any colour value is NA, set to black
+    data$colour <- data$colour %NA% "black"
+
+    # Change the text colour to its complement if the background fill is too
+    # dark, then change (perhaps again) if the shades of the colour and fill
+    # are too similar
+    data$colour <- ifelse(
+      shades::lightness(data$fill) < 50,
+      as.character(shades::complement(shades::shade(data$colour))),
+      data$colour
+    )
+    data$colour <- ifelse(
+      abs(shades::lightness(data$fill) - shades::lightness(data$colour)) < 50,
+      as.character(shades::complement(shades::shade(data$colour))),
+      data$colour
+    )
+  }
+
   # Prepare grob for each text label
   grobs <- lapply(seq_len(nrow(data)), function(i) {
 
     # Convenience
     text <- data[i, ]
-
-    # If contrast is set, and the shade of the text colour is too close to the
-    # shade of the fill colour, change the text colour to its complement
-    if (ftt$contrast) {
-
-      # If the fill is NA, emit a warning and set background to the default
-      # ggplot2 grey
-      if ("fill" %in% names(text)) {
-        if (is.na(text$fill)) {
-          warning(
-            "For label '", 
-            text$label, 
-            "', trying to contrast text against a fill of 'NA'",
-            call. = FALSE
-          )
-          text$fill <- "grey35"
-        }
-      }
-
-      # If the text colour is NA, set to black
-      if (is.na(text$colour)) text$colour <- "black"
-
-      # If contrast is set but there is no fill aesthetic, assume the default
-      # ggplot2 dark grey fill
-      text$fill <- ifelse("fill" %in% names(text), text$fill, "grey35")
-      text$colour <- ifelse("colour" %in% names(text), text$colour, "black")
-
-      # Retaining this block only so that the behaviour of 'contrast' does not
-      # change unexpectedly
-      complement <- as.character(shades::complement(shades::shade(text$colour)))
-      text$colour <- ifelse(
-        shades::lightness(text$fill) < 50,
-        complement,
-        text$colour
-      )
-
-      if (abs(shades::lightness(text$fill) - shades::lightness(text$colour)) < 50) {
-        complement <- shades::complement(shades::shade(text$colour))
-        text$colour <- as.character(complement)
-      }
-    }
 
     # Create textGrob
     tg <- grid::textGrob(
