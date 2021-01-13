@@ -177,6 +177,14 @@ GeomFitText <- ggplot2::ggproto(
     fill = NULL
   ),
 
+  setup_params = function(data, params) {
+
+    # Standardise the place argument
+    params$place <- ifelse(params$place %in% c("middle", "center"), "centre", params$place)
+
+    params
+  },
+
   setup_data = function(
     data,
     params
@@ -204,14 +212,14 @@ GeomFitText <- ggplot2::ggproto(
 
     # If 'width' is provided, but not as unit, interpret it as a numeric on the
     # x scale
-    if ((! is.null(params$width)) & (! "unit" %in% class(params$width))) {
+    if ((! is.null(params$width)) & (! inherits(params$width, "unit"))) {
       data$xmin <- data$x - params$width / 2
       data$xmax <- data$x + params$width / 2
     }
 
     # If 'height' is provided, but not a unit, interpret it as a numeric on the
     # y scale
-    if ((! is.null(params$height)) & (! "unit" %in% class(params$height))) {
+    if ((! is.null(params$height)) & (! inherits(params$height, "unit"))) {
       data$ymin <- data$y - params$height / 2
       data$ymax <- data$y + params$height / 2
     }
@@ -277,39 +285,30 @@ GeomFitText <- ggplot2::ggproto(
     outside = FALSE
   ) {
 
-    # Check if plot is in polar coordinates
-    is_polar <- "CoordPolar" %in% class(coord)
-
-    # Transform data to plot scales
-    if (! is_polar) {
-      data <- coord$transform(data, panel_scales)
+    # Transform data to plot scales; if in polar coordinates, we need to ensure
+    # that x and y values are given
+    if (inherits(coord, "CoordPolar")) {
+      if (is.null(data$x)) data$x <- 1
+      if (is.null(data$y)) data$y <- 1
+    }
+    data <- coord$transform(data, panel_scales)
 
     # For polar coordinates, we need to transform xmin/xmax & ymin/ymax into
     # theta and r values respectively; these can be used later to accurately
     # set the width and height of the bounding box in polar space
-    } else if (is_polar) {
-      if (is.null(data$x)) data$x <- 1
-      if (is.null(data$y)) data$y <- 1
-      data <- coord$transform(data, panel_scales)
-      if (! is.null(data$xmin)) data$xmin <- ggplot2:::theta_rescale(coord, data$xmin, panel_scales)
-      if (! is.null(data$xmax)) data$xmax <- ggplot2:::theta_rescale(coord, data$xmax, panel_scales)
-      if (! is.null(data$ymin)) data$ymin <- ggplot2:::r_rescale(coord, data$ymin, panel_scales$r.range)
-      if (! is.null(data$ymax)) data$ymax <- ggplot2:::r_rescale(coord, data$ymax, panel_scales$r.range)
-    }
-
-    # Reverse colours if desired
-    if (contrast & "fill" %in% names(data)) {
-      complement <- as.character(shades::complement(shades::shade(data$colour)))
-      data$colour <- ifelse(
-        shades::lightness(data$fill) < 50,
-        complement,
-        data$colour
-      )
-    }
-
-    # Standardise the place argument
-    if (place %in% c("middle", "center")) {
-      place <- "centre"
+    if (inherits(coord, "CoordPolar")) {
+      if (! is.null(data$xmin)) {
+        data$xmin <- ggplot2:::theta_rescale(coord, data$xmin, panel_scales)
+      }
+      if (! is.null(data$xmax)) {
+        data$xmax <- ggplot2:::theta_rescale(coord, data$xmax, panel_scales)
+      }
+      if (! is.null(data$ymin)) {
+        data$ymin <- ggplot2:::r_rescale(coord, data$ymin, panel_scales$r.range)
+      }
+      if (! is.null(data$ymax)) {
+        data$ymax <- ggplot2:::r_rescale(coord, data$ymax, panel_scales$r.range)
+      }
     }
 
     gt <- grid::gTree(
@@ -327,7 +326,7 @@ GeomFitText <- ggplot2::ggproto(
       width = width,
       height = height,
       contrast = contrast,
-      cl = ifelse(is_polar, "fittexttreepolar", "fittexttree")
+      cl = ifelse(inherits(coord, "CoordPolar"), "fittexttreepolar", "fittexttree")
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
     gt
@@ -336,26 +335,43 @@ GeomFitText <- ggplot2::ggproto(
 
 #' @importFrom grid makeContent
 #' @export
-makeContent.fittexttree <- function(x) {
+makeContent.fittexttree <- function(fttree) {
 
-  data <- x$data
+  # Extract data
+  data <- fttree$data
 
-  # Handle missing parameters
-  if (is.null(x$contrast)) x$contrast <- FALSE
-  if (is.null(x$outside)) x$outside <- FALSE
+  # Set default parameters
+  fttree$outside <- ifelse(is.null(fttree$outside), FALSE, fttree$outside)
+  fttree$contrast <- ifelse(is.null(fttree$contrast), FALSE, fttree$contrast)
+  fttree$vjust <- ifelse(is.null(fttree$vjust), 0.5, fttree$vjust)
+  if (is.null(fttree$hjust)) {
+    if (fttree$place %in% c("left", "bottomleft", "topleft")) {
+      fttree$hjust <- 0
+    } else if (fttree$place %in% c("right", "bottomright", "topright")) {
+      fttree$hjust <- 1
+    } else {
+      fttree$hjust <- 0.5
+    }
+  }
+  fttree$fullheight <- ifelse(is.null(fttree$fullheight), fttree$grow, 
+                              fttree$fullheight)
+
+  # Convert padding.x and padding.y to npc units
+  padding.x <- grid::convertWidth(fttree$padding.x, "npc", valueOnly = TRUE)
+  padding.y <- grid::convertHeight(fttree$padding.y, "npc", valueOnly = TRUE)
 
   # If xmin/xmax are not provided, generate boundary box from width
   if (!("xmin" %in% names(data))) {
     data$xmin <- data$x - (
       grid::convertWidth(
-        grid::unit(x$width, "mm"),
+        grid::unit(fttree$width, "mm"),
         "npc",
         valueOnly = TRUE
       ) / 2
     )
     data$xmax <- data$x + (
       grid::convertWidth(
-        grid::unit(x$width, "mm"),
+        grid::unit(fttree$width, "mm"),
         "npc",
         valueOnly = TRUE
       ) / 2
@@ -366,14 +382,14 @@ makeContent.fittexttree <- function(x) {
   if (!("ymin" %in% names(data))) {
     data$ymin <- data$y - (
       grid::convertHeight(
-        grid::unit(x$height, "mm"),
+        grid::unit(fttree$height, "mm"),
         "npc",
         valueOnly = TRUE
       ) / 2
     )
     data$ymax <- data$y + (
       grid::convertHeight(
-        grid::unit(x$height, "mm"),
+        grid::unit(fttree$height, "mm"),
         "npc",
         valueOnly = TRUE
       ) / 2
@@ -393,10 +409,6 @@ makeContent.fittexttree <- function(x) {
     )
   }
 
-  # Convert padding.x and padding.y to npc units
-  padding.x <- grid::convertWidth(x$padding.x, "npc", valueOnly = TRUE)
-  padding.y <- grid::convertHeight(x$padding.y, "npc", valueOnly = TRUE)
-
   # Prepare grob for each text label
   grobs <- lapply(seq_len(nrow(data)), function(i) {
 
@@ -410,7 +422,7 @@ makeContent.fittexttree <- function(x) {
 
     # If contrast is set, and the shade of the text colour is too close to the
     # shade of the fill colour, change the text colour to its complement
-    if (x$contrast) {
+    if (fttree$contrast) {
 
       # If the fill is NA, emit a warning and set background to the default
       # ggplot2 grey
@@ -431,11 +443,20 @@ makeContent.fittexttree <- function(x) {
 
       # If contrast is set but there is no fill aesthetic, assume the default
       # ggplot2 dark grey fill
-      bg_colour <- ifelse("fill" %in% names(text), text$fill, "grey35")
-      text_colour <- ifelse("colour" %in% names(text), text$colour, "black")
+      text$fill <- ifelse("fill" %in% names(text), text$fill, "grey35")
+      text$colour <- ifelse("colour" %in% names(text), text$colour, "black")
 
-      if (abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50) {
-        complement <- shades::complement(shades::shade(text_colour))
+      # Retaining this block only so that the behaviour of 'contrast' does not
+      # change unexpectedly
+      complement <- as.character(shades::complement(shades::shade(text$colour)))
+      text$colour <- ifelse(
+        shades::lightness(text$fill) < 50,
+        complement,
+        text$colour
+      )
+
+      if (abs(shades::lightness(text$fill) - shades::lightness(text$colour)) < 50) {
+        complement <- shades::complement(shades::shade(text$colour))
         text$colour <- as.character(complement)
       }
     }
@@ -443,34 +464,14 @@ makeContent.fittexttree <- function(x) {
     # Clean up angle
     text$angle <- text$angle %% 360
 
-    # If hjust and/or vjust have not been set, set an appropriate value based
-    # on place
-    if (is.null(x$hjust)) {
-      if (x$place %in% c("left", "bottomleft", "topleft")) {
-        x$hjust <- 0
-      } else if (x$place %in% c("right", "bottomright", "topright")) {
-        x$hjust <- 1
-      } else {
-        x$hjust <- 0.5
-      }
-    }
-    if (is.null(x$vjust)) {
-      x$vjust <- 0.5
-    }
-
-    # If fullheight has not been set, set an appropriate value
-    if (is.null(x$fullheight)) {
-      x$fullheight <- x$grow
-    }
-
     # Create textGrob
     tg <- grid::textGrob(
       label = text$label,
       x = 0.5,
       y = 0.5,
       default.units = "npc",
-      hjust = x$hjust,
-      vjust = x$vjust,
+      hjust = fttree$hjust,
+      vjust = fttree$vjust,
       rot = text$angle,
       gp = grid::gpar(
         col = ggplot2::alpha(text$colour, text$alpha),
@@ -482,7 +483,7 @@ makeContent.fittexttree <- function(x) {
     )
 
     # Get starting textGrob dimensions, in mm
-    tgdim <- tgDimensions(tg, x$fullheight, text$angle)
+    tgdim <- tgDimensions(tg, fttree$fullheight, text$angle)
 
     # Get dimensions of bounding box, in mm
     xdim <- grid::convertWidth(
@@ -498,11 +499,11 @@ makeContent.fittexttree <- function(x) {
 
     # The reflowing and resizing steps are encapsulated in a function to allow
     # for the 'outside' argument
-    reflow_and_resize <- function(tg, x, xdim, ydim, text) {
+    reflow_and_resize <- function(tg, fttree, xdim, ydim, text) {
 
       # Reflow the text, if reflow = TRUE and either the text doesn't currently
       # fit or grow = TRUE and if text contains spaces
-      if (x$reflow & (x$grow | tgdim$width > xdim | tgdim$height > ydim) & 
+      if (fttree$reflow & (fttree$grow | tgdim$width > xdim | tgdim$height > ydim) & 
           stringi::stri_detect_regex(tg$label, "\\s")) {
 
         # Try reducing the text width, one character at a time, and see if it
@@ -531,7 +532,7 @@ makeContent.fittexttree <- function(x) {
           
           # Recalculate aspect ratio of textGrob using and update if this is the
           # new best ratio
-          tgdim <- tgDimensions(tg, x$fullheight, text$angle)
+          tgdim <- tgDimensions(tg, fttree$fullheight, text$angle)
           aspect_ratio <- tgdim$width / tgdim$height
           diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
           best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
@@ -542,20 +543,20 @@ makeContent.fittexttree <- function(x) {
 
           # If the text now fits the bounding box (and we are not trying to grow
           # the text), good to stop here
-          if (tgdim$width < xdim & tgdim$height < ydim & !x$grow) break
+          if (tgdim$width < xdim & tgdim$height < ydim & !fttree$grow) break
         }
 
         # If all reflow widths have been tried and none is smaller than the box
         # (i.e. some shrinking is still required), or if we are trying to grow
         # the text, pick the reflow width that produces the aspect ratio closest
         # to that of the bounding box
-        if (tgdim$width > xdim | tgdim$height > ydim | x$grow) {
+        if (tgdim$width > xdim | tgdim$height > ydim | fttree$grow) {
           tg$label <- paste(
             stringi::stri_wrap(label, best_width, normalize = FALSE),
             collapse = "\n"
           )
           # Update the textGrob dimensions
-          tgdim <- tgDimensions(tg, x$fullheight, text$angle)
+          tgdim <- tgDimensions(tg, fttree$fullheight, text$angle)
         }
       }
 
@@ -564,7 +565,7 @@ makeContent.fittexttree <- function(x) {
         # Standard condition - is text too big for box?
         (tgdim$width > xdim | tgdim$height > ydim) |
         # grow = TRUE condition - is text too small for box?
-        (x$grow & tgdim$width < xdim & tgdim$height < ydim)
+        (fttree$grow & tgdim$width < xdim & tgdim$height < ydim)
       ) {
 
         # Get the slopes of the relationships between font size and label
@@ -583,23 +584,23 @@ makeContent.fittexttree <- function(x) {
 
       # If the font size is too small and 'outside' has been set, try reflowing
       # and resizing again in the 'outside' position
-      if (tg$gp$fontsize < x$min.size & x$outside) {
-        if (x$place == "top") {
+      if (tg$gp$fontsize < fttree$min.size & fttree$outside) {
+        if (fttree$place == "top") {
           text$ymin <- text$ymax
           text$ymax <- 1
-          x$place <- "bottom"
-        } else if (x$place == "bottom") {
+          fttree$place <- "bottom"
+        } else if (fttree$place == "bottom") {
           text$ymax <- text$ymin
           text$ymin <- 0
-          x$place <- "top"
-        } else if (x$place == "right") {
+          fttree$place <- "top"
+        } else if (fttree$place == "right") {
           text$xmin <- text$xmax
           text$xmax <- 1
-          x$place <- "left"
-        } else if (x$place == "left") {
+          fttree$place <- "left"
+        } else if (fttree$place == "left") {
           text$xmax <- text$xmin
           text$xmin <- 0
-          x$place <- "right"
+          fttree$place <- "right"
         }
         xdim <- grid::convertWidth(
           grid::unit(abs(text$xmin - text$xmax) - (2 * padding.x), "npc"),
@@ -612,10 +613,10 @@ makeContent.fittexttree <- function(x) {
           TRUE
         )
         tg$gp$fontsize <- text$size
-        x$outside <- FALSE
+        fttree$outside <- FALSE
         # If we're moving the text outside and contrast is true, set the text
         # in contrast to the default theme_grey panel colour
-        if (x$contrast) {
+        if (fttree$contrast) {
           bg_colour <- "grey92"
           text_colour <- ifelse("colour" %in% names(text), text$colour, "black")
           if (
@@ -625,20 +626,20 @@ makeContent.fittexttree <- function(x) {
             tg$gp$col <- as.character(complement)
           }
         }
-        return(reflow_and_resize(tg, x, xdim, ydim, text))
+        return(reflow_and_resize(tg, fttree, xdim, ydim, text))
       }
-      list(tg = tg, text = text, x = x)
+      list(tg = tg, text = text, fttree = fttree)
     }
-    fitted <- reflow_and_resize(tg, x, xdim, ydim, text)
+    fitted <- reflow_and_resize(tg, fttree, xdim, ydim, text)
     tg <- fitted$tg
     text <- fitted$text
-    x <- fitted$x
+    fttree <- fitted$fttree
 
     # Hide if below minimum font size
-    if (tg$gp$fontsize < x$min.size) return()
+    if (tg$gp$fontsize < fttree$min.size) return()
 
     # Update the textGrob dimensions
-    tgdim <- tgDimensions(tg, x$fullheight, text$angle)
+    tgdim <- tgDimensions(tg, fttree$fullheight, text$angle)
 
     # To calculate the vector from the geometric centre of the text to the
     # anchor point, we first need the dimensions of the unrotated text in mm.
@@ -647,31 +648,30 @@ makeContent.fittexttree <- function(x) {
     if (tg$rot == 0 | tg$rot == 180) {
       tg_width_unrot <- tgdim$width
       tg_height_unrot <- tgdim$height
-      if (x$fullheight) {
+      if (fttree$fullheight) {
         tg_descent_unrot <- grid::convertHeight(tgdim$descent, "mm", TRUE)
       }
     } else if (tg$rot == 90 | tg$rot == 270) {
       tg_width_unrot <- tgdim$height
       tg_height_unrot <- tgdim$width
-      if (x$fullheight) {
+      if (fttree$fullheight) {
         tg_descent_unrot <- grid::convertWidth(tgdim$descent, "mm", TRUE)
       }
     } else {
-      # For some
-      # reason, we don't get accurate values if we do this with the original
-      # textGrob so we create a copy
+      # For some reason, we don't get accurate values if we do this with the
+      # original textGrob so we create a copy
       unrot <- tg
       unrot$rot <- 0
       tg_width_unrot <- grid::convertWidth(grid::grobWidth(unrot), "mm", TRUE)
       tg_height_unrot <- grid::convertHeight(grid::grobHeight(unrot), "mm", TRUE)
-      if (x$fullheight) {
+      if (fttree$fullheight) {
         tg_descent_unrot <- grid::convertHeight(grid::grobDescent(unrot), "mm", TRUE)
       }
     }
 
     # We can use these values to calculate the magnitude of the vector from the
     # centre point to the anchor point, using the Pythagorean identity
-    if (x$fullheight) {
+    if (fttree$fullheight) {
       rise <- ((tg_height_unrot * tg$vjust) + tg_descent_unrot) - 
                 ((tg_height_unrot + tg_descent_unrot) * 0.5)
     } else {
@@ -733,18 +733,18 @@ makeContent.fittexttree <- function(x) {
     tgdim$height <- grid::convertHeight(grid::unit(tgdim$height, "mm"), "npc", TRUE)
 
     # Place the text
-    if (x$place %in% c("topleft", "left", "bottomleft")) {
+    if (fttree$place %in% c("topleft", "left", "bottomleft")) {
       tg$x <- xmin + (tgdim$width / 2) + x_offset
-    } else if (x$place %in% c("top", "centre", "bottom")) {
+    } else if (fttree$place %in% c("top", "centre", "bottom")) {
       tg$x <- ((xmin + xmax) / 2) + x_offset
-    } else if (x$place %in% c("topright", "right", "bottomright")) {
+    } else if (fttree$place %in% c("topright", "right", "bottomright")) {
       tg$x <- xmax - (tgdim$width / 2) + x_offset
     }
-    if (x$place %in% c("topleft", "top", "topright")) {
+    if (fttree$place %in% c("topleft", "top", "topright")) {
       tg$y <- ymax - (tgdim$height / 2) + y_offset
-    } else if (x$place %in% c("left", "centre", "right")) {
+    } else if (fttree$place %in% c("left", "centre", "right")) {
       tg$y <- ((ymin + ymax) / 2) + y_offset
-    } else if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
+    } else if (fttree$place %in% c("bottomleft", "bottom", "bottomright")) {
       tg$y <- ymin + (tgdim$height / 2) + y_offset
     }
 
@@ -757,7 +757,7 @@ makeContent.fittexttree <- function(x) {
   })
 
   class(grobs) <- "gList"
-  grid::setChildren(x, grobs)
+  grid::setChildren(fttree, grobs)
 }
 
 #' geom_fit_text
@@ -772,13 +772,13 @@ geom_shrink_text <- function(...) {
   .Deprecated("geom_fit_text(grow = F, ...)")
 }
 
-#' conversions between degrees and radians
+#' Conversions between degrees and radians
 #'
 #' @noRd
 deg2rad <- function(deg) { deg * (pi / 180) }
 rad2deg <- function(rad) { rad * (180 / pi) }
 
-#' Functions to get textgrob dimensions, in absolute units (mm)
+#' Function to get textgrob dimensions, in absolute units (mm)
 #' 
 #' @noRd
 tgDimensions <- function(tg, fullheight, angle) {
