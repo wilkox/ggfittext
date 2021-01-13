@@ -431,122 +431,12 @@ makeContent.fittexttree <- function(ftt) {
     # Convenience
     text <- data[i, ]
 
-    # Create textGrob
-    tg <- grid::textGrob(
-      label = text$label,
-      x = 0.5,
-      y = 0.5,
-      default.units = "npc",
-      hjust = ftt$hjust,
-      vjust = ftt$vjust,
-      rot = text$angle,
-      gp = grid::gpar(
-        col = ggplot2::alpha(text$colour, text$alpha),
-        fontsize = text$size,
-        fontfamily = text$family,
-        fontface = text$fontface,
-        lineheight = text$lineheight
-      )
-    )
-
-    # Get starting textGrob dimensions, in mm
-    tgdim <- tgDimensions(tg, ftt$fullheight, text$angle)
-
     # Get dimensions of bounding box, in mm
     xdim <- wnpc2mm(abs(text$xmin - text$xmax) - (2 * ftt$padding.x))
     ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * ftt$padding.y))
 
-    # The reflowing and resizing steps are encapsulated in a function to allow
-    # for the 'outside' argument
-    reflow_and_resize <- function(tg, reflow, grow, fullheight, xdim, ydim, text) {
-
-      # Reflow the text, if reflow = TRUE and either the text doesn't currently
-      # fit or grow = TRUE and if text contains spaces
-      if (reflow & (grow | tgdim$width > xdim | tgdim$height > ydim) & 
-          stringi::stri_detect_regex(tg$label, "\\s")) {
-
-        # Try reducing the text width, one character at a time, and see if it
-        # fits the bounding box
-        best_aspect_ratio <- Inf
-        best_width <- stringi::stri_length(tg$label)
-        label <- unlist(stringi::stri_split(tg$label, regex = "\n"))
-        stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
-        previous_reflow <- ""
-        for (w in (stringwidth):1) {
-
-          # Reflow text to this width
-          # By splitting the text on whitespace and passing normalize = F,
-          # line breaks in the original text are respected
-          tg$label <- paste(
-            stringi::stri_wrap(label, w, normalize = FALSE),
-            collapse = "\n"
-          )
-
-          # Skip if the text is unchanged
-          if (previous_reflow == tg$label) {
-            previous_reflow <- tg$label
-            next
-          }
-          previous_reflow <- tg$label
-          
-          # Recalculate aspect ratio of textGrob using and update if this is the
-          # new best ratio
-          tgdim <- tgDimensions(tg, fullheight, text$angle)
-          aspect_ratio <- tgdim$width / tgdim$height
-          diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
-          best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
-          if (diff_from_box_ratio < best_diff_from_box_ratio) {
-            best_aspect_ratio <- aspect_ratio
-            best_width <- w
-          }
-
-          # If the text now fits the bounding box (and we are not trying to grow
-          # the text), good to stop here
-          if (tgdim$width < xdim & tgdim$height < ydim & !grow) break
-        }
-
-        # If all reflow widths have been tried and none is smaller than the box
-        # (i.e. some shrinking is still required), or if we are trying to grow
-        # the text, pick the reflow width that produces the aspect ratio closest
-        # to that of the bounding box
-        if (tgdim$width > xdim | tgdim$height > ydim | grow) {
-          tg$label <- paste(
-            stringi::stri_wrap(label, best_width, normalize = FALSE),
-            collapse = "\n"
-          )
-          # Update the textGrob dimensions
-          tgdim <- tgDimensions(tg, fullheight, text$angle)
-        }
-      }
-
-      # Resize text to fit bounding box if it doesn't fit
-      if (
-        # Standard condition - is text too big for box?
-        (tgdim$width > xdim | tgdim$height > ydim) |
-        # grow = TRUE condition - is text too small for box?
-        (grow & tgdim$width < xdim & tgdim$height < ydim)
-      ) {
-
-        # Get the slopes of the relationships between font size and label
-        # dimensions
-        slopew <- tg$gp$fontsize / tgdim$width
-        slopeh <- tg$gp$fontsize / tgdim$height
-
-        # Calculate the target font size required to fit text to box along each
-        # dimension
-        targetfsw <- xdim * slopew
-        targetfsh <- ydim * slopeh
-
-        # Set to smaller of target font sizes
-        tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
-      }
-
-      list(tg = tg, text = text)
-    }
-    fitted <- reflow_and_resize(tg, ftt$reflow, ftt$grow, ftt$fullheight, 
-                                xdim, ydim, text)
-    tg <- fitted$tg
-    text <- fitted$text
+    # Reflow and/or resize the text into a textGrob
+    tg <- reflow_and_resize(text, ftt$reflow, ftt$grow, ftt$fullheight, xdim, ydim)
 
     # If the font size is too small and 'outside' has been set, try reflowing
     # and resizing again in the 'outside' position
@@ -581,17 +471,18 @@ makeContent.fittexttree <- function(ftt) {
           abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50
         ) {
           complement <- shades::complement(shades::shade(text_colour))
-          tg$gp$col <- as.character(complement)
+          text$colour <- as.character(complement)
         }
       }
-      fitted <- reflow_and_resize(tg, ftt$reflow, ftt$grow, ftt$fullheight, 
-                                  xdim, ydim, text)
-      tg <- fitted$tg
-      text <- fitted$text
+      tg <- reflow_and_resize(text, ftt$reflow, ftt$grow, ftt$fullheight, xdim, ydim)
     }
 
     # If the font size is still too small, don't draw this label
     if (tg$gp$fontsize < ftt$min.size) return()
+
+    # Set hjust and vjust
+    tg$hjust <- ftt$hjust
+    tg$vjust <- ftt$vjust
 
     # Update the textGrob dimensions
     tgdim <- tgDimensions(tg, ftt$fullheight, text$angle)
@@ -713,4 +604,116 @@ geom_grow_text <- function(...) {
 #' @noRd
 geom_shrink_text <- function(...) {
   .Deprecated("geom_fit_text(grow = F, ...)")
+}
+
+
+#' Return a textGrob with the text reflowed and/or resized to fit given
+#' dimensions
+#'
+#' @noRd
+reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim) {
+
+  # Create textGrob
+  tg <- grid::textGrob(
+    label = text$label,
+    x = 0.5,
+    y = 0.5,
+    default.units = "npc",
+    hjust = 0.5,
+    vjust = 0.5,
+    rot = text$angle,
+    gp = grid::gpar(
+      col = ggplot2::alpha(text$colour, text$alpha),
+      fontsize = text$size,
+      fontfamily = text$family,
+      fontface = text$fontface,
+      lineheight = text$lineheight
+    )
+  )
+
+  # Get starting textGrob dimensions, in mm
+  tgdim <- tgDimensions(tg, fullheight, text$angle)
+
+  # Reflow the text, if reflow = TRUE and either the text doesn't currently
+  # fit or grow = TRUE and if text contains spaces
+  if (reflow & (grow | tgdim$width > xdim | tgdim$height > ydim) & 
+      stringi::stri_detect_regex(tg$label, "\\s")) {
+
+    # Try reducing the text width, one character at a time, and see if it
+    # fits the bounding box
+    best_aspect_ratio <- Inf
+    best_width <- stringi::stri_length(tg$label)
+    label <- unlist(stringi::stri_split(tg$label, regex = "\n"))
+    stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
+    previous_reflow <- ""
+    for (w in (stringwidth):1) {
+
+      # Reflow text to this width
+      # By splitting the text on whitespace and passing normalize = F,
+      # line breaks in the original text are respected
+      tg$label <- paste(
+        stringi::stri_wrap(label, w, normalize = FALSE),
+        collapse = "\n"
+      )
+
+      # Skip if the text is unchanged
+      if (previous_reflow == tg$label) {
+        previous_reflow <- tg$label
+        next
+      }
+      previous_reflow <- tg$label
+      
+      # Recalculate aspect ratio of textGrob using and update if this is the
+      # new best ratio
+      tgdim <- tgDimensions(tg, fullheight, text$angle)
+      aspect_ratio <- tgdim$width / tgdim$height
+      diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
+      best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
+      if (diff_from_box_ratio < best_diff_from_box_ratio) {
+        best_aspect_ratio <- aspect_ratio
+        best_width <- w
+      }
+
+      # If the text now fits the bounding box (and we are not trying to grow
+      # the text), good to stop here
+      if (tgdim$width < xdim & tgdim$height < ydim & !grow) break
+    }
+
+    # If all reflow widths have been tried and none is smaller than the box
+    # (i.e. some shrinking is still required), or if we are trying to grow
+    # the text, pick the reflow width that produces the aspect ratio closest
+    # to that of the bounding box
+    if (tgdim$width > xdim | tgdim$height > ydim | grow) {
+      tg$label <- paste(
+        stringi::stri_wrap(label, best_width, normalize = FALSE),
+        collapse = "\n"
+      )
+      # Update the textGrob dimensions
+      tgdim <- tgDimensions(tg, fullheight, text$angle)
+    }
+  }
+
+  # Resize text to fit bounding box if it doesn't fit
+  if (
+    # Standard condition - is text too big for box?
+    (tgdim$width > xdim | tgdim$height > ydim) |
+    # grow = TRUE condition - is text too small for box?
+    (grow & tgdim$width < xdim & tgdim$height < ydim)
+  ) {
+
+    # Get the slopes of the relationships between font size and label
+    # dimensions
+    slopew <- tg$gp$fontsize / tgdim$width
+    slopeh <- tg$gp$fontsize / tgdim$height
+
+    # Calculate the target font size required to fit text to box along each
+    # dimension
+    targetfsw <- xdim * slopew
+    targetfsh <- ydim * slopeh
+
+    # Set to smaller of target font sizes
+    tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
+  }
+
+  return(tg)
 }
