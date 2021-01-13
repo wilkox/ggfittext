@@ -191,19 +191,13 @@ GeomFitText <- ggplot2::ggproto(
   ) {
 
     # Check that valid aesthetics have been supplied for each dimension
-    if (!(
-      ("xmin" %in% names(data) & "xmax" %in% names(data)) |
-      ("x" %in% names(data))
-    )) {
+    if (! (! is.null(data$xmin) & ! is.null(data$xmax) | ! is.null(data$x))) {
       stop(
         "geom_fit_text needs either 'xmin' and 'xmax', or 'x'",
         .call = FALSE
       )
     }
-    if (!(
-      "ymin" %in% names(data) & "ymax" %in% names(data) |
-      "y" %in% names(data)
-    )) {
+    if (! (! is.null(data$ymin) & ! is.null(data$ymax) | ! is.null(data$y))) {
       stop(
         "geom_fit_text needs either 'ymin' and 'ymax', or 'y'",
         .call = FALSE
@@ -226,7 +220,7 @@ GeomFitText <- ggplot2::ggproto(
 
     # If neither a 'width' parameter nor xmin/xmax aesthetics have been
     # provided, infer the width using the method of geom_boxplot
-    if (is.null(params$width) & ! "xmin" %in% names(data)) {
+    if (is.null(params$width) & is.null(data$xmin)) {
       data$width <- ggplot2::resolution(data$x, FALSE) * 0.9
       data$xmin <- data$x - data$width / 2
       data$xmax <- data$x + data$width / 2
@@ -235,7 +229,7 @@ GeomFitText <- ggplot2::ggproto(
 
     # If neither a 'height' parameter nor ymin/ymax aesthetics have been
     # provided, infer the height using the method of geom_boxplot
-    if (is.null(params$height) & ! "ymin" %in% names(data)) {
+    if (is.null(params$height) & is.null(data$ymin)) {
       data$height <- ggplot2::resolution(data$y, FALSE) * 0.9
       data$ymin <- data$y - data$height / 2
       data$ymax <- data$y + data$height / 2
@@ -364,13 +358,13 @@ makeContent.fittexttree <- function(ftt) {
   data$colour <- data$colour %||% "black"
 
   # If xmin/xmax are not provided, generate boundary box from width
-  if (!("xmin" %in% names(data))) {
+  if (is.null(data$xmin)) {
     data$xmin <- data$x - (wmm2npc(ftt$width) / 2)
     data$xmax <- data$x + (wmm2npc(ftt$width) / 2)
   }
 
   # If ymin/ymax are not provided, generate boundary box from height
-  if (!("ymin" %in% names(data))) {
+  if (is.null(data$ymin)) {
     data$ymin <- data$y - (hmm2npc(ftt$height) / 2)
     data$ymax <- data$y + (hmm2npc(ftt$height) / 2)
   }
@@ -400,7 +394,7 @@ makeContent.fittexttree <- function(ftt) {
 
     # If any fill value is NA, emit a warning and set to the default
     # ggplot2 background grey
-    if ("fill" %in% names(data)) {
+    if (! is.null(data$fill)) {
       if (any(is.na(data$fill))) {
         warning("NA values in fill", call. = FALSE)
         data$fill <- data$fill %NA% "grey35"
@@ -466,7 +460,7 @@ makeContent.fittexttree <- function(ftt) {
       # in contrast to the default theme_grey panel colour
       if (ftt$contrast) {
         bg_colour <- "grey92"
-        text_colour <- ifelse("colour" %in% names(text), text$colour, "black")
+        text_colour <- text$colour %||% "black"
         if (
           abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50
         ) {
