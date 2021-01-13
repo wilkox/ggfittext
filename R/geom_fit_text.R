@@ -458,11 +458,11 @@ makeContent.fittexttree <- function(ftt) {
 
     # The reflowing and resizing steps are encapsulated in a function to allow
     # for the 'outside' argument
-    reflow_and_resize <- function(tg, ftt, xdim, ydim, text) {
+    reflow_and_resize <- function(tg, reflow, grow, fullheight, xdim, ydim, text) {
 
       # Reflow the text, if reflow = TRUE and either the text doesn't currently
       # fit or grow = TRUE and if text contains spaces
-      if (ftt$reflow & (ftt$grow | tgdim$width > xdim | tgdim$height > ydim) & 
+      if (reflow & (grow | tgdim$width > xdim | tgdim$height > ydim) & 
           stringi::stri_detect_regex(tg$label, "\\s")) {
 
         # Try reducing the text width, one character at a time, and see if it
@@ -491,7 +491,7 @@ makeContent.fittexttree <- function(ftt) {
           
           # Recalculate aspect ratio of textGrob using and update if this is the
           # new best ratio
-          tgdim <- tgDimensions(tg, ftt$fullheight, text$angle)
+          tgdim <- tgDimensions(tg, fullheight, text$angle)
           aspect_ratio <- tgdim$width / tgdim$height
           diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
           best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
@@ -502,20 +502,20 @@ makeContent.fittexttree <- function(ftt) {
 
           # If the text now fits the bounding box (and we are not trying to grow
           # the text), good to stop here
-          if (tgdim$width < xdim & tgdim$height < ydim & !ftt$grow) break
+          if (tgdim$width < xdim & tgdim$height < ydim & !grow) break
         }
 
         # If all reflow widths have been tried and none is smaller than the box
         # (i.e. some shrinking is still required), or if we are trying to grow
         # the text, pick the reflow width that produces the aspect ratio closest
         # to that of the bounding box
-        if (tgdim$width > xdim | tgdim$height > ydim | ftt$grow) {
+        if (tgdim$width > xdim | tgdim$height > ydim | grow) {
           tg$label <- paste(
             stringi::stri_wrap(label, best_width, normalize = FALSE),
             collapse = "\n"
           )
           # Update the textGrob dimensions
-          tgdim <- tgDimensions(tg, ftt$fullheight, text$angle)
+          tgdim <- tgDimensions(tg, fullheight, text$angle)
         }
       }
 
@@ -524,7 +524,7 @@ makeContent.fittexttree <- function(ftt) {
         # Standard condition - is text too big for box?
         (tgdim$width > xdim | tgdim$height > ydim) |
         # grow = TRUE condition - is text too small for box?
-        (ftt$grow & tgdim$width < xdim & tgdim$height < ydim)
+        (grow & tgdim$width < xdim & tgdim$height < ydim)
       ) {
 
         # Get the slopes of the relationships between font size and label
@@ -541,52 +541,56 @@ makeContent.fittexttree <- function(ftt) {
         tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
       }
 
-      # If the font size is too small and 'outside' has been set, try reflowing
-      # and resizing again in the 'outside' position
-      if (tg$gp$fontsize < ftt$min.size & ftt$outside) {
-        if (ftt$place == "top") {
-          text$ymin <- text$ymax
-          text$ymax <- 1
-          ftt$place <- "bottom"
-        } else if (ftt$place == "bottom") {
-          text$ymax <- text$ymin
-          text$ymin <- 0
-          ftt$place <- "top"
-        } else if (ftt$place == "right") {
-          text$xmin <- text$xmax
-          text$xmax <- 1
-          ftt$place <- "left"
-        } else if (ftt$place == "left") {
-          text$xmax <- text$xmin
-          text$xmin <- 0
-          ftt$place <- "right"
-        }
-        xdim <- wnpc2mm(abs(text$xmin - text$xmax) - (2 * ftt$padding.x))
-        ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * ftt$padding.y))
-        tg$gp$fontsize <- text$size
-        ftt$outside <- FALSE
-        # If we're moving the text outside and contrast is true, set the text
-        # in contrast to the default theme_grey panel colour
-        if (ftt$contrast) {
-          bg_colour <- "grey92"
-          text_colour <- ifelse("colour" %in% names(text), text$colour, "black")
-          if (
-            abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50
-          ) {
-            complement <- shades::complement(shades::shade(text_colour))
-            tg$gp$col <- as.character(complement)
-          }
-        }
-        return(reflow_and_resize(tg, ftt, xdim, ydim, text))
-      }
-      list(tg = tg, text = text, ftt = ftt)
+      list(tg = tg, text = text)
     }
-    fitted <- reflow_and_resize(tg, ftt, xdim, ydim, text)
+    fitted <- reflow_and_resize(tg, ftt$reflow, ftt$grow, ftt$fullheight, 
+                                xdim, ydim, text)
     tg <- fitted$tg
     text <- fitted$text
-    ftt <- fitted$ftt
 
-    # Hide if below minimum font size
+    # If the font size is too small and 'outside' has been set, try reflowing
+    # and resizing again in the 'outside' position
+    if (tg$gp$fontsize < ftt$min.size & ftt$outside) {
+      if (ftt$place == "top") {
+        text$ymin <- text$ymax
+        text$ymax <- 1
+        ftt$place <- "bottom"
+      } else if (ftt$place == "bottom") {
+        text$ymax <- text$ymin
+        text$ymin <- 0
+        ftt$place <- "top"
+      } else if (ftt$place == "right") {
+        text$xmin <- text$xmax
+        text$xmax <- 1
+        ftt$place <- "left"
+      } else if (ftt$place == "left") {
+        text$xmax <- text$xmin
+        text$xmin <- 0
+        ftt$place <- "right"
+      }
+      xdim <- wnpc2mm(abs(text$xmin - text$xmax) - (2 * ftt$padding.x))
+      ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * ftt$padding.y))
+      tg$gp$fontsize <- text$size
+      ftt$outside <- FALSE
+      # If we're moving the text outside and contrast is true, set the text
+      # in contrast to the default theme_grey panel colour
+      if (ftt$contrast) {
+        bg_colour <- "grey92"
+        text_colour <- ifelse("colour" %in% names(text), text$colour, "black")
+        if (
+          abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50
+        ) {
+          complement <- shades::complement(shades::shade(text_colour))
+          tg$gp$col <- as.character(complement)
+        }
+      }
+      fitted <- reflow_and_resize(tg, ftt$reflow, ftt$grow, ftt$fullheight, 
+                                  xdim, ydim, text)
+      tg <- fitted$tg
+      text <- fitted$text
+    }
+
+    # If the font size is still too small, don't draw this label
     if (tg$gp$fontsize < ftt$min.size) return()
 
     # Update the textGrob dimensions
