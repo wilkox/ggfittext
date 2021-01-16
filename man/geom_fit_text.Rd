@@ -52,6 +52,7 @@ geom_fit_text(
   height = NULL,
   formatter = NULL,
   contrast = FALSE,
+  rich = FALSE,
   ...
 )
 }

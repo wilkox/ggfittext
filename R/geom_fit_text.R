@@ -123,6 +123,7 @@ geom_fit_text <- function(
   height = NULL,
   formatter = NULL,
   contrast = FALSE,
+  rich = FALSE,
   ...
 ) {
   ggplot2::layer(
@@ -149,6 +150,7 @@ geom_fit_text <- function(
       height = height,
       formatter = formatter,
       contrast = contrast,
+      rich = rich,
       ...
     )
   )
@@ -276,7 +278,8 @@ GeomFitText <- ggplot2::ggproto(
     formatter = NULL,
     contrast = FALSE,
     place = "centre",
-    outside = FALSE
+    outside = FALSE,
+    rich = FALSE
   ) {
 
     # Transform data to plot scales; if in polar coordinates, we need to ensure
@@ -320,6 +323,7 @@ GeomFitText <- ggplot2::ggproto(
       width = width,
       height = height,
       contrast = contrast,
+      rich = rich,
       cl = ifelse(inherits(coord, "CoordPolar"), "fittexttreepolar", "fittexttree")
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
@@ -348,6 +352,7 @@ makeContent.fittexttree <- function(ftt) {
     }
   }
   ftt$fullheight <- ftt$fullheight %||% ftt$grow
+  ftt$rich <- ftt$rich %||% FALSE
 
   # Convert padding.x and padding.y to npc units
   ftt$padding.x <- wunit2npc(ftt$padding.x)
@@ -430,7 +435,7 @@ makeContent.fittexttree <- function(ftt) {
     ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * ftt$padding.y))
 
     # Reflow and/or resize the text into a textGrob
-    tg <- reflow_and_resize(text, ftt$reflow, ftt$grow, ftt$fullheight, xdim, ydim)
+    tg <- reflow_and_resize(text, ftt$reflow, ftt$grow, ftt$fullheight, xdim, ydim, ftt$rich)
 
     # If the font size is too small and 'outside' has been set, try reflowing
     # and resizing again in the 'outside' position
@@ -468,7 +473,7 @@ makeContent.fittexttree <- function(ftt) {
           text$colour <- as.character(complement)
         }
       }
-      tg <- reflow_and_resize(text, ftt$reflow, ftt$grow, ftt$fullheight, xdim, ydim)
+      tg <- reflow_and_resize(text, ftt$reflow, ftt$grow, ftt$fullheight, xdim, ydim, ftt$rich)
     }
 
     # If the font size is still too small, don't draw this label
@@ -485,16 +490,14 @@ makeContent.fittexttree <- function(ftt) {
     # anchor point, we first need the dimensions of the unrotated text in mm.
     # For the common use case of an orthogonal rotation, we can reuse the
     # pre-calculated values to save time
-    if (tg$rot == 0 | tg$rot == 180) {
+    if (getrot(tg) == 0 | getrot(tg) == 180) {
       tg_width_unrot <- tgdim$width
       tg_height_unrot <- tgdim$height
       if (ftt$fullheight) tg_descent_unrot <- hunit2mm(tgdim$descent)
-    } else if (tg$rot == 90 | tg$rot == 270) {
+    } else if (getrot(tg) == 90 | getrot(tg) == 270) {
       tg_width_unrot <- tgdim$height
       tg_height_unrot <- tgdim$width
-      if (ftt$fullheight) {
-        tg_descent_unrot <- wunit2mm(tgdim$descent)
-      }
+      if (ftt$fullheight) tg_descent_unrot <- wunit2mm(tgdim$descent)
     } else {
       # For some reason, we don't get accurate values if we do this with the
       # original textGrob so we create a copy
@@ -543,7 +546,7 @@ makeContent.fittexttree <- function(ftt) {
     } else if (sign(rise) == 0 & sign(run) == 0) {
       direction_angle <- 0
     }
-    direction_angle <- (direction_angle + tg$rot) %% 360
+    direction_angle <- (direction_angle + getrot(tg)) %% 360
 
     # We can now use these to calculate the x and y offsets of the anchor point
     # from the centre point. For convenience, we will convert these to npc
@@ -562,23 +565,21 @@ makeContent.fittexttree <- function(ftt) {
 
     # Place the text
     if (ftt$place %in% c("topleft", "left", "bottomleft")) {
-      tg$x <- xmin + (tgdim$width / 2) + x_offset
+      x <- xmin + (tgdim$width / 2) + x_offset
     } else if (ftt$place %in% c("top", "centre", "bottom")) {
-      tg$x <- ((xmin + xmax) / 2) + x_offset
+      x <- ((xmin + xmax) / 2) + x_offset
     } else if (ftt$place %in% c("topright", "right", "bottomright")) {
-      tg$x <- xmax - (tgdim$width / 2) + x_offset
+      x <- xmax - (tgdim$width / 2) + x_offset
     }
+    tg <- setx(tg, x)
     if (ftt$place %in% c("topleft", "top", "topright")) {
-      tg$y <- ymax - (tgdim$height / 2) + y_offset
+      y <- ymax - (tgdim$height / 2) + y_offset
     } else if (ftt$place %in% c("left", "centre", "right")) {
-      tg$y <- ((ymin + ymax) / 2) + y_offset
+      y <- ((ymin + ymax) / 2) + y_offset
     } else if (ftt$place %in% c("bottomleft", "bottom", "bottomright")) {
-      tg$y <- ymin + (tgdim$height / 2) + y_offset
+      y <- ymin + (tgdim$height / 2) + y_offset
     }
-
-    # Convert x and y coordinates to unit objects
-    tg$x <- grid::unit(tg$x, "npc")
-    tg$y <- grid::unit(tg$y, "npc")
+    tg <- sety(tg, y)
 
     # Return the textGrob
     tg
@@ -600,30 +601,54 @@ geom_shrink_text <- function(...) {
   .Deprecated("geom_fit_text(grow = F, ...)")
 }
 
-
 #' Return a textGrob with the text reflowed and/or resized to fit given
 #' dimensions
 #'
 #' @noRd
-reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim) {
+reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) {
 
-  # Create textGrob
-  tg <- grid::textGrob(
-    label = text$label,
-    x = 0.5,
-    y = 0.5,
-    default.units = "npc",
-    hjust = 0.5,
-    vjust = 0.5,
-    rot = text$angle,
-    gp = grid::gpar(
-      col = ggplot2::alpha(text$colour, text$alpha),
-      fontsize = text$size,
-      fontfamily = text$family,
-      fontface = text$fontface,
-      lineheight = text$lineheight
+  # Create textGrob or richtext_grob
+  if (rich) {
+    tg <- gridtext::richtext_grob(
+      text = text$label,
+      x = 0.5,
+      y = 0.5,
+      hjust = 0.5,
+      vjust = 0.5,
+      rot = text$angle,
+      default.units = "npc",
+      gp = grid::gpar(
+        col = ggplot2::alpha(text$colour, text$alpha),
+        fontsize = text$size,
+        fontfamily = text$family,
+        fontface = text$fontface,
+        lineheight = text$lineheight
+      ),
+      use_markdown = TRUE
     )
-  )
+    tg$params <- list(text = text$label, x = 0.5, y = 0.5, hjust = 0.5, vjust = 0.5, 
+                      rot = text$angle, colour = text$colour, alpha = text$alpha, 
+                      fontsize = text$size, fontfamily = text$family, 
+                      fontface = text$fontface, lineheight = text$lineheight)
+
+  } else {
+    tg <- grid::textGrob(
+      label = text$label,
+      x = 0.5,
+      y = 0.5,
+      default.units = "npc",
+      hjust = 0.5,
+      vjust = 0.5,
+      rot = text$angle,
+      gp = grid::gpar(
+        col = ggplot2::alpha(text$colour, text$alpha),
+        fontsize = text$size,
+        fontfamily = text$family,
+        fontface = text$fontface,
+        lineheight = text$lineheight
+      )
+    )
+  }
 
   # Get starting textGrob dimensions, in mm
   tgdim <- tgDimensions(tg, fullheight, text$angle)
@@ -631,13 +656,13 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim) {
   # Reflow the text, if reflow = TRUE and either the text doesn't currently
   # fit or grow = TRUE and if text contains spaces
   if (reflow & (grow | tgdim$width > xdim | tgdim$height > ydim) & 
-      stringi::stri_detect_regex(tg$label, "\\s")) {
+      stringi::stri_detect_regex(getlabel(tg), "\\s")) {
 
     # Try reducing the text width, one character at a time, and see if it
     # fits the bounding box
     best_aspect_ratio <- Inf
-    best_width <- stringi::stri_length(tg$label)
-    label <- unlist(stringi::stri_split(tg$label, regex = "\n"))
+    best_width <- stringi::stri_length(getlabel(tg))
+    label <- unlist(stringi::stri_split(getlabel(tg), regex = "\n"))
     stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
     previous_reflow <- ""
     for (w in (stringwidth):1) {
@@ -645,17 +670,17 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim) {
       # Reflow text to this width
       # By splitting the text on whitespace and passing normalize = F,
       # line breaks in the original text are respected
-      tg$label <- paste(
-        stringi::stri_wrap(label, w, normalize = FALSE),
-        collapse = "\n"
+      tg <- setlabel(
+        tg,
+        paste(stringi::stri_wrap(label, w, normalize = FALSE), collapse = "\n")
       )
 
       # Skip if the text is unchanged
-      if (previous_reflow == tg$label) {
-        previous_reflow <- tg$label
+      if (previous_reflow == getlabel(tg)) {
+        previous_reflow <- getlabel(tg)
         next
       }
-      previous_reflow <- tg$label
+      previous_reflow <- getlabel(tg)
       
       # Recalculate aspect ratio of textGrob using and update if this is the
       # new best ratio
@@ -670,7 +695,7 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim) {
 
       # If the text now fits the bounding box (and we are not trying to grow
       # the text), good to stop here
-      if (tgdim$width < xdim & tgdim$height < ydim & !grow) break
+      if (tgdim$width < xdim & tgdim$height < ydim & !grow) return(tg)
     }
 
     # If all reflow widths have been tried and none is smaller than the box
@@ -678,9 +703,9 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim) {
     # the text, pick the reflow width that produces the aspect ratio closest
     # to that of the bounding box
     if (tgdim$width > xdim | tgdim$height > ydim | grow) {
-      tg$label <- paste(
-        stringi::stri_wrap(label, best_width, normalize = FALSE),
-        collapse = "\n"
+      tg <- setlabel(
+        tg,
+        paste(stringi::stri_wrap(label, best_width, normalize = FALSE), collapse = "\n")
       )
       # Update the textGrob dimensions
       tgdim <- tgDimensions(tg, fullheight, text$angle)
