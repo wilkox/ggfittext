@@ -1,4 +1,3 @@
-library(ggplot2)
 grid::current.viewport()
 
 yeats <- data.frame(

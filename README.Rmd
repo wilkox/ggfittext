@@ -28,17 +28,18 @@ yeats <- data.frame(
   xmax = c(4, 8, 8, 6, 5, 6, 6,   5.5, 5.25, 5.5,  5.5),
   ymin = c(0, 4, 0, 0, 2, 3, 2,   2,   2.5,  2.75, 2.5),
   ymax = c(8, 8, 4, 2, 4, 4, 3,   2.5, 3,    3,    2.75),
-  label = c("Turning", "and", "turning", "in", "the", "widening", "gyre", "the",
+  label = c("<span style='color:red'>T</span><span style='color:orange'>u</span><span style='color:yellow'>r</span><span style='color:green'>n</span><span style='color:blue'>i</span><span style='color:purple'>n</span><span style='color:violet'>g</span>",
+            "**and**", "*turning*", "<span style='color:blue'>in</span>", 
+            "the<sup>*</sup>", "widening", "gyre", "the",
             "falcon", "cannot", "hear"),
   angle = c(0, 315, 270, 225, 180, 135, 90, 45, 0, 315, 270)
 )
-library(ggplot2)
 library(ggfittext)
 library(patchwork)
 p1 <- ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
                   label, angle = angle)) +
   geom_rect(fill = "grey", colour = "black") +
-  geom_fit_text(grow = TRUE, min.size = 0)
+  geom_fit_text(grow = TRUE, min.size = 0, rich = TRUE)
 
 polar_d <- data.frame(
   word = c("The" , "falcon" , "cannot" , "hear" , "the" , "falconer") ,
@@ -57,7 +58,7 @@ p2 <- ggplot(polar_d, aes(label = word, xmin = xmin, xmax = xmax, ymin =
     padding.x = grid::unit(1, "mm"),
     padding.y = grid::unit(1, "mm"),
     place = "top",
-    min.size = 0
+    min.size = 0, rich = T
   )
 p1 + p2
 ```
