@@ -1,3 +1,9 @@
+# ggfittext (development version)
+
+## Minor changes
+
+- Internal refactoring
+
 # ggfittext 0.9.1
 
 ## Minor changes
