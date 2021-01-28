@@ -15,12 +15,11 @@ rad2deg <- function(rad) { rad * (180 / pi) }
 #' @noRd
 tgDimensions <- function(tg, fullheight, angle) {
   width <- wunit2mm(grid::grobWidth(tg))
-  height <- grid::convertHeight(grid::grobHeight(tg), "mm", TRUE)
+  height <- hunit2mm(grid::grobHeight(tg))
   if (fullheight) {
     descent <- grid::grobDescent(tg)
     width <- width + abs(wunit2mm(descent) * sin(deg2rad(angle)))
-    height <- height + abs(grid::convertHeight(descent, "mm", TRUE) * 
-                           cos(deg2rad(angle)))
+    height <- height + abs(hunit2mm(descent) * cos(deg2rad(angle)))
   } else {
     descent <- NULL
   }
@@ -81,6 +80,19 @@ setlabel.text <- function(tg, value) {
 }
 setlabel.richtext_grob <- function(tg, value) set_richtext_grob_param(tg, "text", value)
 
+getfontsize <- function(tg) UseMethod("getfontsize")
+getfontsize.text <- function(tg) tg$gp$fontsize
+getfontsize.richtext_grob <- function(tg) tg$params$fontsize
+
+setfontsize <- function(tg, value) UseMethod("setfontsize")
+setfontsize.text <- function(tg, value) {
+  tg$gp$fontsize <- value
+  tg
+}
+setfontsize.richtext_grob <- function(tg, value) {
+  set_richtext_grob_param(tg, "fontsize", value)
+}
+
 setx <- function(tg, x) UseMethod("setx")
 setx.text <- function(tg, x) {
   if (!inherits(x, "unit")) x <- grid::unit(x, "npc")
@@ -99,4 +111,24 @@ sety.text <- function(tg, y) {
 }
 sety.richtext_grob <- function(tg, y) {
   tg <- set_richtext_grob_param(tg, "y", y)
+}
+
+#' Methods to wrap labels for textGrob and richtext_grob
+#'
+#' These are needed because textGrob uses \n for line breaks while
+#' richtext_grob uses <br>
+#'
+#' @noRd
+wraplabel <- function(tg, w) UseMethod("wraplabel")
+wraplabel.text <- function(tg, w) {
+  paste(
+    stringi::stri_wrap(getlabel(tg), w, normalize = FALSE),
+    collapse = "\n"
+  )
+}
+wraplabel.richtext_grob <- function(tg, w) {
+  paste(
+    stringi::stri_wrap(getlabel(tg), w, normalize = FALSE),
+    collapse = "<br>"
+  )
 }

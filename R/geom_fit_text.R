@@ -90,6 +90,8 @@
 #' heuristically for `geom_bar_text()`.
 #' @param mapping `ggplot2::aes()` object as standard in 'ggplot2'. Note
 #' that aesthetics specifying the box must be provided. See Details.
+#' @param rich If `TRUE`, text will be formatted with markdown and HTML markup
+#' as implemented by `gridtext::richtext_grob()`. `FALSE` by default.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
 #' arguments as for `ggplot2::geom_text()`.
 #'
@@ -439,7 +441,7 @@ makeContent.fittexttree <- function(ftt) {
 
     # If the font size is too small and 'outside' has been set, try reflowing
     # and resizing again in the 'outside' position
-    if (tg$gp$fontsize < ftt$min.size & ftt$outside) {
+    if (getfontsize(tg) < ftt$min.size & ftt$outside) {
       if (ftt$place == "top") {
         text$ymin <- text$ymax
         text$ymax <- 1
@@ -459,7 +461,7 @@ makeContent.fittexttree <- function(ftt) {
       }
       xdim <- wnpc2mm(abs(text$xmin - text$xmax) - (2 * ftt$padding.x))
       ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * ftt$padding.y))
-      tg$gp$fontsize <- text$size
+      tg <- setfontsize(tg, text$size)
       ftt$outside <- FALSE
       # If we're moving the text outside and contrast is true, set the text
       # in contrast to the default theme_grey panel colour
@@ -477,7 +479,7 @@ makeContent.fittexttree <- function(ftt) {
     }
 
     # If the font size is still too small, don't draw this label
-    if (tg$gp$fontsize < ftt$min.size) return()
+    if (getfontsize(tg) < ftt$min.size) return()
 
     # Set hjust and vjust
     tg$hjust <- ftt$hjust
@@ -670,10 +672,8 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) 
       # Reflow text to this width
       # By splitting the text on whitespace and passing normalize = F,
       # line breaks in the original text are respected
-      tg <- setlabel(
-        tg,
-        paste(stringi::stri_wrap(label, w, normalize = FALSE), collapse = "\n")
-      )
+      tg <- setlabel(tg, label)
+      tg <- setlabel(tg, wraplabel(tg, w))
 
       # Skip if the text is unchanged
       if (previous_reflow == getlabel(tg)) {
@@ -703,10 +703,8 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) 
     # the text, pick the reflow width that produces the aspect ratio closest
     # to that of the bounding box
     if (tgdim$width > xdim | tgdim$height > ydim | grow) {
-      tg <- setlabel(
-        tg,
-        paste(stringi::stri_wrap(label, best_width, normalize = FALSE), collapse = "\n")
-      )
+      tg <- setlabel(tg, label)
+      tg <- setlabel(tg, wraplabel(tg, best_width))
       # Update the textGrob dimensions
       tgdim <- tgDimensions(tg, fullheight, text$angle)
     }
@@ -722,8 +720,8 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) 
 
     # Get the slopes of the relationships between font size and label
     # dimensions
-    slopew <- tg$gp$fontsize / tgdim$width
-    slopeh <- tg$gp$fontsize / tgdim$height
+    slopew <- getfontsize(tg) / tgdim$width
+    slopeh <- getfontsize(tg) / tgdim$height
 
     # Calculate the target font size required to fit text to box along each
     # dimension
@@ -731,7 +729,7 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) 
     targetfsh <- ydim * slopeh
 
     # Set to smaller of target font sizes
-    tg$gp$fontsize <- ifelse(targetfsw < targetfsh, targetfsw, targetfsh)
+    tg <- setfontsize(tg, ifelse(targetfsw < targetfsh, targetfsw, targetfsh))
   }
 
   return(tg)
