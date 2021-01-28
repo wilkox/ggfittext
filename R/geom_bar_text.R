@@ -13,6 +13,7 @@ geom_bar_text <- function(
   padding.y = grid::unit(1, "mm"),
   min.size = 8,
   place = NULL,
+  outside = NULL,
   grow = FALSE,
   reflow = FALSE,
   hjust = NULL,
@@ -22,7 +23,7 @@ geom_bar_text <- function(
   height = NULL,
   formatter = NULL,
   contrast = NULL,
-  outside = NULL,
+  rich = FALSE,
   ...
 ) {
 
@@ -45,6 +46,7 @@ geom_bar_text <- function(
       padding.x = padding.x,
       padding.y = padding.y,
       place = place,
+      outside = outside,
       min.size = min.size,
       grow = grow,
       reflow = reflow,
@@ -55,7 +57,7 @@ geom_bar_text <- function(
       height = height,
       formatter = formatter,
       contrast = contrast,
-      outside = outside,
+      rich = rich,
       ...
     )
   )
@@ -146,6 +148,8 @@ GeomBarText <- ggplot2::ggproto(
     padding.x = grid::unit(1, "mm"),
     padding.y = grid::unit(1, "mm"),
     min.size = 8,
+    place = NULL,
+    outside = NULL,
     grow = FALSE,
     reflow = FALSE,
     hjust = NULL,
@@ -155,8 +159,7 @@ GeomBarText <- ggplot2::ggproto(
     height = NULL,
     formatter = NULL,
     contrast = TRUE,
-    place = NULL,
-    outside = NULL
+    rich = FALSE
   ) {
 
     # Standardise the place argument
@@ -207,6 +210,7 @@ GeomBarText <- ggplot2::ggproto(
         grow = grow,
         reflow = reflow,
         contrast = contrast,
+        rich = rich,
         cl = "fittexttree"
       )
       gtrees$positives <- positives_gt
@@ -242,6 +246,7 @@ GeomBarText <- ggplot2::ggproto(
         grow = grow,
         reflow = reflow,
         contrast = contrast,
+        rich = rich,
         cl = "fittexttree"
       )
       gtrees$negatives <- negatives_gt
