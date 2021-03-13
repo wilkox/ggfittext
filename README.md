@@ -2,7 +2,7 @@
 [![Travis-CI Build
 Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
 # ggfittext
 
@@ -193,7 +193,7 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
 -   **`formatter`** allows you to provide a function that will be
     applied to the text before it is drawn. This is mostly useful in
     contexts where variables may be interpolated, such as when using
-    [gganimate](http://www.gganimate.com/).
+    [gganimate](https://gganimate.com/).
 -   **`fullheight`** is automatically set depending on place, but can be
     overridden with this option. This is used to determine the bounding
     box around the text. If `FALSE`, the bounding box includes the
