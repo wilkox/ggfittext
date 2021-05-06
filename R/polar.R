@@ -34,7 +34,8 @@ makeContent.fittexttreepolar <- function(x) {
     text <- data[i, ]
 
     # Handle angled text
-    if (! text$angle == 0) warning("Angled text is not supported in polar coordinates")
+    # Only allow rotation in 0 or 180 for coord_polar
+    if (! text$angle %% 180 == 0) warning("Angled text is not supported in polar coordinates")
 
     # Set hjust and vjust 
     # A vjust of 0.2 strikes a good visual balance in the kerning of characters
