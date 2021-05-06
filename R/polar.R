@@ -160,6 +160,18 @@ makeContent.fittexttreepolar <- function(x) {
     # c = the circumference of the baseline
     c <- 2 * pi * r
 
+    # check if need to flip (angle == 180)
+    if (text$angle %% 360 == 180) {
+      flip <- TRUE
+    } else {
+      flip <- FALSE
+    }
+
+    # If angle == 180, reverse the string before splitting
+    if (flip) {
+      text$label <- strrev(as.character(text$label))
+    }
+
     # char_widths = widths of each character in the string
     chars <- strsplit(as.character(text$label), "")[[1]]
     char_widths <- (grid::calcStringMetric(chars)$width / 
@@ -208,13 +220,17 @@ makeContent.fittexttreepolar <- function(x) {
       y_pos <- r * sin(theta_rad)
       y_pos <- 0.5 + grid::convertHeight(grid::unit(y_pos, "mm"), "npc", TRUE)
 
+      if (flip) {
+        x$vjust <- 1-x$vjust
+      }
+
       tg <- grid::textGrob(
         label = char,
         x = x_pos,
         y = y_pos,
         hjust = x$hjust,
-        vjust = 1-x$vjust,
-        rot = theta - 90 + 180,
+        vjust = x$vjust,
+        rot = theta - 90 + 180 * flip,
         default.units = "npc",
         gp = grid::gpar(
           fontsize = tg$gp$fontsize,
