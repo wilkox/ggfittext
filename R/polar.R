@@ -188,7 +188,7 @@ makeContent.fittexttreepolar <- function(x) {
 
     # angle = ?? I can't even remember what this is supposed to do but it
     # works. Converting from radians to degrees with some sort of correction?
-    angle <- 450 - rad2deg(theta)
+    angle <- 450 - rad2deg(theta) + 180
 
     # char_thetas = theta position of the anchors for each character (assuming
     # hjust = 0.5 for the textGrob representing this character), in degrees
