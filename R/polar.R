@@ -160,17 +160,7 @@ makeContent.fittexttreepolar <- function(x) {
     # c = the circumference of the baseline
     c <- 2 * pi * r
 
-    # check if need to flip (angle == 180)
-    if (text$angle %% 360 == 180) {
-      flip <- TRUE
-    } else {
-      flip <- FALSE
-    }
 
-    # If angle == 180, reverse the string before splitting
-    if (flip) {
-      text$label <- strrev(as.character(text$label))
-    }
 
     # char_widths = widths of each character in the string
     chars <- strsplit(as.character(text$label), "")[[1]]
@@ -196,6 +186,19 @@ makeContent.fittexttreepolar <- function(x) {
       )
     } else if (x$place %in% c("bottomright", "right", "topright")) {
       theta <- text$xmax - (deg2rad(sum(char_arcs)) / 2) - padding.x.arcrad
+    }
+
+    # check if need to flip (angle == 180)
+    flip  <- rad2deg(theta) %% 360 == 180
+
+    # If angle == 180, reverse the string before splitting
+    if (flip) {
+      text$label <- strrev(as.character(text$label))
+
+      #over-write text that needs to be flipped
+      chars <- strsplit(as.character(text$label), "")[[1]]
+      char_widths <- (grid::calcStringMetric(chars)$width / 
+                       sum(grid::calcStringMetric(chars)$width)) * tgdim$width
     }
 
     # angle = ?? I can't even remember what this is supposed to do but it
