@@ -92,6 +92,8 @@
 #' that aesthetics specifying the box must be provided. See Details.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
 #' arguments as for `ggplot2::geom_text()`.
+#' @param flip If `TRUE` text will be rotated when it would otherwise be
+#' displayed upside down in polar coordinates.
 #'
 #' @examples
 #'
@@ -123,6 +125,7 @@ geom_fit_text <- function(
   height = NULL,
   formatter = NULL,
   contrast = FALSE,
+  flip = FALSE,
   ...
 ) {
   ggplot2::layer(
@@ -149,6 +152,7 @@ geom_fit_text <- function(
       height = height,
       formatter = formatter,
       contrast = contrast,
+      flip = flip,
       ...
     )
   )
@@ -254,6 +258,8 @@ GeomFitText <- ggplot2::ggproto(
       data$label <- formatted_labels
     }
 
+    data$flip <- params$flip
+
     data
   },
 
@@ -276,6 +282,7 @@ GeomFitText <- ggplot2::ggproto(
     formatter = NULL,
     contrast = FALSE,
     place = "centre",
+    flip = flip,
     outside = FALSE
   ) {
 
@@ -303,6 +310,7 @@ GeomFitText <- ggplot2::ggproto(
       if (! is.null(data$ymax)) {
         data$ymax <- ggplot2:::r_rescale(coord, data$ymax, panel_scales$r.range)
       }
+
     }
 
     gt <- grid::gTree(
@@ -320,6 +328,7 @@ GeomFitText <- ggplot2::ggproto(
       width = width,
       height = height,
       contrast = contrast,
+      flip = flip,
       cl = ifelse(inherits(coord, "CoordPolar"), "fittexttreepolar", "fittexttree")
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")

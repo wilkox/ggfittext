@@ -34,8 +34,7 @@ makeContent.fittexttreepolar <- function(x) {
     text <- data[i, ]
 
     # Handle angled text
-    # Only allow rotation in 0 or 180 for coord_polar
-    if (! text$angle %% 180 == 0) warning("Angled text is not supported in polar coordinates")
+    if (! text$angle == 0) warning("Angled text is not supported in polar coordinates")
 
     # Set hjust and vjust 
     # A vjust of 0.2 strikes a good visual balance in the kerning of characters
@@ -160,14 +159,6 @@ makeContent.fittexttreepolar <- function(x) {
     # c = the circumference of the baseline
     c <- 2 * pi * r
 
-    # check if need to flip (angle == 180)
-    flip  <- rad2deg(text$theta) > 90 && rad2deg(text$theta) < 270
-
-    # If angle == 180, reverse the string before splitting
-    if (flip) {
-      text$label <- strrev(as.character(text$label))
-    }
-
     # char_widths = widths of each character in the string
     chars <- strsplit(as.character(text$label), "")[[1]]
     char_widths <- (grid::calcStringMetric(chars)$width / 
@@ -194,6 +185,46 @@ makeContent.fittexttreepolar <- function(x) {
       theta <- text$xmax - (deg2rad(sum(char_arcs)) / 2) - padding.x.arcrad
     }
 
+    # check if need to flip (angle == 180)
+    flip <- x$flip
+
+    if (flip) {
+      flip <- rad2deg(theta) > 90 && rad2deg(theta) < 270
+    }
+
+    # If flipping, over-write necessary strings
+    if (flip) {
+      # Reverse the string
+      text$label <- strrev(as.character(text$label))
+
+      # re-calc string positions
+      chars <- strsplit(as.character(text$label), "")[[1]]
+      char_widths <- (grid::calcStringMetric(chars)$width / 
+                        sum(grid::calcStringMetric(chars)$width)) * tgdim$width
+
+      # char_arcs = arcwidth of each character, in degrees
+      char_arcs <- 360 * char_widths / c
+
+      # padding.x.arcrad = the arcwidth of padding.x, expressed in radians, at
+      # the anchor radius
+      padding.x.arcrad <- (padding.x / c) * 2 * pi
+
+      # theta = the theta of the text anchor for the entire label in the
+      # coordinate system, initial calculated in radians
+      if (x$place %in% c("bottomleft", "left", "topleft")) {
+        theta <- text$xmin + (deg2rad(sum(char_arcs)) / 2) + padding.x.arcrad
+      } else if (x$place %in% c("bottom", "centre", "top")) {
+        theta <- ifelse(
+          text$xmax > text$xmin,
+          (text$xmin + text$xmax) / 2,
+          (text$xmin + text$xmax + pi + pi) / 2
+        )
+      } else if (x$place %in% c("bottomright", "right", "topright")) {
+        theta <- text$xmax - (deg2rad(sum(char_arcs)) / 2) - padding.x.arcrad
+      }
+    }
+
+
     # angle = ?? I can't even remember what this is supposed to do but it
     # works. Converting from radians to degrees with some sort of correction?
     angle <- 450 - rad2deg(theta)
@@ -217,7 +248,8 @@ makeContent.fittexttreepolar <- function(x) {
       y_pos <- 0.5 + grid::convertHeight(grid::unit(y_pos, "mm"), "npc", TRUE)
 
       if (flip) {
-        x$vjust <- 1-x$vjust
+        # adjust for 0.8 to take into account 0.2 vjust for nice kerning
+        x$vjust <- 0.8 - x$vjust
       }
 
       tg <- grid::textGrob(
