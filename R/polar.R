@@ -213,7 +213,7 @@ makeContent.fittexttreepolar <- function(x) {
         x = x_pos,
         y = y_pos,
         hjust = x$hjust,
-        vjust = -x$vjust,
+        vjust = 1-x$vjust,
         rot = theta - 90 + 180,
         default.units = "npc",
         gp = grid::gpar(
