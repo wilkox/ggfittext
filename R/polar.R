@@ -189,7 +189,8 @@ makeContent.fittexttreepolar <- function(x) {
     }
 
     # check if need to flip (angle == 180)
-    flip  <- rad2deg(theta) %% 360 == 180
+    #flip  <- rad2deg(theta) %% 360 == 180
+    flip <- TRUE
 
     # If angle == 180, reverse the string before splitting
     if (flip) {
