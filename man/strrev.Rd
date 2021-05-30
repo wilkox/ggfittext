@@ -6,6 +6,9 @@
 \usage{
 strrev(string)
 }
+\arguments{
+\item{string}{String to be returned with reversed characters.}
+}
 \description{
 Return a reversed string
 }
