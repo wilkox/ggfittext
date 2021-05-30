@@ -184,13 +184,20 @@ Text can be drawn in polar coordinates with `geom_fit_text()` simply by adding
 are very welcome.
 
 ```{r, fig.width = 4, fig.height = 4}
-ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
+p <- ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
                  fill = linenumber, label = line)) +
   coord_polar() +
   geom_rect() +
-  geom_fit_text(min.size = 0, grow = TRUE) +
   scale_fill_gradient(low = "#fee391", high = "#238443")
+
+p + geom_fit_text(min.size = 0, grow = TRUE)
 ```
+
+### Auto-flip text for readability
+```{r, fig.width=4, fig.height=4}
+p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)
+```
+
 
 ## Other useful arguments
 

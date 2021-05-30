@@ -151,15 +151,24 @@ adding `coord_polar()` to the plot. This feature is experimental and any
 bug reports are very welcome.
 
 ``` r
-ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
+p <- ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
                  fill = linenumber, label = line)) +
   coord_polar() +
   geom_rect() +
-  geom_fit_text(min.size = 0, grow = TRUE) +
   scale_fill_gradient(low = "#fee391", high = "#238443")
+
+p + geom_fit_text(min.size = 0, grow = TRUE)
 ```
 
 ![](man/figures/README-unnamed-chunk-12-1.png)<!-- -->
+
+### Auto-flip text for readability
+
+``` r
+p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)
+```
+
+![](man/figures/README-unnamed-chunk-13-1.png)<!-- -->
 
 ## Other useful arguments
 
@@ -175,7 +184,7 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   geom_fit_text(reflow = TRUE, grow = TRUE, contrast = TRUE)
 ```
 
-![](man/figures/README-unnamed-chunk-13-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-14-1.png)<!-- -->
 
 -   **`padding.x`** and **`padding.y`** can be used to set the padding
     between the text and the edge of the box. By default this is 1 mm.
@@ -204,6 +213,6 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
     (`fullheight = FALSE`), or when you want to avoid descenders
     spilling out of the bounding box (`fullheight = TRUE`).
 
-![](man/figures/README-unnamed-chunk-14-1.png)<!-- -->
-
 ![](man/figures/README-unnamed-chunk-15-1.png)<!-- -->
+
+![](man/figures/README-unnamed-chunk-16-1.png)<!-- -->
