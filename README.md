@@ -162,7 +162,8 @@ p + geom_fit_text(min.size = 0, grow = TRUE)
 
 ![](man/figures/README-unnamed-chunk-12-1.png)<!-- -->
 
-### Auto-flip text for readability
+When text is drawn in polar coordinates, the `flip = TRUE` argument can
+be used to flip upside-down text the ‘right way up’ to ease readbility:
 
 ``` r
 p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)

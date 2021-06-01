@@ -193,7 +193,8 @@ p <- ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
 p + geom_fit_text(min.size = 0, grow = TRUE)
 ```
 
-### Auto-flip text for readability
+When text is drawn in polar coordinates, the `flip = TRUE` argument can be used
+to flip upside-down text the 'right way up' to ease readbility:
 ```{r, fig.width=4, fig.height=4}
 p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)
 ```
