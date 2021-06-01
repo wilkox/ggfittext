@@ -92,8 +92,8 @@
 #' that aesthetics specifying the box must be provided. See Details.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
 #' arguments as for `ggplot2::geom_text()`.
-#' @param flip If `TRUE` text will be flipped the 'right way up', to enhance
-#' readbility of the text.
+#' @param flip If `TRUE`, when in polar coordinates 'upside-down' text will be
+#' flipped the 'right way up', to enhance readability.
 #'
 #' @examples
 #'

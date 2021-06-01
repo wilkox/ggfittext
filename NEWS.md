@@ -1,5 +1,10 @@
 # ggfittext (development version)
 
+## Major changes
+
+- Add 'flip' argument to `geom_fit_text()` to flip text 'the right way up' when
+  in polar coordinates (thanks @BradyAJohnston)
+
 ## Minor changes
 
 - Internal refactoring

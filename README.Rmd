@@ -194,11 +194,11 @@ p + geom_fit_text(min.size = 0, grow = TRUE)
 ```
 
 When text is drawn in polar coordinates, the `flip = TRUE` argument can be used
-to flip upside-down text the 'right way up' to ease readbility:
+to flip upside-down text the 'right way up' to ease readability:
+
 ```{r, fig.width=4, fig.height=4}
 p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)
 ```
-
 
 ## Other useful arguments
 

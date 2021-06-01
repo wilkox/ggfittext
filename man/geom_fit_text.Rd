@@ -112,8 +112,8 @@ will be drawn outside the box if possible. This is mostly useful for drawing
 text inside bar/column geoms. Defaults to TRUE for \code{position = "identity"}
 when using \code{geom_bar_text()}, otherwise FALSE.}
 
-\item{flip}{If \code{TRUE} text will be flipped the 'right way up', to enhance
-readbility of the text.}
+\item{flip}{If \code{TRUE}, when in polar coordinates 'upside-down' text will be
+flipped the 'right way up', to enhance readability.}
 }
 \description{
 \code{geom_fit_text()} shrinks, grows and wraps text to fit inside a defined
