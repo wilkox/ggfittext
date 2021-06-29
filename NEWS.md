@@ -8,6 +8,7 @@
 ## Minor changes
 
 - Internal refactoring
+- Make 'label' required aesthetic for `geom_bar_text()` (#29, thanks @gregleleu)
 
 # ggfittext 0.9.1
 
