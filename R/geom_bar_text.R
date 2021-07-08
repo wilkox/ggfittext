@@ -64,8 +64,9 @@ geom_bar_text <- function(
 GeomBarText <- ggplot2::ggproto(
   "GeomBarText",
   ggplot2::Geom,
-  required_aes = c("x", "y", "label"),
+  required_aes = c("x", "y"),
   default_aes = ggplot2::aes(
+    label = NULL,
     alpha = 1,
     angle = 0,
     colour = "black",
