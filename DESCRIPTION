@@ -24,10 +24,11 @@ BugReports: https://github.com/wilkox/ggfittext/issues/
 Suggests: 
     knitr,
     rmarkdown,
-    testthat,
+    testthat (>= 3.0.0),
     vdiffr,
     spelling
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Language: en-GB
+Config/testthat/edition: 3
