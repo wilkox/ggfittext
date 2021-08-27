@@ -1,8 +1,14 @@
 # ggfittext (development version)
 
+## Major changes
+
+- Add 'flip' argument to `geom_fit_text()` to flip text 'the right way up' when
+  in polar coordinates (thanks @BradyAJohnston)
+
 ## Minor changes
 
 - Internal refactoring
+- Make 'label' required aesthetic for `geom_bar_text()` (#29, thanks @gregleleu)
 
 # ggfittext 0.9.1
 

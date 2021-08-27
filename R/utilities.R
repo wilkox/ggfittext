@@ -10,6 +10,13 @@
 deg2rad <- function(deg) { deg * (pi / 180) }
 rad2deg <- function(rad) { rad * (180 / pi) }
 
+#' Return a reversed string
+#' @param string String to be returned with reversed characters.
+#' @noRd
+strrev <- function(string) {
+  sapply(lapply(strsplit(string, NULL), rev), paste0, collapse = "")
+}
+
 #' Textgrob dimensions, in mm
 #' 
 #' @noRd
@@ -115,8 +122,8 @@ sety.richtext_grob <- function(tg, y) {
 
 #' Methods to wrap labels for textGrob and richtext_grob
 #'
-#' These are needed because textGrob uses \n for line breaks while
-#' richtext_grob uses <br>
+#' These are needed because textGrob uses `\n` for line breaks while
+#' richtext_grob uses `<br>`
 #'
 #' @noRd
 wraplabel <- function(tg, w) UseMethod("wraplabel")

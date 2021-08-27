@@ -1,19 +1,23 @@
 Package: ggfittext
 Title: Fit Text Inside a Box in 'ggplot2'
-Version: 0.9.1.9001
-Authors@R: person("David", "Wilkins", email = "david@wilkox.org",
-                  role = c("aut", "cre"))
+Version: 0.9.1.9002
+Authors@R: c(person("David", "Wilkins", email = "david@wilkox.org",
+                  role = c("aut", "cre")), 
+             person("Brady", "Johnston", email = "brady.johnston@me.com", 
+                  role = c("ctb"))
+             )
 Description: Provides 'ggplot2' geoms to fit text into a box by growing, shrinking
     or wrapping the text.
 Depends:
-    R (>= 3.6),
-    ggplot2 (>= 2.2.1)
+    R (>= 3.6)
 License: GPL-2
 LazyData: true
 Imports:
     grid (>= 3.1),
     stringi (>= 1.1.2),
-    shades (>= 1.3.1)
+    shades (>= 1.3.1),
+    gridtext (>= 0.1.4),
+    ggplot2 (>= 2.2.1)
 RoxygenNote: 7.1.1
 URL: https://wilkox.org/ggfittext/
 BugReports: https://github.com/wilkox/ggfittext/issues/

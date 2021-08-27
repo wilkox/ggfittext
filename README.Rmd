@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 [![Travis-CI Build Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
 # ggfittext
 
@@ -185,12 +185,20 @@ Text can be drawn in polar coordinates with `geom_fit_text()` simply by adding
 are very welcome.
 
 ```{r, fig.width = 4, fig.height = 4}
-ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
+p <- ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
                  fill = linenumber, label = line)) +
   coord_polar() +
   geom_rect() +
-  geom_fit_text(min.size = 0, grow = TRUE) +
   scale_fill_gradient(low = "#fee391", high = "#238443")
+
+p + geom_fit_text(min.size = 0, grow = TRUE)
+```
+
+When text is drawn in polar coordinates, the `flip = TRUE` argument can be used
+to flip upside-down text the 'right way up' to ease readability:
+
+```{r, fig.width=4, fig.height=4}
+p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)
 ```
 
 ## Other useful arguments
@@ -222,7 +230,7 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
 - **`formatter`** allows you to provide a function that will be applied to the
   text before it is drawn. This is mostly useful in contexts where variables
   may be interpolated, such as when using
-  [gganimate](http://www.gganimate.com/).
+  [gganimate](https://gganimate.com/).
 - **`fullheight`** is automatically set depending on place, but can be
   overridden with this option. This is used to determine the bounding box
   around the text. If `FALSE`, the bounding box includes the x-height of the

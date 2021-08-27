@@ -1,8 +1,8 @@
 
 [![Travis-CI Build
 Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
 # ggfittext
 
@@ -151,15 +151,25 @@ adding `coord_polar()` to the plot. This feature is experimental and any
 bug reports are very welcome.
 
 ``` r
-ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
+p <- ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
                  fill = linenumber, label = line)) +
   coord_polar() +
   geom_rect() +
-  geom_fit_text(min.size = 0, grow = TRUE) +
   scale_fill_gradient(low = "#fee391", high = "#238443")
+
+p + geom_fit_text(min.size = 0, grow = TRUE)
 ```
 
 ![](man/figures/README-unnamed-chunk-12-1.png)<!-- -->
+
+When text is drawn in polar coordinates, the `flip = TRUE` argument can
+be used to flip upside-down text the ‘right way up’ to ease readability:
+
+``` r
+p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)
+```
+
+![](man/figures/README-unnamed-chunk-13-1.png)<!-- -->
 
 ## Other useful arguments
 
@@ -175,7 +185,7 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   geom_fit_text(reflow = TRUE, grow = TRUE, contrast = TRUE)
 ```
 
-![](man/figures/README-unnamed-chunk-13-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-14-1.png)<!-- -->
 
 -   **`padding.x`** and **`padding.y`** can be used to set the padding
     between the text and the edge of the box. By default this is 1 mm.
@@ -193,7 +203,7 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
 -   **`formatter`** allows you to provide a function that will be
     applied to the text before it is drawn. This is mostly useful in
     contexts where variables may be interpolated, such as when using
-    [gganimate](http://www.gganimate.com/).
+    [gganimate](https://gganimate.com/).
 -   **`fullheight`** is automatically set depending on place, but can be
     overridden with this option. This is used to determine the bounding
     box around the text. If `FALSE`, the bounding box includes the
@@ -204,6 +214,6 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
     (`fullheight = FALSE`), or when you want to avoid descenders
     spilling out of the bounding box (`fullheight = TRUE`).
 
-![](man/figures/README-unnamed-chunk-14-1.png)<!-- -->
-
 ![](man/figures/README-unnamed-chunk-15-1.png)<!-- -->
+
+![](man/figures/README-unnamed-chunk-16-1.png)<!-- -->

@@ -53,6 +53,7 @@ geom_fit_text(
   height = NULL,
   formatter = NULL,
   contrast = FALSE,
+  flip = FALSE,
   rich = FALSE,
   ...
 )
@@ -115,6 +116,9 @@ heuristically for \code{geom_bar_text()}.}
 
 \item{rich}{If \code{TRUE}, text will be formatted with markdown and HTML markup
 as implemented by \code{gridtext::richtext_grob()}. \code{FALSE} by default.}
+
+\item{flip}{If \code{TRUE}, when in polar coordinates 'upside-down' text will be
+flipped the 'right way up', to enhance readability.}
 }
 \description{
 \code{geom_fit_text()} shrinks, grows and wraps text to fit inside a defined

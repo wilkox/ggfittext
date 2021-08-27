@@ -35,6 +35,23 @@ test_that("basic plots in polar coordinates run without errors", {
       coord_polar()
     print(p)
   } )
+  
+  expect_silent( {
+    ggplot(gold,
+           aes(
+             xmin = xmin,
+             xmax = xmax,
+             ymin = ymin,
+             ymax = ymax,
+             fill = linenumber,
+             label = line
+           )) +
+      coord_polar() +
+      geom_rect() +
+      geom_fit_text(min.size = 0,
+                    flip = TRUE) +
+      scale_fill_gradient(low = "#fee391", high = "#238443")
+  })
 } )
 
 context("visual tests of plots")
@@ -142,5 +159,43 @@ test_that("plots look the way they should", {
       ) +
       scale_fill_gradient(low = "#fee391", high = "#238443")
   } )
+  
+  expect_doppelganger("flip text test", {
+    ggplot(gold,
+           aes(
+             xmin = xmin,
+             xmax = xmax,
+             ymin = ymin,
+             ymax = ymax,
+             fill = linenumber,
+             label = line
+           )) +
+      coord_polar() +
+      geom_rect() +
+      geom_fit_text(min.size = 0,
+                    flip = TRUE,
+                    grow = TRUE) +
+      scale_fill_gradient(low = "#fee391", high = "#238443")
+    
+  })
+  
+  expect_doppelganger("top left flip", {
+    ggplot(gold,
+           aes(
+             xmin = xmin,
+             xmax = xmax,
+             ymin = ymin,
+             ymax = ymax,
+             fill = linenumber,
+             label = line
+           )) +
+      coord_polar() +
+      geom_rect() +
+      geom_fit_text(min.size = 0,
+                    flip = TRUE,
+                    place = "topleft") +
+      scale_fill_gradient(low = "#fee391", high = "#238443")
+    
+  })
 
 } )

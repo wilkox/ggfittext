@@ -1,3 +1,5 @@
+Apologies for the problematic URLs, they have now been fixed.
+
 # Test environments
 
 * local OS X install, R 4.0.3

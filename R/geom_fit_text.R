@@ -94,6 +94,8 @@
 #' as implemented by `gridtext::richtext_grob()`. `FALSE` by default.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
 #' arguments as for `ggplot2::geom_text()`.
+#' @param flip If `TRUE`, when in polar coordinates 'upside-down' text will be
+#' flipped the 'right way up', to enhance readability.
 #'
 #' @examples
 #'
@@ -125,6 +127,7 @@ geom_fit_text <- function(
   height = NULL,
   formatter = NULL,
   contrast = FALSE,
+  flip = FALSE,
   rich = FALSE,
   ...
 ) {
@@ -152,6 +155,7 @@ geom_fit_text <- function(
       height = height,
       formatter = formatter,
       contrast = contrast,
+      flip = flip,
       rich = rich,
       ...
     )
@@ -258,6 +262,8 @@ GeomFitText <- ggplot2::ggproto(
       data$label <- formatted_labels
     }
 
+    data$flip <- params$flip
+
     data
   },
 
@@ -281,7 +287,8 @@ GeomFitText <- ggplot2::ggproto(
     contrast = FALSE,
     place = "centre",
     outside = FALSE,
-    rich = FALSE
+    rich = FALSE,
+    flip = FALSE
   ) {
 
     # Transform data to plot scales; if in polar coordinates, we need to ensure
@@ -326,6 +333,7 @@ GeomFitText <- ggplot2::ggproto(
       height = height,
       contrast = contrast,
       rich = rich,
+      flip = flip,
       cl = ifelse(inherits(coord, "CoordPolar"), "fittexttreepolar", "fittexttree")
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
