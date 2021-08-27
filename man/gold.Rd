@@ -8,10 +8,10 @@
 A data frame with 8 rows and 5 variables:
 \describe{
 \item{line}{a line from the poem}
-\item{xmin}{the xmin coordinate with which to draw the word}
-\item{xmax}{the xmax coordinate with which to draw the word}
-\item{ymin}{the ymin coordinate with which to draw the word}
-\item{ymax}{the ymax coordinate with which to draw the word}
+\item{xmin}{the xmin coordinate with which to draw the line}
+\item{xmax}{the xmax coordinate with which to draw the line}
+\item{ymin}{the ymin coordinate with which to draw the line}
+\item{ymax}{the ymax coordinate with which to draw the line}
 \item{linenumber}{the line number}
 }
 }

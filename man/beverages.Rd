@@ -11,11 +11,22 @@ A data frame with 6 rows and 3 variables:
 \item{ingredient}{the ingredient}
 \item{proportion}{the proportion of a cup to fill with the ingredient}
 }
+
+A data frame with 6 rows and 3 variables:
+\describe{
+\item{beverage}{the name of the beverage}
+\item{ingredient}{the ingredient, in rich text}
+\item{proportion}{the proportion of a cup to fill with the ingredient}
+}
 }
 \usage{
+beverages
+
 beverages
 }
 \description{
 The compositions of some espresso-based beverages
+
+The compositions of some espresso-based beverages, in rich text
 }
 \keyword{datasets}

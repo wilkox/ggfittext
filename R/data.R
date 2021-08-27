@@ -30,6 +30,16 @@
 #' }
 "beverages"
 
+#' The compositions of some espresso-based beverages, in rich text
+#'
+#' @format A data frame with 6 rows and 3 variables:
+#' \describe{
+#'   \item{beverage}{the name of the beverage} 
+#'   \item{ingredient}{the ingredient, in rich text} 
+#'   \item{proportion}{the proportion of a cup to fill with the ingredient} 
+#' }
+"beverages"
+
 #' Some craft and their altitudes
 #'
 #' @format A data frame with 4 rows and 2 variables:
