@@ -112,11 +112,10 @@ test_that("geom_bar_text() draws contrasting text", {
   expect_doppelganger("Contrasting with non-black text", {
     ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
       geom_tile() +
-      geom_fit_text(colour = "thistle", reflow = TRUE, grow = TRUE, 
-                    contrast = TRUE) +
+      geom_fit_text(colour = "thistle", reflow = TRUE, grow = TRUE, contrast = TRUE) +
        scale_fill_gradientn(
-         colours = c("red","yellow","green","lightblue","darkblue"),
-         values = c(1.0,0.8,0.6,0.4,0.2,0)
+         colours = c("red", "yellow", "green", "lightblue", "darkblue"),
+         values = c(1.0, 0.8, 0.6, 0.4, 0.2, 0)
        ) 
   } )
 
