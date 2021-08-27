@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' data-engine-version='2.0' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpMjcuOTB8NjIxLjEyfDIyLjc4fDU0NS4xMQ=='>
+    <rect x='27.90' y='22.78' width='593.22' height='522.33' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMjcuOTB8NjIxLjEyfDIyLjc4fDU0NS4xMQ==)'>
+<rect x='27.90' y='22.78' width='593.22' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<rect x='337.99' y='176.03' width='242.68' height='43.17' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #7CAE00;' />
+<rect x='337.99' y='89.69' width='242.68' height='86.34' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #F8766D;' />
+<rect x='337.99' y='219.20' width='242.68' height='129.50' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #00BFC4;' />
+<rect x='337.99' y='348.70' width='242.68' height='172.67' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #C77CFF;' />
+<rect x='68.35' y='46.53' width='242.68' height='215.84' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #7CAE00;' />
+<rect x='68.35' y='262.36' width='242.68' height='259.01' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #00BFC4;' />
+<text x='459.33' y='187.12' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='48.71px' lengthAdjust='spacingAndGlyphs'>espresso</text>
+<text x='459.33' y='100.79' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='51.38px' lengthAdjust='spacingAndGlyphs'>chocolate</text>
+<text x='459.33' y='230.29' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='70.70px' lengthAdjust='spacingAndGlyphs'>steamed milk</text>
+<text x='459.33' y='359.79' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='81.39px' lengthAdjust='spacingAndGlyphs'>whipped cream</text>
+<text x='189.69' y='57.62' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='48.71px' lengthAdjust='spacingAndGlyphs'>espresso</text>
+<text x='189.69' y='273.46' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='70.70px' lengthAdjust='spacingAndGlyphs'>steamed milk</text>
+<rect x='27.90' y='22.78' width='593.22' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<text x='22.97' y='524.40' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='22.97' y='394.90' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>3</text>
+<text x='22.97' y='265.39' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>6</text>
+<text x='22.97' y='135.89' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>9</text>
+<polyline points='25.16,521.37 27.90,521.37 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='25.16,391.87 27.90,391.87 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='25.16,262.36 27.90,262.36 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='25.16,132.86 27.90,132.86 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='189.69,547.85 189.69,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='459.33,547.85 459.33,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='189.69' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='34.73px' lengthAdjust='spacingAndGlyphs'>flat white</text>
+<text x='459.33' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='26.42px' lengthAdjust='spacingAndGlyphs'>mocha</text>
+<text x='324.51' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='45.88px' lengthAdjust='spacingAndGlyphs'>beverage</text>
+<text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='49.53px' lengthAdjust='spacingAndGlyphs'>proportion</text>
+<rect x='632.08' y='241.72' width='82.44' height='84.45' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='632.08' y='250.43' style='font-size: 11.00px; font-family: sans;' textLength='48.31px' lengthAdjust='spacingAndGlyphs'>ingredient</text>
+<rect x='632.08' y='257.05' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<rect x='632.78' y='257.76' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #F8766D;' />
+<rect x='632.08' y='274.33' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<rect x='632.78' y='275.04' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #7CAE00;' />
+<rect x='632.08' y='291.61' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<rect x='632.78' y='292.32' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #00BFC4;' />
+<rect x='632.08' y='308.89' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<rect x='632.78' y='309.60' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #C77CFF;' />
+<text x='654.84' y='268.72' style='font-size: 8.80px; font-family: sans;' textLength='37.68px' lengthAdjust='spacingAndGlyphs'>chocolate</text>
+<text x='654.84' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='35.72px' lengthAdjust='spacingAndGlyphs'>espresso</text>
+<text x='654.84' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='51.85px' lengthAdjust='spacingAndGlyphs'>steamed milk</text>
+<text x='654.84' y='320.56' style='font-size: 8.80px; font-family: sans;' textLength='59.69px' lengthAdjust='spacingAndGlyphs'>whipped cream</text>
+<text x='27.90' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='234.41px' lengthAdjust='spacingAndGlyphs'>Integer y shouldn't induce an implied flip</text>
+</g>
+</svg>
