@@ -122,9 +122,6 @@ sety.richtext_grob <- function(tg, y) {
 
 #' Methods to wrap labels for textGrob and richtext_grob
 #'
-#' These are needed because textGrob uses `\n` for line breaks while
-#' richtext_grob uses `<br>`
-#'
 #' @noRd
 wraplabel <- function(tg, w) UseMethod("wraplabel")
 wraplabel.text <- function(tg, w) {
@@ -134,8 +131,198 @@ wraplabel.text <- function(tg, w) {
   )
 }
 wraplabel.richtext_grob <- function(tg, w) {
-  paste(
-    stringi::stri_wrap(getlabel(tg), w, normalize = FALSE),
-    collapse = "<br>"
-  )
+  lines <- unlist(strsplit(getlabel(tg), c("<br>", "</br>", "\n")))
+  paste(vapply(lines, wrap_rich, w = w, character(1)), collapse = "<br>")
+}
+
+#' An (approximate) wrapper for strings containing markdown and HTML. 
+#'
+#' It aims to handle (approximately) the same set of markup as gridtext.
+#' Markdown parsing is implemented as a something resembling a finite state
+#' machine with memoization (i.e. a packrat parser). The states are as follows:
+#'
+#' plain: un-marked up text
+#' html_start: possibly the start of an HTML tag (i.e. a less-than sign)
+#' html: an HTML tag
+#' startasterisk1,startasterisk2,startasterisk3: a asterisk belonging to a
+#' series of one, two or three that closes a matching pair
+#' endasterisk1,endasterisk2,endasterisk3: an asterisk belonging to a series of
+#' one, two or three that closes a matching pair
+#' markup: other markup characters (that gridtext recognises)
+#'
+#' @noRd
+wrap_rich <- function(string, w) {
+
+  chars <- unlist(strsplit(string, split = NULL))
+
+  # If the string is less than the wrap width, return the string
+  if (length(chars) <= w) return(string)
+
+  states <- character(length(chars))
+  pos <- 1
+  while (pos <= length(chars)) {
+
+    # Skip if this position has already been parsed
+    if (! states[pos] == "") {
+      pos <- pos + 1; next
+    }
+
+    # Make sure the machine hasn't jumped ahead for some reason
+    if (pos > 1) {
+      if (states[pos - 1] == "") {
+        stop(
+          "Markdown parser stuck in a bad state at position ", pos,
+          " - unable to parse"
+        )
+      }
+    }
+
+    # Get character
+    char <- chars[pos]
+
+    # Possibly the start of an HTML tag
+    if (char == "<") {
+      states[pos] <- "html_start"
+      pos <- pos + 1; next
+    }
+
+    # Possibly the end of an HTML tag. Look back, and if there is an HTML start
+    # tag with no intervening HTML, mark the entire tag as HTML. The states of
+    # the intervening characters don't matter, a HTML tag steamrolls them all.
+    if (char == ">") {
+      backpos <- pos - 1
+      while (backpos > 0) {
+        if (states[backpos] == "html") break
+        if (states[backpos] == "html_start") {
+          states[seq(backpos, pos)] <- "html"
+          break
+        }
+        backpos <- backpos - 1
+      }
+      if (states[pos] == "html") {
+        pos <- pos + 1; next
+      }
+    }
+
+    # An asterisk. Look ahead to determine if this is a one, two or
+    # three-asterisk series (more than three asterisks don't count, so will begin
+    # a new series). Then, look back to see if this is the end of a matched pair.
+    if (char == "*") {
+
+      if (chars[pos + 1] == "*" & ! is.na(chars[pos + 1])) {
+        if (chars[pos + 2] == "*" & ! is.na(chars[pos + 2])) {
+          states[seq(pos, (pos + 2))] <- "asterisk3"
+        } else {
+          states[seq(pos, (pos + 1))] <- "asterisk2"
+        }
+      } else {
+        states[pos] <- "asterisk1"
+      }
+
+      backpos <- pos - 1
+      while (backpos > 0) {
+        if (states[pos] == "asterisk1") {
+          if (states[backpos] == "endasterisk1") break
+          if (states[backpos] == "asterisk1") {
+            states[backpos] <- "startasterisk1"
+            states[pos] <- "endasterisk1"
+            break
+          }
+        }
+        if (states[pos] == "asterisk2") {
+          if (states[backpos] == "endasterisk2") break
+          if (states[backpos] == "asterisk2") {
+            states[seq(backpos - 1, backpos)] <- "startasterisk2"
+            states[seq(pos, pos + 1)] <- "endasterisk2"
+            break
+          }
+        }
+        if (states[pos] == "asterisk3") {
+          if (states[backpos] == "endasterisk3") break
+          if (states[backpos] == "asterisk3") {
+            states[seq(backpos - 2, backpos)] <- "startasterisk3"
+            states[seq(pos, pos + 2)] <- "endasterisk3"
+            break
+          }
+        }
+        backpos <- backpos - 1
+      }
+
+      if (states[pos] == "asterisk1") pos <- pos + 1
+      if (states[pos] == "asterisk2") pos <- pos + 2
+      if (states[pos] == "asterisk3") pos <- pos + 3
+      next
+    }
+
+    # Any other markup that gridtext knows about that does not come in a matched
+    # pair
+    if (char %in% c("^")) {
+      states[pos] <- "markup"
+      pos <- pos + 1; next
+    }
+
+    states[pos] <- "plain"
+  }
+
+  # Identify states that count as characters for the purposes of wrapping
+  states <- states %in% c("plain", "asterisk1", "asterisk2", "asterisk3")
+
+  # If the number of characters that count is less than the wrap width, return
+  # the string
+  if (sum(states) <= w) return(string)
+
+  # Wrap to the specified character width
+  #
+  # States:
+  #
+  # expand: filling a line out to the desired width
+  # contract: having filled to the desired width, backtracking to find somewhere
+  # to insert a line break
+  # hyperexpand: if there was nowhere within the width window to put a line
+  # break, start looking forward to the next possible place (resulting in a
+  # too-long line)
+  pos <- 1
+  line_l <- 0
+  state <- "expand"
+  while (pos <= length(chars)) {
+
+    if (state == "expand") {
+      if (line_l == w) { state <- "contract"; next }
+      if (pos == length(chars)) { break }
+      if (states[pos]) { line_l <- line_l + 1 }
+      pos <- pos + 1
+      next
+    }
+
+    if (state == "contract") {
+      if (chars[pos] == " ") {
+        chars[pos] <- "<br>"
+        pos <- pos + 1
+        line_l <- 0
+        state <- "expand"
+        next
+      }
+      if (chars[pos] == "<br>" | pos == 1) {
+        state <- "hyperexpand"
+        pos <- pos + 1
+        next
+      }
+      pos <- pos - 1
+    }
+
+    if (state == "hyperexpand") {
+      if (chars[pos] == " ") {
+        chars[pos] <- "<br>"
+        pos <- pos + 1
+        line_l <- 0
+        state <- "expand"
+        next
+      }
+      if (pos == length(chars)) break
+      pos <- pos + 1
+      next
+    }
+  }
+  wrapped_string <- paste(chars, collapse = "")
+  return(wrapped_string)
 }

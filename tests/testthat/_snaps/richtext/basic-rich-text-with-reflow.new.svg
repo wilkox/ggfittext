@@ -33,9 +33,52 @@
 <rect x='486.40' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
 <rect x='279.01' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
 <rect x='279.01' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<text x='126.96' y='168.12' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='17.34px' lengthAdjust='spacingAndGlyphs'>red</text>
-<text x='144.31' y='168.12' style='font-size: 12.00px; font-family: sans;' textLength='44.69px' lengthAdjust='spacingAndGlyphs'>-rumped</text>
-<text x='192.33' y='168.12' style='font-size: 12.00px; font-family: sans;' textLength='31.35px' lengthAdjust='spacingAndGlyphs'>parrot</text>
+<text x='85.09' y='132.80' style='font-size: 12.00px; font-family: sans;' textLength='37.35px' lengthAdjust='spacingAndGlyphs'>Whose</text>
+<text x='125.78' y='132.80' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='34.70px' lengthAdjust='spacingAndGlyphs'>woods</text>
+<text x='163.81' y='132.80' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='29.36px' lengthAdjust='spacingAndGlyphs'>these</text>
+<text x='196.50' y='132.80' style='font-size: 12.00px; font-weight: bold; font-style: italic; font-family: sans;' textLength='17.34px' lengthAdjust='spacingAndGlyphs'>are</text>
+<text x='217.18' y='132.80' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='3.33px' lengthAdjust='spacingAndGlyphs'>I</text>
+<text x='223.85' y='132.80' style='font-size: 12.00px; font-family: sans;' textLength='7.01px' lengthAdjust='spacingAndGlyphs'>&lt;</text>
+<text x='234.20' y='132.80' style='font-size: 12.00px; font-family: sans;' textLength='25.35px' lengthAdjust='spacingAndGlyphs'>think</text>
+<text x='262.88' y='136.10' style='font-size: 9.60px; font-family: sans;' textLength='2.67px' lengthAdjust='spacingAndGlyphs'>I</text>
+<text x='108.71' y='148.00' style='font-size: 12.00px; font-family: sans;' textLength='28.02px' lengthAdjust='spacingAndGlyphs'>know</text>
+<text x='136.73' y='148.00' style='font-size: 12.00px; font-family: sans;' textLength='3.33px' lengthAdjust='spacingAndGlyphs'>.</text>
+<text x='143.40' y='148.00' style='font-size: 12.00px; font-family: sans;' textLength='17.34px' lengthAdjust='spacingAndGlyphs'>His</text>
+<text x='164.07' y='144.70' style='font-size: 9.60px; font-family: sans;' textLength='26.16px' lengthAdjust='spacingAndGlyphs'>house</text>
+<text x='190.23' y='148.00' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='8.67px' lengthAdjust='spacingAndGlyphs'>is</text>
+<text x='202.23' y='148.00' style='font-size: 12.00px; font-family: sans;' textLength='9.34px' lengthAdjust='spacingAndGlyphs'>in</text>
+<text x='214.90' y='148.00' style='font-size: 12.00px; font-family: sans;' textLength='7.01px' lengthAdjust='spacingAndGlyphs'>&gt;</text>
+<text x='225.25' y='148.00' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'>the</text>
+<text x='98.27' y='158.76' style='font-size: 12.00px; font-weight: bold; font-style: italic; font-family: sans;' textLength='34.02px' lengthAdjust='spacingAndGlyphs'>village</text>
+<text x='135.62' y='158.76' style='font-size: 12.00px; font-family: sans;' textLength='40.04px' lengthAdjust='spacingAndGlyphs'>though.</text>
+<text x='178.99' y='158.76' style='font-size: 12.00px; font-family: sans;' textLength='28.01px' lengthAdjust='spacingAndGlyphs'>What</text>
+<text x='210.34' y='158.76' style='font-size: 12.00px; font-family: sans;' textLength='13.35px' lengthAdjust='spacingAndGlyphs'>do</text>
+<text x='227.02' y='158.76' style='font-size: 12.00px; font-family: sans;' textLength='4.67px' lengthAdjust='spacingAndGlyphs'>*</text>
+<text x='231.69' y='158.76' style='font-size: 12.00px; font-weight: bold; font-style: italic; font-family: sans;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'>four</text>
+<text x='137.62' y='169.52' style='font-size: 12.00px; font-weight: bold; font-style: italic; font-family: sans;' textLength='47.36px' lengthAdjust='spacingAndGlyphs'>asterisks</text>
+<text x='184.99' y='169.52' style='font-size: 12.00px; font-family: sans;' textLength='4.67px' lengthAdjust='spacingAndGlyphs'>*</text>
+<text x='192.99' y='169.52' style='font-size: 12.00px; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>do?</text>
+<text x='84.93' y='180.28' style='font-size: 12.00px; font-family: sans;' textLength='28.01px' lengthAdjust='spacingAndGlyphs'>What</text>
+<text x='116.27' y='180.28' style='font-size: 12.00px; font-family: sans;' textLength='30.03px' lengthAdjust='spacingAndGlyphs'>about</text>
+<text x='149.64' y='180.28' style='font-size: 12.00px; font-family: sans;' textLength='9.35px' lengthAdjust='spacingAndGlyphs'>**</text>
+<text x='158.98' y='180.28' style='font-size: 12.00px; font-weight: bold; font-style: italic; font-family: sans;' textLength='18.68px' lengthAdjust='spacingAndGlyphs'>five</text>
+<text x='180.99' y='180.28' style='font-size: 12.00px; font-weight: bold; font-style: italic; font-family: sans;' textLength='47.36px' lengthAdjust='spacingAndGlyphs'>asterisks</text>
+<text x='228.35' y='180.28' style='font-size: 12.00px; font-family: sans;' textLength='4.67px' lengthAdjust='spacingAndGlyphs'>*</text>
+<text x='233.03' y='180.28' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>?</text>
+<text x='243.04' y='180.28' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='22.67px' lengthAdjust='spacingAndGlyphs'>This</text>
+<text x='105.46' y='192.68' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='8.67px' lengthAdjust='spacingAndGlyphs'>is</text>
+<text x='117.47' y='192.68' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='7.01px' lengthAdjust='spacingAndGlyphs'>&lt;</text>
+<text x='127.81' y='192.68' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='21.35px' lengthAdjust='spacingAndGlyphs'>less</text>
+<text x='152.49' y='192.68' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='30.37px' lengthAdjust='spacingAndGlyphs'>~than</text>
+<text x='186.20' y='189.38' style='font-size: 9.60px; font-style: italic; font-family: sans;' textLength='17.61px' lengthAdjust='spacingAndGlyphs'>this,</text>
+<text x='207.14' y='192.68' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='20.02px' lengthAdjust='spacingAndGlyphs'>and</text>
+<text x='230.49' y='192.68' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>a</text>
+<text x='240.50' y='192.68' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='4.67px' lengthAdjust='spacingAndGlyphs'>*</text>
+<text x='98.93' y='203.44' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='35.37px' lengthAdjust='spacingAndGlyphs'>couple</text>
+<text x='137.63' y='203.44' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='10.01px' lengthAdjust='spacingAndGlyphs'>of</text>
+<text x='150.98' y='203.44' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='4.67px' lengthAdjust='spacingAndGlyphs'>*</text>
+<text x='158.98' y='203.44' style='font-size: 12.00px; font-family: sans;' textLength='38.69px' lengthAdjust='spacingAndGlyphs'>floating</text>
+<text x='201.01' y='203.44' style='font-size: 12.00px; font-family: sans;' textLength='50.70px' lengthAdjust='spacingAndGlyphs'>asterisks.</text>
 <text x='129.95' y='405.54' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='44.69px' lengthAdjust='spacingAndGlyphs'>emperor</text>
 <text x='177.98' y='405.54' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='42.71px' lengthAdjust='spacingAndGlyphs'>penguin</text>
 <text x='558.74' y='168.12' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>sugar</text>
