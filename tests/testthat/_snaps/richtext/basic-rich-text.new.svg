@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' data-engine-version='2.0' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpNTAuODl8NzE0LjUyfDIyLjc4fDU0NS4xMQ=='>
+    <rect x='50.89' y='22.78' width='663.63' height='522.33' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNTAuODl8NzE0LjUyfDIyLjc4fDU0NS4xMQ==)'>
+<rect x='50.89' y='22.78' width='663.63' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<rect x='71.63' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='71.63' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='486.40' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='486.40' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='279.01' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='279.01' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
+<text x='126.96' y='168.12' style='font-size: 12.00px; fill: #FF0000; font-family: sans;' textLength='17.34px' lengthAdjust='spacingAndGlyphs'>red</text>
+<text x='144.31' y='168.12' style='font-size: 12.00px; font-family: sans;' textLength='44.69px' lengthAdjust='spacingAndGlyphs'>-rumped</text>
+<text x='192.33' y='168.12' style='font-size: 12.00px; font-family: sans;' textLength='31.35px' lengthAdjust='spacingAndGlyphs'>parrot</text>
+<text x='129.95' y='405.54' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='44.69px' lengthAdjust='spacingAndGlyphs'>emperor</text>
+<text x='177.98' y='405.54' style='font-size: 12.00px; font-weight: bold; font-family: sans;' textLength='42.71px' lengthAdjust='spacingAndGlyphs'>penguin</text>
+<text x='558.74' y='168.12' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>sugar</text>
+<text x='592.09' y='168.12' style='font-size: 12.00px; font-style: italic; font-family: sans;' textLength='29.35px' lengthAdjust='spacingAndGlyphs'>glider</text>
+<text x='561.40' y='407.44' style='font-size: 9.60px; font-family: sans;' textLength='24.02px' lengthAdjust='spacingAndGlyphs'>brush</text>
+<text x='588.76' y='404.14' style='font-size: 12.00px; font-family: sans;' textLength='30.02px' lengthAdjust='spacingAndGlyphs'>rabbit</text>
+<text x='361.83' y='165.64' style='font-size: 9.60px; font-family: sans;' textLength='22.41px' lengthAdjust='spacingAndGlyphs'>flying</text>
+<text x='387.57' y='168.95' style='font-size: 12.00px; font-family: sans;' textLength='16.01px' lengthAdjust='spacingAndGlyphs'>fox</text>
+<text x='364.03' y='405.54' style='font-size: 12.00px; font-family: sans;' textLength='37.35px' lengthAdjust='spacingAndGlyphs'>herring</text>
+<rect x='50.89' y='22.78' width='663.63' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<text x='45.96' y='405.69' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='27.88px' lengthAdjust='spacingAndGlyphs'>FALSE</text>
+<text x='45.96' y='168.26' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='23.96px' lengthAdjust='spacingAndGlyphs'>TRUE</text>
+<polyline points='48.15,402.66 50.89,402.66 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='48.15,165.24 50.89,165.24 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='175.32,547.85 175.32,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='382.70,547.85 382.70,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='590.09,547.85 590.09,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='175.32' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='31.80px' lengthAdjust='spacingAndGlyphs'>feathers</text>
+<text x='382.70' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='13.70px' lengthAdjust='spacingAndGlyphs'>fins</text>
+<text x='590.09' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='10.27px' lengthAdjust='spacingAndGlyphs'>fur</text>
+<text x='382.70' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='20.80px' lengthAdjust='spacingAndGlyphs'>type</text>
+<text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='19.56px' lengthAdjust='spacingAndGlyphs'>flies</text>
+<text x='50.89' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='82.18px' lengthAdjust='spacingAndGlyphs'>Basic rich text</text>
+</g>
+</svg>

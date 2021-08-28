@@ -21,46 +21,15 @@
 <rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
 </g>
 <defs>
-  <clipPath id='cpNDAuMTN8NzE0LjUyfDIyLjc4fDU0NS4xMQ=='>
-    <rect x='40.13' y='22.78' width='674.39' height='522.33' />
+  <clipPath id='cpNS40OHw3MTQuNTJ8MjIuNzh8NTcwLjUy'>
+    <rect x='5.48' y='22.78' width='709.04' height='547.74' />
   </clipPath>
 </defs>
-<g clip-path='url(#cpNDAuMTN8NzE0LjUyfDIyLjc4fDU0NS4xMQ==)'>
-<rect x='40.13' y='22.78' width='674.39' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<rect x='392.65' y='402.66' width='275.89' height='118.71' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #595959;' />
-<rect x='392.65' y='331.43' width='275.89' height='71.23' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #595959;' />
-<rect x='392.65' y='212.72' width='275.89' height='118.71' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #595959;' />
-<rect x='392.65' y='46.53' width='275.89' height='166.20' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #595959;' />
-<rect x='86.11' y='402.66' width='275.89' height='118.71' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #595959;' />
-<rect x='86.11' y='212.72' width='275.89' height='189.94' style='stroke-width: 1.07; stroke: none; stroke-linecap: square; stroke-linejoin: miter; fill: #595959;' />
-<text x='506.24' y='413.75' style='font-size: 12.00px; fill: #FFFFFF; font-family: sans;' textLength='48.71px' lengthAdjust='spacingAndGlyphs'>espresso</text>
-<text x='504.91' y='342.53' style='font-size: 12.00px; fill: #FFFFFF; font-family: sans;' textLength='51.38px' lengthAdjust='spacingAndGlyphs'>chocolate</text>
-<text x='495.24' y='223.81' style='font-size: 12.00px; fill: #FFFFFF; font-family: sans;' textLength='46.04px' lengthAdjust='spacingAndGlyphs'>steamed</text>
-<text x='544.62' y='223.81' style='font-size: 12.00px; fill: #FFFFFF; font-family: sans;' textLength='21.33px' lengthAdjust='spacingAndGlyphs'>milk</text>
-<text x='489.90' y='57.62' style='font-size: 12.00px; fill: #FFFFFF; font-family: sans;' textLength='44.70px' lengthAdjust='spacingAndGlyphs'>whipped</text>
-<text x='537.94' y='57.62' style='font-size: 12.00px; fill: #FFFFFF; font-family: sans;' textLength='33.35px' lengthAdjust='spacingAndGlyphs'>cream</text>
-<text x='199.70' y='413.75' style='font-size: 12.00px; fill: #FFFFFF; font-family: sans;' textLength='48.71px' lengthAdjust='spacingAndGlyphs'>espresso</text>
-<text x='188.70' y='223.81' style='font-size: 12.00px; fill: #FFFFFF; font-family: sans;' textLength='46.04px' lengthAdjust='spacingAndGlyphs'>steamed</text>
-<text x='238.08' y='223.81' style='font-size: 12.00px; fill: #FFFFFF; font-family: sans;' textLength='21.33px' lengthAdjust='spacingAndGlyphs'>milk</text>
-<rect x='40.13' y='22.78' width='674.39' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
+<g clip-path='url(#cpNS40OHw3MTQuNTJ8MjIuNzh8NTcwLjUy)'>
+<rect x='5.48' y='22.78' width='709.04' height='547.74' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<rect x='5.48' y='22.78' width='709.04' height='547.74' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<text x='35.20' y='524.40' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.00</text>
-<text x='35.20' y='405.69' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.25</text>
-<text x='35.20' y='286.98' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.50</text>
-<text x='35.20' y='168.26' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.75</text>
-<text x='35.20' y='49.55' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>1.00</text>
-<polyline points='37.39,521.37 40.13,521.37 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='37.39,402.66 40.13,402.66 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='37.39,283.95 40.13,283.95 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='37.39,165.24 40.13,165.24 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='37.39,46.53 40.13,46.53 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='224.06,547.85 224.06,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<polyline points='530.60,547.85 530.60,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
-<text x='224.06' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='34.73px' lengthAdjust='spacingAndGlyphs'>flat white</text>
-<text x='530.60' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='26.42px' lengthAdjust='spacingAndGlyphs'>mocha</text>
-<text x='377.33' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='45.88px' lengthAdjust='spacingAndGlyphs'>beverage</text>
-<text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='49.53px' lengthAdjust='spacingAndGlyphs'>proportion</text>
-<text x='40.13' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='157.01px' lengthAdjust='spacingAndGlyphs'>Basic bar plot with rich text</text>
+<text x='5.48' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='157.01px' lengthAdjust='spacingAndGlyphs'>Basic bar plot with rich text</text>
 </g>
 </svg>
