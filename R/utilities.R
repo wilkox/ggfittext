@@ -295,7 +295,7 @@ wrap_rich <- function(string, w) {
     }
 
     if (state == "contract") {
-      if (chars[pos] == " ") {
+      if (chars[pos] == " " & states[pos]) {
         chars[pos] <- "<br>"
         pos <- pos + 1
         line_l <- 0
@@ -311,7 +311,7 @@ wrap_rich <- function(string, w) {
     }
 
     if (state == "hyperexpand") {
-      if (chars[pos] == " ") {
+      if (chars[pos] == " " & states[pos]) {
         chars[pos] <- "<br>"
         pos <- pos + 1
         line_l <- 0
