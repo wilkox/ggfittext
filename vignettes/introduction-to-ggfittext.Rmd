@@ -127,6 +127,8 @@ ggplot(animals_rich, aes(x = type, y = flies, label = animal)) +
   geom_fit_text(reflow = TRUE, grow = TRUE, rich = TRUE)
 ```
 
+Rich text cannot be drawn in polar coordinates.
+
 ## Experimental feature: text in polar coordinates
 
 Text can be drawn in polar coordinates with `geom_fit_text()` simply by adding

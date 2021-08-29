@@ -176,6 +176,8 @@ ggplot(animals_rich, aes(x = type, y = flies, label = animal)) +
   geom_fit_text(reflow = TRUE, grow = TRUE, rich = TRUE)
 ```
 
+Rich text cannot be drawn in polar coordinates.
+
 ## Specifying the box limits
 
 If you want to manually set the limits of the box (instead of having them

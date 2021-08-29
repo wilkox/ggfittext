@@ -237,7 +237,23 @@ test_that("geom_fit_text() draws, grows and correctly places text in polar coord
       geom_fit_text(place = "bottom", min.size = 0)
   } )
 
+
 } )
+
+
+test_that("geom_fit_text() emits an error if you try to draw rich text in polar coordinates", {
+
+  expect_error( {
+    p <- ggplot(gold, aes(label = line, xmin = xmin, xmax = xmax, ymin = ymin, 
+                     ymax = ymax)) +
+      geom_rect(fill = "lightblue") +
+      coord_polar(start = (pi / 2)) +
+      geom_fit_text(min.size = 0, rich = TRUE)
+    print(p)
+  } )
+
+} )
+
 
 test_that("geom_fit_text() correctly applies width and height arguments in polar coordinates", {
 

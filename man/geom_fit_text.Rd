@@ -115,7 +115,8 @@ background fills. \code{FALSE} by default for \code{geom_fit_text()}, set
 heuristically for \code{geom_bar_text()}.}
 
 \item{rich}{If \code{TRUE}, text will be formatted with markdown and HTML markup
-as implemented by \code{gridtext::richtext_grob()}. \code{FALSE} by default.}
+as implemented by \code{gridtext::richtext_grob()}. \code{FALSE} by default. Rich text
+cannot be drawn in polar coordinates.}
 
 \item{flip}{If \code{TRUE}, when in polar coordinates 'upside-down' text will be
 flipped the 'right way up', to enhance readability.}

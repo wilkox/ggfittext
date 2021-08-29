@@ -91,7 +91,8 @@
 #' @param mapping `ggplot2::aes()` object as standard in 'ggplot2'. Note
 #' that aesthetics specifying the box must be provided. See Details.
 #' @param rich If `TRUE`, text will be formatted with markdown and HTML markup
-#' as implemented by `gridtext::richtext_grob()`. `FALSE` by default.
+#' as implemented by `gridtext::richtext_grob()`. `FALSE` by default. Rich text
+#' cannot be drawn in polar coordinates.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
 #' arguments as for `ggplot2::geom_text()`.
 #' @param flip If `TRUE`, when in polar coordinates 'upside-down' text will be
@@ -202,13 +203,13 @@ GeomFitText <- ggplot2::ggproto(
     if (! (! is.null(data$xmin) & ! is.null(data$xmax) | ! is.null(data$x))) {
       stop(
         "geom_fit_text needs either 'xmin' and 'xmax', or 'x'",
-        .call = FALSE
+        call. = FALSE
       )
     }
     if (! (! is.null(data$ymin) & ! is.null(data$ymax) | ! is.null(data$y))) {
       stop(
         "geom_fit_text needs either 'ymin' and 'ymax', or 'y'",
-        .call = FALSE
+        call. = FALSE
       )
     }
 
@@ -290,6 +291,11 @@ GeomFitText <- ggplot2::ggproto(
     rich = FALSE,
     flip = FALSE
   ) {
+
+    # Rich text cannot be used in polar coordinates
+    if (inherits(coord, "CoordPolar") & rich) {
+      stop("Cannot draw rich text in polar coordinates", call. = FALSE)
+    }
 
     # Transform data to plot scales; if in polar coordinates, we need to ensure
     # that x and y values are given
