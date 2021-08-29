@@ -122,17 +122,71 @@ sety.richtext_grob <- function(tg, y) {
 
 #' Methods to wrap labels for textGrob and richtext_grob
 #'
+#' Each method returns a data frame containing all possible wraps for the text.
+#' Newline tokens ("\n" for plain text, additionally "<br>" and its variants
+#' for rich text) are respected when wrapping.
+#'
 #' @noRd
-wraplabel <- function(tg, w) UseMethod("wraplabel")
-wraplabel.text <- function(tg, w) {
-  paste(
-    stringi::stri_wrap(getlabel(tg), w, normalize = FALSE),
-    collapse = "\n"
+wraplabel <- function(tg) UseMethod("wraplabel")
+wraplabel.text <- function(tg) {
+
+  label <- getlabel(tg)
+
+  # Split the string into lines
+  lines <- unlist(stringi::stri_split(label, regex = "\n"))
+
+  # Identify all the line-wise locations of whitespace in the text (i.e.
+  # possible widths to wrap to). Include the full lengths of each line, to
+  # allow for non-wrapped wrap
+  breakpoints <- lapply(
+    lines,
+    function(line) stringi::stri_locate_all(line, regex = "\\s")[[1]][,1]
   )
+  breakpoints <- c(breakpoints, stringi::stri_length(lines))
+  breakpoints <- sort(unique(unlist(breakpoints)))
+
+  # Generate wraps for those lengths
+  wraps <- data.frame(wrapwidth = breakpoints)
+  wraps$wrap <- vapply(wraps$wrapwidth, function(w) {
+    paste0(lapply(lines, function(line) {
+      paste0(
+        stringi::stri_wrap(str = line, width = w, normalise = FALSE),
+        collapse = "\n"
+      )
+    } ), collapse = "\n")
+  }, character(1))
+
+  return(wraps)
 }
-wraplabel.richtext_grob <- function(tg, w) {
-  lines <- unlist(strsplit(getlabel(tg), c("<br>", "</br>", "\n")))
-  paste(vapply(lines, wrap_rich, w = w, character(1)), collapse = "<br>")
+wraplabel.richtext_grob <- function(tg) {
+
+  label <- getlabel(tg)
+
+  # Split the string into lines
+  lines <- unlist(strsplit(label, c("<br>", "</br>", "\n")))
+
+  # Identify all the line-wise locations of whitespace in the text (i.e.
+  # possible widths to wrap to). Include the full lengths of each line, to
+  # allow for non-wrapped wrap
+  breakpoints <- lapply(
+    lines,
+    function(line) stringi::stri_locate_all(line, regex = "\\s")[[1]][,1]
+  )
+  breakpoints <- c(breakpoints, stringi::stri_length(lines))
+  breakpoints <- sort(unique(unlist(breakpoints)))
+
+  # Generate wraps for those lengths
+  wraps <- data.frame(wrapwidth = breakpoints)
+  wraps$wrap <- vapply(wraps$wrapwidth, function(w) {
+    paste0(lapply(lines, function(line) {
+      paste0(
+        wrap_rich(line, w),
+        collapse = "<br>"
+      )
+    } ), collapse = "<br>")
+  }, character(1))
+
+  return(wraps)
 }
 
 #' An (approximate) wrapper for strings containing markdown and HTML. 

@@ -43,6 +43,40 @@ test_that("geom_fit_text() grows and reflows text correctly", {
       geom_fit_text(grow = TRUE, reflow = TRUE)
   } )
 
+  expect_doppelganger("Reflowing without growing", {
+    ggplot(animals, aes(x = type, y = flies, label = animal)) +
+      geom_tile(fill = "white", colour = "black") +
+      geom_fit_text(reflow = TRUE)
+  } )
+
+  animals2 <- animals
+  animals2$animal[1] <- paste(
+    "Whose woods these are I think I know.",
+    "His house is in the village though;",
+    "He will not see me stopping here",
+    "To watch his woods fill up with snow.",
+    sep = "\n"
+  )
+  animals2$animal[2]<- paste(
+    "Whose woods these are I think I know.",
+    "His house is in the village though;",
+    "He will not see me stopping here",
+    "To watch his woods fill up with snow.",
+    sep = " "
+  )
+
+  expect_doppelganger("Complex text with reflowing and growing", {
+    ggplot(animals2, aes(x = type, y = flies, label = animal)) +
+      geom_tile(fill = "white", colour = "black") +
+      geom_fit_text(grow = TRUE, reflow = TRUE)
+  } )
+
+  expect_doppelganger("Complex text with reflowing only", {
+    ggplot(animals2, aes(x = type, y = flies, label = animal)) +
+      geom_tile(fill = "white", colour = "black") +
+      geom_fit_text(reflow = TRUE)
+  } )
+
 } )
 
 test_that("The width and height arguments work correctly", {

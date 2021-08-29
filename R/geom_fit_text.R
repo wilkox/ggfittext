@@ -30,7 +30,7 @@
 #'
 #' `reflow = TRUE` will cause the text to be reflowed (wrapped) to better fit
 #' in the box. If the text cannot be made to fit by reflowing alone, it will be
-#' reflowed then shrunk to fit the box.  Existing line breaks in the text will
+#' reflowed then shrunk to fit the box. Existing line breaks in the text will
 #' be respected when reflowing.
 #'
 #' `geom_fit_text()` includes experimental support for drawing text in polar
@@ -668,54 +668,48 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) 
   if (reflow & (grow | tgdim$width > xdim | tgdim$height > ydim) & 
       stringi::stri_detect_regex(getlabel(tg), "\\s")) {
 
-    # Try reducing the text width, one character at a time, and see if it
-    # fits the bounding box
-    best_aspect_ratio <- Inf
-    best_width <- stringi::stri_length(getlabel(tg))
-    label <- unlist(stringi::stri_split(getlabel(tg), regex = "\n"))
-    stringwidth <- sum(unlist(lapply(label, stringi::stri_length)))
-    previous_reflow <- ""
-    for (w in (stringwidth):1) {
+    # Generate a list of all wraps for the text
+    wraps <- wraplabel(tg)
 
-      # Reflow text to this width
-      # By splitting the text on whitespace and passing normalize = F,
-      # line breaks in the original text are respected
-      tg <- setlabel(tg, label)
-      tg <- setlabel(tg, wraplabel(tg, w))
+    # For each wrap, calculate the aspect ratio and return the absolute
+    # difference from the box aspect ratio
+    wraps$tg <- lapply(wraps$wrap, function(wrap) setlabel(tg, wrap))
+    wraps$tgdim <- lapply(
+      wraps$tg,
+      function(tg) tgDimensions(tg, fullheight, text$angle)
+    )
+    wraps$aspect_ratio <- vapply(
+      wraps$tgdim,
+      function(tgdim) tgdim$width/tgdim$height,
+      double(1)
+    )
+    wraps$ar_diff <- abs(wraps$aspect_ratio - (xdim / ydim))
 
-      # Skip if the text is unchanged
-      if (previous_reflow == getlabel(tg)) {
-        previous_reflow <- getlabel(tg)
-        next
+    # If grow is false, select the widest wrap that fits the box (if there is
+    # one) and return it
+    if (! grow) {
+
+      wraps$width <- unlist(lapply(wraps$tgdim, function(tgdim) tgdim$width))
+      wraps$height <- unlist(lapply(wraps$tgdim, function(tgdim) tgdim$height))
+      fit_wraps <- wraps[which(wraps$width < xdim), ]
+      fit_wraps <- wraps[which(fit_wraps$height < ydim), ]
+
+      if (nrow(fit_wraps) > 0) {
+        best_index <- which(fit_wraps$wrapwidth == max(fit_wraps$wrapwidth))[1]
+        tg <- setlabel(tg, fit_wraps$wrap[best_index])
+        return(tg)
       }
-      previous_reflow <- getlabel(tg)
-      
-      # Recalculate aspect ratio of textGrob using and update if this is the
-      # new best ratio
-      tgdim <- tgDimensions(tg, fullheight, text$angle)
-      aspect_ratio <- tgdim$width / tgdim$height
-      diff_from_box_ratio <- abs(aspect_ratio - (xdim / ydim))
-      best_diff_from_box_ratio <- abs(best_aspect_ratio - (xdim / ydim))
-      if (diff_from_box_ratio < best_diff_from_box_ratio) {
-        best_aspect_ratio <- aspect_ratio
-        best_width <- w
-      }
-
-      # If the text now fits the bounding box (and we are not trying to grow
-      # the text), good to stop here
-      if (tgdim$width < xdim & tgdim$height < ydim & !grow) return(tg)
     }
 
-    # If all reflow widths have been tried and none is smaller than the box
-    # (i.e. some shrinking is still required), or if we are trying to grow
-    # the text, pick the reflow width that produces the aspect ratio closest
-    # to that of the bounding box
-    if (tgdim$width > xdim | tgdim$height > ydim | grow) {
-      tg <- setlabel(tg, label)
-      tg <- setlabel(tg, wraplabel(tg, best_width))
-      # Update the textGrob dimensions
-      tgdim <- tgDimensions(tg, fullheight, text$angle)
-    }
+    # Select the wrap with the smallest difference from the box aspect ratio
+    # and update the textGrob dimensions
+    best_index <- which(wraps$ar_diff == min(wraps$ar_diff))[1]
+    tg <- setlabel(tg, wraps$wrap[best_index])
+    tgdim <- wraps$tgdim[best_index][[1]]
+
+    # If the text now fits the bounding box (and we are not trying to grow
+    # the text), good to stop here
+    if (tgdim$width < xdim & tgdim$height < ydim & !grow) return(tg)
   }
 
   # Resize text to fit bounding box if it doesn't fit

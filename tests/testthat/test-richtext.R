@@ -26,14 +26,35 @@ test_that("geom_fit_text() plots with rich text", {
      geom_fit_text(rich = TRUE, grow = TRUE, reflow = TRUE)
   } )
 
-
   animals_rich2 <- animals_rich
-  animals_rich2$animal[1] <- "Whose **woods these *are* I** < think <sub>I</sub> <span>know</span>. His ^house **is** in > *the* ***village*** though. What do ****four asterisks**** do?<br>What about *****five asterisks*****? This is < less ~than ^this, and a * couple of ** floating asterisks."
-  animals_rich2$animal[6] <- "<span style='color:red'>red</span Hundreds of years ago, my kind was so plentiful that the Rio Abajo Forest resounded with our voices. Now we’re almost gone. Soon this rainforest may be as silent as the rest of the universe.>-rumped parrot"
+  animals_rich2$animal[1] <- paste(
+    "Whose **woods these *are* I** < think <sub>I</sub> <span>know",
+    "</span>. His ^house **is** in > *the* ***village*** though.",
+    "What do ****four asterisks**** do?<br>",
+    "What about *****five asterisks*****?",
+    "This is < less ~than ^this, and a * couple of ** floating asterisks.",
+    sep = " "
+  )
+  animals_rich2$animal[6] <- paste(
+    "<span style='color:red'",
+    "Hundreds of years ago, my kind was so plentiful",
+    "that the Rio Abajo Forest resounded with our voices.",
+    "Now we’re almost gone.",
+    "Soon this rainforest may be as silent as the rest of the universe.>",
+    "red</span>-rumped parrot",
+    sep = " "
+  )
+
   expect_doppelganger("Complex rich text with grow and reflow", {
-  ggplot(animals_rich2, aes(x = type, y = flies, label = animal)) +
-    geom_tile(fill = "white", colour = "black") +
-    geom_fit_text(rich = TRUE, grow = TRUE, reflow = TRUE)
+    ggplot(animals_rich2, aes(x = type, y = flies, label = animal)) +
+      geom_tile(fill = "white", colour = "black") +
+      geom_fit_text(rich = TRUE, grow = TRUE, reflow = TRUE)
+  } )
+
+  expect_doppelganger("Complex rich text with reflow only", {
+    ggplot(animals_rich2, aes(x = type, y = flies, label = animal)) +
+      geom_tile(fill = "white", colour = "black") +
+      geom_fit_text(rich = TRUE, reflow = TRUE)
   } )
 
 } )
