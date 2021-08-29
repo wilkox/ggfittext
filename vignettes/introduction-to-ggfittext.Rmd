@@ -115,6 +115,18 @@ Alternatively, you can set the width and/or height with the `width` and/or
 `height` arguments, which should be `grid::unit()` objects. The horizontal
 and/or vertical centre of the box will be defined by `x` and/or `y`.
 
+### Rich text
+
+With the `rich = TRUE` argument, `geom_fit_text()` and `geom_bar_text()` both
+support a limited subset of Markdown and HTML markup for text (rendered with
+[gridtext](https://wilkelab.org/gridtext/)).
+
+```{r, fig.width = 4, fig.height = 4}
+ggplot(animals_rich, aes(x = type, y = flies, label = animal)) +
+  geom_tile(fill = "white", colour = "black") +
+  geom_fit_text(reflow = TRUE, grow = TRUE, rich = TRUE)
+```
+
 ## Experimental feature: text in polar coordinates
 
 Text can be drawn in polar coordinates with `geom_fit_text()` simply by adding

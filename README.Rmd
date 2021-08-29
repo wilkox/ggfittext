@@ -35,6 +35,7 @@ yeats <- data.frame(
   angle = c(0, 315, 270, 225, 180, 135, 90, 45, 0, 315, 270)
 )
 library(ggfittext)
+library(ggplot2)
 library(patchwork)
 p1 <- ggplot(yeats, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label =
                   label, angle = angle)) +
@@ -161,6 +162,18 @@ ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
   geom_bar_text(position = "dodge", grow = TRUE, reflow = TRUE, 
                 place = "left") +
   coord_flip()
+```
+
+### Rich text
+
+With the `rich = TRUE` argument, `geom_fit_text()` and `geom_bar_text()` both
+support a limited subset of Markdown and HTML markup for text (rendered with
+[gridtext](https://wilkelab.org/gridtext/)).
+
+```{r, fig.width = 4, fig.height = 4}
+ggplot(animals_rich, aes(x = type, y = flies, label = animal)) +
+  geom_tile(fill = "white", colour = "black") +
+  geom_fit_text(reflow = TRUE, grow = TRUE, rich = TRUE)
 ```
 
 ## Specifying the box limits

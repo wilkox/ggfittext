@@ -125,6 +125,20 @@ ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
 
 ![](man/figures/README-unnamed-chunk-10-1.png)<!-- -->
 
+### Rich text
+
+With the `rich = TRUE` argument, `geom_fit_text()` and `geom_bar_text()`
+both support a limited subset of Markdown and HTML markup for text
+(rendered with [gridtext](https://wilkelab.org/gridtext/)).
+
+``` r
+ggplot(animals_rich, aes(x = type, y = flies, label = animal)) +
+  geom_tile(fill = "white", colour = "black") +
+  geom_fit_text(reflow = TRUE, grow = TRUE, rich = TRUE)
+```
+
+![](man/figures/README-unnamed-chunk-11-1.png)<!-- -->
+
 ## Specifying the box limits
 
 If you want to manually set the limits of the box (instead of having
@@ -137,7 +151,7 @@ ggplot(presidential, aes(ymin = start, ymax = end, x = party, label = name)) +
   geom_errorbar(alpha = 0.5)
 ```
 
-![](man/figures/README-unnamed-chunk-11-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-12-1.png)<!-- -->
 
 Alternatively, you can set the width and/or height with the `width`
 and/or `height` arguments, which should be `grid::unit()` objects. The
@@ -160,7 +174,7 @@ p <- ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
 p + geom_fit_text(min.size = 0, grow = TRUE)
 ```
 
-![](man/figures/README-unnamed-chunk-12-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-13-1.png)<!-- -->
 
 When text is drawn in polar coordinates, the `flip = TRUE` argument can
 be used to flip upside-down text the ‘right way up’ to ease readability:
@@ -169,7 +183,7 @@ be used to flip upside-down text the ‘right way up’ to ease readability:
 p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)
 ```
 
-![](man/figures/README-unnamed-chunk-13-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-14-1.png)<!-- -->
 
 ## Other useful arguments
 
@@ -185,7 +199,7 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   geom_fit_text(reflow = TRUE, grow = TRUE, contrast = TRUE)
 ```
 
-![](man/figures/README-unnamed-chunk-14-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-15-1.png)<!-- -->
 
 -   **`padding.x`** and **`padding.y`** can be used to set the padding
     between the text and the edge of the box. By default this is 1 mm.
@@ -214,6 +228,6 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
     (`fullheight = FALSE`), or when you want to avoid descenders
     spilling out of the bounding box (`fullheight = TRUE`).
 
-![](man/figures/README-unnamed-chunk-15-1.png)<!-- -->
-
 ![](man/figures/README-unnamed-chunk-16-1.png)<!-- -->
+
+![](man/figures/README-unnamed-chunk-17-1.png)<!-- -->
