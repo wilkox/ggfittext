@@ -38,7 +38,7 @@
 #'   \item{ingredient}{the ingredient, in rich text} 
 #'   \item{proportion}{the proportion of a cup to fill with the ingredient} 
 #' }
-"beverages"
+"beverages_rich"
 
 #' Some craft and their altitudes
 #'

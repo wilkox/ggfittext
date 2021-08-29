@@ -151,7 +151,7 @@ requires shrinking or growing.
 
 \code{reflow = TRUE} will cause the text to be reflowed (wrapped) to better fit
 in the box. If the text cannot be made to fit by reflowing alone, it will be
-reflowed then shrunk to fit the box.  Existing line breaks in the text will
+reflowed then shrunk to fit the box. Existing line breaks in the text will
 be respected when reflowing.
 
 \code{geom_fit_text()} includes experimental support for drawing text in polar

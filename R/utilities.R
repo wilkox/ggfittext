@@ -123,7 +123,7 @@ sety.richtext_grob <- function(tg, y) {
 #' Methods to wrap labels for textGrob and richtext_grob
 #'
 #' Each method returns a data frame containing all possible wraps for the text.
-#' Newline tokens ("\n" for plain text, additionally "<br>" and its variants
+#' Newline tokens (`\n` for plain text, additionally `<br>` and its variants
 #' for rich text) are respected when wrapping.
 #'
 #' @noRd
