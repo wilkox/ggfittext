@@ -96,7 +96,7 @@ GeomBarText <- ggplot2::ggproto(
 
     # Detect if the bar is to be drawn with 'implied' flipped orientation as
     # permitted in ggplot2 v3.3.0
-    implied_flip <- typeof(data$y) == "integer"
+    implied_flip <- "mapped_discrete" %in% class(data$y)
     data$implied_flip <- implied_flip
 
     # Set bar width using the method of geom_boxplot

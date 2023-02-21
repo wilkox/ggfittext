@@ -15,6 +15,10 @@
 - Improvements to the reflowing algorithm, both for speed and aesthetics
 - Make 'label' required aesthetic for `geom_bar_text()` (#29, thanks @gregleleu)
 
+## Bug fixes
+
+- Fix support for bi-directional `geom_col()` (#23, thanks again @ds-jim)
+
 # ggfittext 0.9.1
 
 ## Minor changes
