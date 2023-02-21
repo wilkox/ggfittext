@@ -27,12 +27,12 @@
 </defs>
 <g clip-path='url(#cpNTAuODl8NzE0LjUyfDIyLjc4fDU0NS4xMQ==)'>
 <rect x='50.89' y='22.78' width='663.63' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<rect x='71.63' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='71.63' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='486.40' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='486.40' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='279.01' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='279.01' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='71.63' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='71.63' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='486.40' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='486.40' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='279.01' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='279.01' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
 <text x='84.98' y='75.04' style='font-size: 20.06px; font-family: sans;' textLength='62.44px' lengthAdjust='spacingAndGlyphs'>Whose</text>
 <text x='153.00' y='75.04' style='font-size: 20.06px; font-weight: bold; font-family: sans;' textLength='58.00px' lengthAdjust='spacingAndGlyphs'>woods</text>
 <text x='216.57' y='75.04' style='font-size: 20.06px; font-weight: bold; font-family: sans;' textLength='49.08px' lengthAdjust='spacingAndGlyphs'>these</text>

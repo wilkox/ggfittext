@@ -27,12 +27,12 @@
 </defs>
 <g clip-path='url(#cpNTAuODl8NzE0LjUyfDIyLjc4fDU0NS4xMQ==)'>
 <rect x='50.89' y='22.78' width='663.63' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<rect x='71.63' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='71.63' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='486.40' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='486.40' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='279.01' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='279.01' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='71.63' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='71.63' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='486.40' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='486.40' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='279.01' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='279.01' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
 <text x='175.32' y='154.74' text-anchor='middle' style='font-size: 35.01px; font-family: sans;' textLength='180.98px' lengthAdjust='spacingAndGlyphs'>red-rumped</text>
 <text x='175.32' y='192.55' text-anchor='middle' style='font-size: 35.01px; font-family: sans;' textLength='91.45px' lengthAdjust='spacingAndGlyphs'>parrot</text>
 <text x='175.32' y='388.10' text-anchor='middle' style='font-size: 48.59px; font-family: sans;' textLength='180.98px' lengthAdjust='spacingAndGlyphs'>emperor</text>

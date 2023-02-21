@@ -27,12 +27,12 @@
 </defs>
 <g clip-path='url(#cpNTAuODl8NzE0LjUyfDIyLjc4fDU0NS4xMQ==)'>
 <rect x='50.89' y='22.78' width='663.63' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<rect x='71.63' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='71.63' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='486.40' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='486.40' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='279.01' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
-<rect x='279.01' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: square; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='71.63' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='71.63' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='486.40' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='486.40' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='279.01' y='46.53' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
+<rect x='279.01' y='283.95' width='207.39' height='237.42' style='stroke-width: 0.21; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFFFF;' />
 <text transform='translate(172.59,157.74) rotate(-200)' text-anchor='middle' style='font-size: 23.18px; font-family: sans;' textLength='186.79px' lengthAdjust='spacingAndGlyphs'>red-rumped parrot</text>
 <text transform='translate(181.74,395.01) rotate(-140)' text-anchor='middle' style='font-size: 29.03px; font-family: sans;' textLength='219.49px' lengthAdjust='spacingAndGlyphs'>emperor penguin</text>
 <text transform='translate(602.82,157.89) rotate(-120)' text-anchor='middle' style='font-size: 42.72px; font-family: sans;' textLength='223.22px' lengthAdjust='spacingAndGlyphs'>sugar glider</text>
