@@ -80,7 +80,7 @@
 <text x='550.41' y='273.42' style='font-size: 8.80px; font-family: sans;' textLength='27.88px' lengthAdjust='spacingAndGlyphs'>cream*</text>
 <text x='550.41' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='164.11px' lengthAdjust='spacingAndGlyphs'>&lt;span style='color:blue'&gt;espresso&lt;/span&gt;</text>
 <text x='550.41' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='110.10px' lengthAdjust='spacingAndGlyphs'>&lt;sub&gt;steamed&lt;/sub&gt; *milk*</text>
-<text x='550.41' y='320.56' style='font-size: 8.80px; font-family: sans;' textLength='39.85px' lengthAdjust='spacingAndGlyphs'>^espresso</text>
+<text x='550.41' y='320.56' style='font-size: 8.80px; font-family: sans;' textLength='87.12px' lengthAdjust='spacingAndGlyphs'>&lt;sup&gt;espresso&lt;/sup&gt;</text>
 <text x='550.41' y='333.14' style='font-size: 8.80px; font-family: sans;' textLength='51.85px' lengthAdjust='spacingAndGlyphs'>steamed milk</text>
 <text x='550.41' y='342.65' style='font-size: 8.80px; font-family: sans;' textLength='0.00px' lengthAdjust='spacingAndGlyphs'></text>
 <text x='40.13' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='157.01px' lengthAdjust='spacingAndGlyphs'>Basic bar plot with rich text</text>

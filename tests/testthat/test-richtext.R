@@ -29,18 +29,15 @@ test_that("geom_fit_text() plots with rich text", {
   animals_rich2 <- animals_rich
   animals_rich2$animal[1] <- paste(
     "Whose **woods these *are* I** < think <sub>I</sub> <span>know",
-    "</span>. His ^house **is** in > *the* ***village*** though.",
+    "</span>. His <sup>house</sup> **is** in > *the* ***village*** though.",
     "What do ****four asterisks**** do?<br>",
     "What about *****five asterisks*****?",
-    "This is < less ~than ^this, and a * couple of ** floating asterisks.",
+    "This is < less <sub>than</sub> <sup>this</sup>, and a * couple of ** floating asterisks.",
     sep = " "
   )
   animals_rich2$animal[6] <- paste(
     "<span style='color:red'",
-    "Hundreds of years ago, my kind was so plentiful",
-    "that the Rio Abajo Forest resounded with our voices.",
-    "Now we’re almost gone.",
-    "Soon this rainforest may be as silent as the rest of the universe.>",
+    ">",
     "red</span>-rumped parrot",
     sep = " "
   )
