@@ -164,7 +164,7 @@ ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
   coord_flip()
 ```
 
-### Rich text
+### Experimental feature: rich text
 
 With the `rich = TRUE` argument, `geom_fit_text()` and `geom_bar_text()` both
 support a limited subset of Markdown and HTML markup for text (rendered with
@@ -176,7 +176,8 @@ ggplot(animals_rich, aes(x = type, y = flies, label = animal)) +
   geom_fit_text(reflow = TRUE, grow = TRUE, rich = TRUE)
 ```
 
-Rich text cannot be drawn in polar coordinates.
+Rich text cannot be drawn in polar coordinates. Please note that this feature
+is liable to change, and is subject to upstream changes to gridtext.
 
 ## Specifying the box limits
 

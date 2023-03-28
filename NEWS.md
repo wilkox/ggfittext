@@ -4,9 +4,11 @@
 
 - Add 'flip' argument to `geom_fit_text()` to flip text 'the right way up' when
   in polar coordinates (thanks @BradyAJohnston)
-- Add support for rich text, with the `rich` argument to `geom_fit_text()` and
-  `geom_bar_text()`. Uses [gridtext](https://wilkelab.org/gridtext/) to render
-  a subset of Markdown and HTML
+- Add **experimental** support for rich text, with the `rich` argument to
+  `geom_fit_text()` and `geom_bar_text()`. Uses
+  [gridtext](https://wilkelab.org/gridtext/) to render a subset of Markdown and
+  HTML. This is liable to change and in particular there may be breaking
+  changes as a result of upstream changes in gridtext
 - Move ggplot2 from 'Depends' to 'Imports'
 
 ## Minor changes

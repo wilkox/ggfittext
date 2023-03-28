@@ -116,7 +116,8 @@ heuristically for \code{geom_bar_text()}.}
 
 \item{rich}{If \code{TRUE}, text will be formatted with markdown and HTML markup
 as implemented by \code{gridtext::richtext_grob()}. \code{FALSE} by default. Rich text
-cannot be drawn in polar coordinates.}
+cannot be drawn in polar coordinates. Please note that rich text support is
+\strong{experimental} and breaking changes are likely}
 
 \item{flip}{If \code{TRUE}, when in polar coordinates 'upside-down' text will be
 flipped the 'right way up', to enhance readability.}

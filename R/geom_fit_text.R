@@ -92,7 +92,8 @@
 #' that aesthetics specifying the box must be provided. See Details.
 #' @param rich If `TRUE`, text will be formatted with markdown and HTML markup
 #' as implemented by `gridtext::richtext_grob()`. `FALSE` by default. Rich text
-#' cannot be drawn in polar coordinates.
+#' cannot be drawn in polar coordinates. Please note that rich text support is
+#' **experimental** and breaking changes are likely
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
 #' arguments as for `ggplot2::geom_text()`.
 #' @param flip If `TRUE`, when in polar coordinates 'upside-down' text will be
