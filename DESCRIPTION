@@ -6,8 +6,7 @@ Authors@R: c(person("David", "Wilkins", email = "david@wilkox.org",
              person("Brady", "Johnston", email = "brady.johnston@me.com", 
                   role = c("ctb"))
              )
-Description: Provides 'ggplot2' geoms to fit text into a box by growing, shrinking
-    or wrapping the text.
+Description: A 'ggplot2' extension to fit text into a box by growing, shrinking or wrapping the text.
 Depends:
     R (>= 3.6)
 License: GPL-2

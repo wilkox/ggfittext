@@ -1,12 +1,16 @@
 
+<!-- badges: start -->
+
 [![Travis-CI Build
 Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
 
 # ggfittext
 
-ggfittext provides some ggplot2 geoms for fitting text into boxes.
+ggfittext is a ggplot2 extension for fitting text into boxes.
 
 ![](man/figures/README-hero-1.png)<!-- -->
 
@@ -125,7 +129,7 @@ ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
 
 ![](man/figures/README-unnamed-chunk-10-1.png)<!-- -->
 
-### Rich text
+### Experimental feature: rich text
 
 With the `rich = TRUE` argument, `geom_fit_text()` and `geom_bar_text()`
 both support a limited subset of Markdown and HTML markup for text
@@ -138,6 +142,10 @@ ggplot(animals_rich, aes(x = type, y = flies, label = animal)) +
 ```
 
 ![](man/figures/README-unnamed-chunk-11-1.png)<!-- -->
+
+Rich text cannot be drawn in polar coordinates. Please note that this
+feature is liable to change, and is subject to upstream changes to
+gridtext.
 
 ## Specifying the box limits
 
@@ -190,8 +198,8 @@ p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)
 All arguments to `geom_fit_text()` can also be used with
 `geom_bar_text()`.
 
--   **`contrast`** can be used to automatically invert the colour of the
-    text so it contrasts against a background `fill`:
+- **`contrast`** can be used to automatically invert the colour of the
+  text so it contrasts against a background `fill`:
 
 ``` r
 ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
@@ -201,32 +209,32 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
 
 ![](man/figures/README-unnamed-chunk-15-1.png)<!-- -->
 
--   **`padding.x`** and **`padding.y`** can be used to set the padding
-    between the text and the edge of the box. By default this is 1 mm.
-    These values must be given as `grid::unit()` objects.
--   **`min.size`** sets the minimum font size in points, by default 4
-    pt. Text smaller than this will be hidden (see also `outside`).
--   **`outside`** is `FALSE` by default for `geom_fit_text()`. If
-    `TRUE`, text that is placed at “top”, “bottom”, “left” or “right”
-    and must be shrunk smaller than `min.size` to fit in the box will be
-    flipped to the outside of the box (if it fits there). This is mostly
-    useful for drawing text inside bars in a bar plot.
--   **`hjust`** and **`vjust`** set the horizontal and vertical
-    justification of the text, scaled between 0 (left/bottom) and 1
-    (right/top). These are both 0.5 by default.
--   **`formatter`** allows you to provide a function that will be
-    applied to the text before it is drawn. This is mostly useful in
-    contexts where variables may be interpolated, such as when using
-    [gganimate](https://gganimate.com/).
--   **`fullheight`** is automatically set depending on place, but can be
-    overridden with this option. This is used to determine the bounding
-    box around the text. If `FALSE`, the bounding box includes the
-    x-height of the text and ascenders, but not any descenders. If TRUE,
-    it extends from the top of the ascenders to the bottom of the
-    descenders. This is mostly useful in situations where you want to
-    ensure the baseline of text is consistent between labels
-    (`fullheight = FALSE`), or when you want to avoid descenders
-    spilling out of the bounding box (`fullheight = TRUE`).
+- **`padding.x`** and **`padding.y`** can be used to set the padding
+  between the text and the edge of the box. By default this is 1 mm.
+  These values must be given as `grid::unit()` objects.
+- **`min.size`** sets the minimum font size in points, by default 4
+  pt. Text smaller than this will be hidden (see also `outside`).
+- **`outside`** is `FALSE` by default for `geom_fit_text()`. If `TRUE`,
+  text that is placed at “top”, “bottom”, “left” or “right” and must be
+  shrunk smaller than `min.size` to fit in the box will be flipped to
+  the outside of the box (if it fits there). This is mostly useful for
+  drawing text inside bars in a bar plot.
+- **`hjust`** and **`vjust`** set the horizontal and vertical
+  justification of the text, scaled between 0 (left/bottom) and 1
+  (right/top). These are both 0.5 by default.
+- **`formatter`** allows you to provide a function that will be applied
+  to the text before it is drawn. This is mostly useful in contexts
+  where variables may be interpolated, such as when using
+  [gganimate](https://gganimate.com/).
+- **`fullheight`** is automatically set depending on place, but can be
+  overridden with this option. This is used to determine the bounding
+  box around the text. If `FALSE`, the bounding box includes the
+  x-height of the text and ascenders, but not any descenders. If TRUE,
+  it extends from the top of the ascenders to the bottom of the
+  descenders. This is mostly useful in situations where you want to
+  ensure the baseline of text is consistent between labels
+  (`fullheight = FALSE`), or when you want to avoid descenders spilling
+  out of the bounding box (`fullheight = TRUE`).
 
 ![](man/figures/README-unnamed-chunk-16-1.png)<!-- -->
 
