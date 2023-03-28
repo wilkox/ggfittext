@@ -14,7 +14,7 @@ rad2deg <- function(rad) { rad * (180 / pi) }
 #' @param string String to be returned with reversed characters.
 #' @noRd
 strrev <- function(string) {
-  sapply(lapply(strsplit(string, NULL), rev), paste0, collapse = "")
+  lapply(lapply(strsplit(string, NULL), rev), paste0, collapse = "")
 }
 
 #' Textgrob dimensions, in mm

@@ -231,12 +231,12 @@ makeContent.fittexttreepolar <- function(x) {
 
     # char_thetas = theta position of the anchors for each character (assuming
     # hjust = 0.5 for the textGrob representing this character), in degrees
-    lag_vector <- function(x) c(0, x[1:length(x) - 1])
+    lag_vector <- function(x) c(0, x[seq_along(x) - 1])
     char_thetas <- angle - lag_vector(cumsum(char_arcs)) - 
                      (char_arcs / 2) + (sum(char_arcs) / 2)
 
     # Generate a textGrob for each character
-    tgs <- lapply(1:length(char_thetas), function(i) {
+    tgs <- lapply(seq_along(char_thetas), function(i) {
 
       char <- chars[i]
       theta <- char_thetas[i]

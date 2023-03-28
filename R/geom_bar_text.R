@@ -30,7 +30,7 @@ geom_bar_text <- function(
   # If position is "identity", outside should be set to TRUE by default;
   # otherwise, set to FALSE
   if (is.null(outside)) {
-    outside = position == "identity"
+    outside <- position == "identity"
   }
 
   ggplot2::layer(
@@ -129,7 +129,7 @@ GeomBarText <- ggplot2::ggproto(
 
       # Apply formatter to the labels, checking that the output is a character
       # vector of the correct length
-      formatted_labels <- sapply(data$label, params$formatter, USE.NAMES = FALSE)
+      formatted_labels <- vapply(data$label, params$formatter, character(1), USE.NAMES = FALSE)
       if ((! length(formatted_labels) == length(data$label)) | 
           (! is.character(formatted_labels))) {
         stop("`formatter` must produce a character vector of same length as input")
