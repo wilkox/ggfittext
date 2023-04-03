@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 <!-- badges: start -->
-[![Travis-CI Build Status](https://travis-ci.org/wilkox/ggfittext.svg?branch=master)](https://travis-ci.org/wilkox/ggfittext)
+[![R-CMD-check](https://github.com/wilkox/gggenes/workflows/R-CMD-check/badge.svg)](https://github.com/wilkox/gggenes/actions)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->

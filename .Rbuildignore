@@ -1,6 +1,5 @@
 ^docs$
 ^_pkgdown\.yml$
-^\.travis\.yml$
 ^README\.Rmd$
 ^README.html$
 ^README-.*\.png$
@@ -8,3 +7,4 @@
 ^doc$
 ^Meta$
 ^revdep$
+^\.github$
