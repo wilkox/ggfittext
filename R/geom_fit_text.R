@@ -350,9 +350,10 @@ GeomFitText <- ggplot2::ggproto(
 
 #' @importFrom grid makeContent
 #' @export
-makeContent.fittexttree <- function(ftt) {
+makeContent.fittexttree <- function(x) {
 
   # Extract data
+  ftt <- x
   data <- ftt$data
 
   # Set and check default parameters
