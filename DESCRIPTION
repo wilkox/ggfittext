@@ -1,6 +1,6 @@
 Package: ggfittext
 Title: Fit Text Inside a Box in 'ggplot2'
-Version: 0.10.0.9000
+Version: 0.10.1
 Authors@R: c(person("David", "Wilkins", email = "david@wilkox.org",
                   role = c("aut", "cre")), 
              person("Brady", "Johnston", email = "brady.johnston@me.com", 
