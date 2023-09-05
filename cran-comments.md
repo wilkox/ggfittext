@@ -4,12 +4,14 @@ There were no ERRORs, WARNINGs or NOTEs.
 
 ## Test environments
 
-- local install: macOS 13.2.1, R 4.2.3
-- win-builder: (with `devtools::check_win_release()` and `devtools::check_win_devel()`) R 4.2.3, 2023-04-02 r84146
+- local install: macOS 13.4.1, R 4.3.1
+- win-builder: (with `devtools::check_win_release()` and `devtools::check_win_devel()`) R 4.3.1, 2023-09-04 r85066
 - Using GitHub Actions:
-  - macOS 12.3.6, R 4.2.3
-  - Microsoft Windows Server 2022 10.0.20348, R 4.2.3
-  - Ubuntu 22.04.2 LTS, R unstable 2023-04-02 r84146, 4.2.3, 4.1.3
+  - macos-latest: macOS 12.6.7, R 4.3.1
+  - windows-latest: Microsoft Windows Server 2022 10.0.20348, R 4.3.1
+  - ubuntu-latest (devel): Ubuntu 22.04.3 LTS, R unstable 2023-08-20 r84995
+  - ubuntu-latest (release): Ubuntu 22.04.3 LTS, R 4.3.1
+  - ubuntu-latest (oldrel-1): Ubuntu 22.04.3 LTS, R 4.2.3
 
 # revdepcheck results
 

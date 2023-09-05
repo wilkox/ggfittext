@@ -1,4 +1,5 @@
 CMD
+Lifecycle
 Reflowing
 bottomleft
 bottomright
@@ -8,11 +9,11 @@ geoms
 gganimate
 ggplot
 gridtext
-lifecycle
 lineheight
 reflow
 reflowed
 reflowing
+roxygen
 topleft
 topright
 un
