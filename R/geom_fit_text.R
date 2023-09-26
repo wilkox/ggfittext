@@ -202,16 +202,10 @@ GeomFitText <- ggplot2::ggproto(
 
     # Check that valid aesthetics have been supplied for each dimension
     if (! (! is.null(data$xmin) & ! is.null(data$xmax) | ! is.null(data$x))) {
-      stop(
-        "geom_fit_text needs either 'xmin' and 'xmax', or 'x'",
-        call. = FALSE
-      )
+      cli::cli_abort("geom_fit_text needs either 'xmin' and 'xmax', or 'x'")
     }
     if (! (! is.null(data$ymin) & ! is.null(data$ymax) | ! is.null(data$y))) {
-      stop(
-        "geom_fit_text needs either 'ymin' and 'ymax', or 'y'",
-        call. = FALSE
-      )
+      cli::cli_abort("geom_fit_text needs either 'ymin' and 'ymax', or 'y'")
     }
 
     # If 'width' is provided, but not as unit, interpret it as a numeric on the
@@ -251,7 +245,7 @@ GeomFitText <- ggplot2::ggproto(
 
       # Check that 'formatter' is a function
       if (! is.function(params$formatter)) {
-        stop("`formatter` must be a function")
+        cli::cli_abort("`formatter` must be a function")
       }
 
       # Apply formatter to the labels, checking that the output is a character
@@ -259,7 +253,7 @@ GeomFitText <- ggplot2::ggproto(
       formatted_labels <- vapply(data$label, params$formatter, character(1), USE.NAMES = FALSE)
       if ((! length(formatted_labels) == length(data$label)) | 
           (! is.character(formatted_labels))) {
-        stop("`formatter` must produce a character vector of same length as input")
+        cli::cli_abort("`formatter` must produce a character vector of same length as input")
       }
       data$label <- formatted_labels
     }
@@ -295,7 +289,7 @@ GeomFitText <- ggplot2::ggproto(
 
     # Rich text cannot be used in polar coordinates
     if (inherits(coord, "CoordPolar") & rich) {
-      stop("Cannot draw rich text in polar coordinates", call. = FALSE)
+      cli::cli_abort("Cannot draw rich text in polar coordinates")
     }
 
     # Transform data to plot scales; if in polar coordinates, we need to ensure
@@ -397,12 +391,7 @@ makeContent.fittexttree <- function(x) {
                    is.na(data$ymax))
   if (length(na_rows) > 0) {
     data <- data[-na_rows, ]
-    warning(
-      "Removed ",
-      length(na_rows),
-      " rows where box limits were outside plot limits (geom_fit_text).",
-      call. = FALSE
-    )
+    cli::cli_warn("Removed {length(na_rows)} rows where box limits were outside plot limits ({.fun geom_fit_text}).")
   }
 
   # Remove any rows with blank labels
@@ -419,7 +408,7 @@ makeContent.fittexttree <- function(x) {
     # ggplot2 background grey
     if (! is.null(data$fill)) {
       if (any(is.na(data$fill))) {
-        warning("NA values in fill", call. = FALSE)
+        cli::cli_warn("NA values in fill")
         data$fill <- data$fill %NA% "grey35"
       }
     }

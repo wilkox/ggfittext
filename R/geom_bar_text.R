@@ -124,7 +124,7 @@ GeomBarText <- ggplot2::ggproto(
 
       # Check that 'formatter' is a function
       if (! is.function(params$formatter)) {
-        stop("`formatter` must be a function")
+        cli::cli_abort("{.arg formatter} must be a function")
       }
 
       # Apply formatter to the labels, checking that the output is a character
@@ -132,7 +132,7 @@ GeomBarText <- ggplot2::ggproto(
       formatted_labels <- vapply(data$label, params$formatter, character(1), USE.NAMES = FALSE)
       if ((! length(formatted_labels) == length(data$label)) | 
           (! is.character(formatted_labels))) {
-        stop("`formatter` must produce a character vector of same length as input")
+        cli::cli_abort("{.arg formatter} must produce a character vector of same length as input")
       }
       data$label <- formatted_labels
     }

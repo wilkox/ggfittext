@@ -224,10 +224,7 @@ wrap_rich <- function(string, w) {
     # Make sure the machine hasn't jumped ahead for some reason
     if (pos > 1) {
       if (states[pos - 1] == "") {
-        stop(
-          "Markdown parser stuck in a bad state at position ", pos,
-          " - unable to parse"
-        )
+        cli::cli_abort("Markdown parser stuck in a bad state at position {pos} - unable to parse")
       }
     }
 

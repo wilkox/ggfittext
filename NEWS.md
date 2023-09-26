@@ -1,3 +1,9 @@
+# ggfittext (development version)
+
+## Minor changes
+
+- Use the cli package for messages, warnings, etc.
+
 # ggfittext 0.10.1
 
 ## Minor changes

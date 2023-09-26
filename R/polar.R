@@ -18,10 +18,10 @@ makeContent.fittexttreepolar <- function(x) {
   if (is.null(x$contrast)) x$contrast <- FALSE
   if (is.null(x$outside)) x$outside <- FALSE
   if (is.null(x$fullheight)) x$fullheight <- x$grow
-  if (x$outside) warning("Outside is not supported in polar coordinates")
-  if (x$reflow) warning("Reflowing is not supported in polar coordinates")
-  if (! is.null(x$hjust)) warning("hjust is not supported in polar coordinates")
-  if (! is.null(x$vjust)) warning("vjust is not supported in polar coordinates")
+  if (x$outside) cli::cli_warn("Outside is not supported in polar coordinates")
+  if (x$reflow) cli::cli_warn("Reflowing is not supported in polar coordinates")
+  if (! is.null(x$hjust)) cli::cli_warn("hjust is not supported in polar coordinates")
+  if (! is.null(x$vjust)) cli::cli_warn("vjust is not supported in polar coordinates")
 
   # Convert padding.x and padding.y to mm
   padding.x <- grid::convertWidth(x$padding.x, "mm", valueOnly = TRUE)
@@ -34,7 +34,7 @@ makeContent.fittexttreepolar <- function(x) {
     text <- data[i, ]
 
     # Handle angled text
-    if (! text$angle == 0) warning("Angled text is not supported in polar coordinates")
+    if (! text$angle == 0) cli::cli_warn("Angled text is not supported in polar coordinates")
 
     # Set hjust and vjust 
     # A vjust of 0.2 strikes a good visual balance in the kerning of characters
