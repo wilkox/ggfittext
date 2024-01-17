@@ -305,16 +305,16 @@ GeomFitText <- ggplot2::ggproto(
     # set the width and height of the bounding box in polar space
     if (inherits(coord, "CoordPolar")) {
       if (! is.null(data$xmin)) {
-        data$xmin <- ggplot2:::theta_rescale(coord, data$xmin, panel_scales)
+        data$xmin <- theta_rescale(coord, data$xmin, panel_scales)
       }
       if (! is.null(data$xmax)) {
-        data$xmax <- ggplot2:::theta_rescale(coord, data$xmax, panel_scales)
+        data$xmax <- theta_rescale(coord, data$xmax, panel_scales)
       }
       if (! is.null(data$ymin)) {
-        data$ymin <- ggplot2:::r_rescale(coord, data$ymin, panel_scales$r.range)
+        data$ymin <- r_rescale(coord, data$ymin, panel_scales$r.range)
       }
       if (! is.null(data$ymax)) {
-        data$ymax <- ggplot2:::r_rescale(coord, data$ymax, panel_scales$r.range)
+        data$ymax <- r_rescale(coord, data$ymax, panel_scales$r.range)
       }
     }
 

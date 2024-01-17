@@ -377,3 +377,17 @@ wrap_rich <- function(string, w) {
   wrapped_string <- paste(chars, collapse = "")
   return(wrapped_string)
 }
+
+theta_rescale <- function(coord, x, panel_params) {
+  range <- panel_params$theta.range
+  x <- pmin(pmax(x, range[1]), range[2])
+  rotate <- function(x) (x + coord$start) %% (2 * pi) * coord$direction
+  rotate(
+    (x - range[1]) / diff(range) * (2 * pi)
+  )
+}
+
+r_rescale <- function(coord, x, range) {
+  x <- pmin(pmax(x, range[1]), range[2])
+  (x - range[1]) / diff(range) * 0.4
+}
