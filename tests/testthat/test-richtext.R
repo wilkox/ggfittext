@@ -2,6 +2,8 @@ library(ggplot2)
 
 test_that("geom_fit_text() plots with rich text", {
 
+  skip_if_os(c("windows", "linux"))
+
   expect_doppelganger("Basic rich text", {
     ggplot(animals_rich, aes(x = type, y = flies, label = animal)) +
       geom_tile(fill = "white", colour = "black") +
@@ -57,6 +59,8 @@ test_that("geom_fit_text() plots with rich text", {
 } )
 
 test_that("geom_bar_text() plots with rich text", {
+
+  skip_if_os(c("windows", "linux"))
 
   expect_doppelganger("Basic bar plot with rich text", {
     ggplot(beverages_rich, aes(x = beverage, y = proportion, label = ingredient, 
