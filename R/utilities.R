@@ -73,49 +73,77 @@ set_richtext_grob_param <- function(tg, param, value) {
 }
 
 getrot <- function(tg) UseMethod("getrot")
+
+#' @export
 getrot.text <- function(tg) tg$rot
+
+#' @export
 getrot.richtext_grob <- function(tg) tg$params$rot
 
 getlabel <- function(tg) UseMethod("getlabel")
+
+#' @export
 getlabel.text <- function(tg) tg$label
+
+#' @export
 getlabel.richtext_grob <- function(tg) tg$params$text
 
 setlabel <- function(tg, value) UseMethod("setlabel")
+
+#' @export
 setlabel.text <- function(tg, value) {
   tg$label <- value
   tg
 }
+
+#' @export
 setlabel.richtext_grob <- function(tg, value) set_richtext_grob_param(tg, "text", value)
 
 getfontsize <- function(tg) UseMethod("getfontsize")
+
+#' @export
 getfontsize.text <- function(tg) tg$gp$fontsize
+
+#' @export
 getfontsize.richtext_grob <- function(tg) tg$params$fontsize
 
 setfontsize <- function(tg, value) UseMethod("setfontsize")
+
+#' @export
 setfontsize.text <- function(tg, value) {
   tg$gp$fontsize <- value
   tg
 }
+
+#' @export
 setfontsize.richtext_grob <- function(tg, value) {
   set_richtext_grob_param(tg, "fontsize", value)
 }
 
 setx <- function(tg, x) UseMethod("setx")
+
+#' @export
 setx.text <- function(tg, x) {
   if (!inherits(x, "unit")) x <- grid::unit(x, "npc")
   tg$x <- x
   tg
 }
+
+#' @export
 setx.richtext_grob <- function(tg, x) {
   set_richtext_grob_param(tg, "x", x)
 }
 
 sety <- function(tg, y) UseMethod("sety")
+
+#' @export
 sety.text <- function(tg, y) {
   if (!inherits(y, "unit")) y <- grid::unit(y, "npc")
   tg$y <- y
   tg
 }
+
+#' @export
 sety.richtext_grob <- function(tg, y) {
   tg <- set_richtext_grob_param(tg, "y", y)
 }
@@ -128,6 +156,8 @@ sety.richtext_grob <- function(tg, y) {
 #'
 #' @noRd
 wraplabel <- function(tg) UseMethod("wraplabel")
+
+#' @export
 wraplabel.text <- function(tg) {
 
   label <- getlabel(tg)
@@ -158,6 +188,8 @@ wraplabel.text <- function(tg) {
 
   return(wraps)
 }
+
+#' @export
 wraplabel.richtext_grob <- function(tg) {
 
   label <- getlabel(tg)
