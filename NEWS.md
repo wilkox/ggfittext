@@ -1,7 +1,9 @@
-# ggfittext (development version)
+# ggfittext 0.10.2
 
 ## Minor changes
 
+- Copy `theta_rescale()` and `r_rescale()` to avoid relying on ggplot2 internal
+  functions (#39, thanks @teunbrand)
 - Use the cli package for messages, warnings, etc.
 
 # ggfittext 0.10.1
