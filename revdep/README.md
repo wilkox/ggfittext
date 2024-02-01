@@ -1,34 +1,23 @@
 # Platform
 
-|field    |value                              |
-|:--------|:----------------------------------|
-|version  |R version 4.3.1 (2023-06-16)       |
-|os       |macOS Ventura 13.4.1               |
-|system   |aarch64, darwin22.5.0              |
-|ui       |unknown                            |
-|language |(EN)                               |
-|collate  |en_AU.UTF-8                        |
-|ctype    |en_AU.UTF-8                        |
-|tz       |Australia/Sydney                   |
-|date     |2023-08-23                         |
-|pandoc   |3.1.6.1 @ /opt/homebrew/bin/pandoc |
+|field    |value                               |
+|:--------|:-----------------------------------|
+|version  |R version 4.3.2 (2023-10-31)        |
+|os       |macOS Sonoma 14.2.1                 |
+|system   |aarch64, darwin23.0.0               |
+|ui       |unknown                             |
+|language |(EN)                                |
+|collate  |en_AU.UTF-8                         |
+|ctype    |en_AU.UTF-8                         |
+|tz       |Australia/Sydney                    |
+|date     |2024-01-31                          |
+|pandoc   |3.1.11.1 @ /opt/homebrew/bin/pandoc |
 
 # Dependencies
 
 |package   |old    |new    |Δ  |
 |:---------|:------|:------|:--|
-|ggfittext |0.10.0 |0.10.1 |*  |
-|curl      |NA     |5.0.2  |*  |
-|ggplot2   |NA     |3.4.3  |*  |
-|gtable    |NA     |0.3.4  |*  |
-|Rcpp      |NA     |1.0.11 |*  |
-|xfun      |NA     |0.40   |*  |
+|ggfittext |0.10.1 |0.10.2 |*  |
 
 # Revdeps
-
-## Failed to check (1)
-
-|package |version |error |warning |note |
-|:-------|:-------|:-----|:-------|:----|
-|pareg   |1.4.1   |1     |        |2    |
 
