@@ -99,15 +99,28 @@ GeomBarText <- ggplot2::ggproto(
     implied_flip <- "mapped_discrete" %in% class(data$y)
     data$implied_flip <- implied_flip
 
-    # Set bar width using the method of geom_boxplot
+    # Set bar width using the method of geom_boxplot, unless width/height
+    # parameters are provided
     if (implied_flip) {
-      height <- ggplot2::resolution(data$y, FALSE) * 0.9
-      data$ymin <- data$y - height / 2
-      data$ymax <- data$y + height / 2
+      # If 'height' is provided but not a unit, interpret it as numeric on y scale
+      if ((! is.null(params$height)) & (! inherits(params$height, "unit"))) {
+        data$ymin <- data$y - params$height / 2
+        data$ymax <- data$y + params$height / 2
+      } else if (is.null(params$height)) {
+        height <- ggplot2::resolution(data$y, FALSE) * 0.9
+        data$ymin <- data$y - height / 2
+        data$ymax <- data$y + height / 2
+      }
     } else {
-      width <- ggplot2::resolution(data$x, FALSE) * 0.9
-      data$xmin <- data$x - width / 2
-      data$xmax <- data$x + width / 2
+      # If 'width' is provided but not a unit, interpret it as numeric on x scale
+      if ((! is.null(params$width)) & (! inherits(params$width, "unit"))) {
+        data$xmin <- data$x - params$width / 2
+        data$xmax <- data$x + params$width / 2
+      } else if (is.null(params$width)) {
+        width <- ggplot2::resolution(data$x, FALSE) * 0.9
+        data$xmin <- data$x - width / 2
+        data$xmax <- data$x + width / 2
+      }
     }
 
     # Set starting bar height/length
@@ -210,6 +223,8 @@ GeomBarText <- ggplot2::ggproto(
         min.size = min.size,
         grow = grow,
         reflow = reflow,
+        width = width,
+        height = height,
         contrast = contrast,
         rich = rich,
         cl = "fittexttree"
@@ -246,6 +261,8 @@ GeomBarText <- ggplot2::ggproto(
         min.size = min.size,
         grow = grow,
         reflow = reflow,
+        width = width,
+        height = height,
         contrast = contrast,
         rich = rich,
         cl = "fittexttree"

@@ -1,3 +1,10 @@
+# ggfittext (development version)
+
+## Bug fixes
+
+- 'width' argument now works properly in `geom_bar_text()` (#41, thanks
+  Laurent-Smeets-GSS-Account)
+
 # ggfittext 0.10.2
 
 ## Minor changes
