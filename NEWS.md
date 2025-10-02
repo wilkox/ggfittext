@@ -1,4 +1,4 @@
-# ggfittext (development version)
+# ggfittext 0.10.3
 
 ## Bug fixes
 
