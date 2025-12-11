@@ -1,48 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/introduction-to-ggfittext.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/altitudes.html</loc>
-  </url>
-  <url>
-    <loc>/reference/animals.html</loc>
-  </url>
-  <url>
-    <loc>/reference/animals_rich.html</loc>
-  </url>
-  <url>
-    <loc>/reference/beverages.html</loc>
-  </url>
-  <url>
-    <loc>/reference/beverages_rich.html</loc>
-  </url>
-  <url>
-    <loc>/reference/geom_fit_text.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ggfittext.html</loc>
-  </url>
-  <url>
-    <loc>/reference/gold.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://wilkox.org/ggfittext/404.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/articles/index.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/articles/introduction-to-ggfittext.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/authors.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/index.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/news/index.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/reference/altitudes.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/reference/animals.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/reference/animals_rich.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/reference/beverages.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/reference/beverages_rich.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/reference/geom_fit_text.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/reference/ggfittext-package.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/reference/gold.html</loc></url>
+<url><loc>https://wilkox.org/ggfittext/reference/index.html</loc></url>
 </urlset>
+
