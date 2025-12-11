@@ -3,7 +3,7 @@
 ## Bug fixes
 
 - 'width' argument now works properly in `geom_bar_text()` (#41, thanks
-  Laurent-Smeets-GSS-Account)
+  @Laurent-Smeets-GSS-Account)
 
 # ggfittext 0.10.2
 
@@ -78,7 +78,7 @@
   FALSE otherwise (#22, thanks @ds-jim)
 - `geom_bar_text()` now defaults to `contrast = TRUE`
 - `outside` now defaults to FALSE with `geom_bar_text()` unless `position =
-  "identity"`
+"identity"`
 - Add visual examples for `fullheight`
 
 ## Bug fixes
@@ -113,7 +113,7 @@
 - New `hjust` and `vjust` arguments that can be controlled independent of
   `place`
 - New `outside` argument to allow text that doesn't fit inside the box to be
-  teleported outside of it 
+  teleported outside of it
 
 ## Minor changes
 
