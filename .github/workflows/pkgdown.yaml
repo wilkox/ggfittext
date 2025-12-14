@@ -1,5 +1,8 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+# Workflow to build pkgdown site, which lives at https://wilkox.org/ggfittext.
+# Deployment is via the gh-pages branch.
+
+# Define when the Workflow runs: on pushes to main and master (builds and
+# deploys), and on pull requests (builds only)
 on:
   push:
     branches: [main, master]
@@ -8,8 +11,9 @@ on:
     types: [published]
   workflow_dispatch:
 
-name: pkgdown.yaml
+name: pkgdown-build-and-deploy
 
+# Read only permission
 permissions: read-all
 
 jobs:
@@ -42,7 +46,7 @@ jobs:
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           clean: false
           branch: gh-pages
