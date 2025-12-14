@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   introduction-to-ggfittext: introduction-to-ggfittext.html
-last_built: 2025-12-14T02:41Z
+last_built: 2025-12-14T03:43Z
 urls:
   reference: https://wilkox.org/ggfittext/reference
   article: https://wilkox.org/ggfittext/articles
