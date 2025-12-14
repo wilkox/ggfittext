@@ -4,10 +4,11 @@
 
 # Define when the workflow runs: on pushes and pull requests to main, master,
 # and CRAN
-push:
-  branches: [main, master, CRAN]
-pull_request:
-  branches: [main, master, CRAN]
+on:
+  push:
+    branches: [main, master, CRAN]
+  pull_request:
+    branches: [main, master, CRAN]
 
 name: R-CMD-check
 
