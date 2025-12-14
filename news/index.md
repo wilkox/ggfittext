@@ -1,0 +1,308 @@
+# Changelog
+
+## ggfittext 0.10.3
+
+CRAN release: 2025-12-13
+
+### Bug fixes
+
+- ‘width’ argument now works properly in
+  [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  ([\#41](https://github.com/wilkox/ggfittext/issues/41), thanks
+  1.  
+
+## ggfittext 0.10.2
+
+CRAN release: 2024-01-31
+
+### Minor changes
+
+- Copy `theta_rescale()` and `r_rescale()` to avoid relying on ggplot2
+  internal functions
+  ([\#39](https://github.com/wilkox/ggfittext/issues/39), thanks
+  [@teunbrand](https://github.com/teunbrand))
+- Use the cli package for messages, warnings, etc.
+
+## ggfittext 0.10.1
+
+CRAN release: 2023-09-05
+
+### Minor changes
+
+- Fix the ‘ggfittext-package’ documentation after a [breaking change to
+  roxygen2](https://github.com/r-lib/roxygen2/issues/1491)
+
+## ggfittext 0.10.0
+
+CRAN release: 2023-04-04
+
+### Major changes
+
+- Add ‘flip’ argument to
+  [`geom_fit_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  to flip text ‘the right way up’ when in polar coordinates (thanks
+  [@BradyAJohnston](https://github.com/BradyAJohnston))
+- Add **experimental** support for rich text, with the `rich` argument
+  to
+  [`geom_fit_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  and
+  [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md).
+  Uses [gridtext](https://wilkelab.org/gridtext/) to render a subset of
+  Markdown and HTML. This is liable to change and in particular there
+  may be breaking changes as a result of upstream changes in gridtext
+- Move ggplot2 from ‘Depends’ to ‘Imports’
+
+### Minor changes
+
+- Internal refactoring
+- Improvements to the reflowing algorithm, both for speed and aesthetics
+- Make ‘label’ required aesthetic for
+  [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  ([\#29](https://github.com/wilkox/ggfittext/issues/29), thanks
+  [@gregleleu](https://github.com/gregleleu))
+
+### Bug fixes
+
+- Fix support for bi-directional
+  [`geom_col()`](https://ggplot2.tidyverse.org/reference/geom_bar.html)
+  ([\#23](https://github.com/wilkox/ggfittext/issues/23), thanks again
+  [@ds-jim](https://github.com/ds-jim))
+
+## ggfittext 0.9.1
+
+CRAN release: 2021-01-30
+
+### Minor changes
+
+- Various minor copy-editing changes to the README and introductory
+  vignette
+- `coffees` data frame renamed to `beverages`, some other minor changes
+  to example data frames
+- Change the heuristic for selecting between ‘xmin/xmax’ and ‘width’ (or
+  ‘ymin/ymax’ and ‘height’), as it was causing a bug with zero-height
+  boxes ([\#26](https://github.com/wilkox/ggfittext/issues/26))
+
+### Bug fixes
+
+- Make vdiffr tests conditional
+- Give a warning, rather than stop with an error, when the
+  `contrast = TRUE` argument is used and the fill value is NA
+
+## ggfittext 0.9.0
+
+CRAN release: 2020-06-14
+
+### Major changes
+
+- Add experimental support for polar coordinates in
+  [`geom_fit_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+- Improvements to the behaviour of
+  [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  in flipped coordinates, including support for the new bi-directional
+  [`geom_col()`](https://ggplot2.tidyverse.org/reference/geom_bar.html)
+  in ggplot2 3.3.0
+  ([\#23](https://github.com/wilkox/ggfittext/issues/23), thanks
+  [@ds-jim](https://github.com/ds-jim))
+
+### Minor changes
+
+- `contrast = TRUE` now assumes ggplot2 default colours for `fill` and
+  `panel.background`, so it can be used in the absence of a `fill`
+  aesthetic.
+- Change default behaviour of `contrast` in
+  [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md);
+  instead of defaulting to TRUE, it defaults to true if the text colour
+  is black but to FALSE otherwise
+  ([\#22](https://github.com/wilkox/ggfittext/issues/22), thanks
+  [@ds-jim](https://github.com/ds-jim))
+- [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  now defaults to `contrast = TRUE`
+- `outside` now defaults to FALSE with
+  [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  unless `position = "identity"`
+- Add visual examples for `fullheight`
+
+### Bug fixes
+
+- Silently ignore NA values of ‘label’ rather than stopping with an
+  error
+- Skip drawing text when the box limits are outside the plot limits and
+  emit a warning, rather than stopping with an error (see
+  [\#11](https://github.com/wilkox/ggfittext/issues/11), thanks
+  2.  
+- Fix ‘Ignoring unknown aesthetics: fill’ error
+  ([\#19](https://github.com/wilkox/ggfittext/issues/19), thanks
+  [@zilch42](https://github.com/zilch42))
+- Clarify defaults for `min.size` argument
+- Fix bug when using grid units for height or width
+
+## ggfittext 0.8.1
+
+CRAN release: 2019-07-18
+
+### Minor changes
+
+- Add ‘vdiffr’ test cases
+
+### Bug fixes
+
+- Fix bug where a blank label causes an error
+
+## ggfittext 0.8.0
+
+CRAN release: 2019-06-23
+
+### Major changes
+
+- New
+  [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  convenience function for labelling of bars in bar plots
+- New `contrast` argument for automatically contrasting a background
+  fill colour
+- New `fullheight` argument for including or excluding descenders in
+  text size
+- Faster for many common uses
+- New `hjust` and `vjust` arguments that can be controlled independent
+  of `place`
+- New `outside` argument to allow text that doesn’t fit inside the box
+  to be teleported outside of it
+
+### Minor changes
+
+- `padding.x` and `padding.y` now both default to 1 mm
+
+### Bug fixes
+
+- When reflowing text, calculation of the best aspect ratio now takes
+  into account the output device’s aspect ratio
+- When reflowing text, calculation of the best aspect ratio no longer
+  refuses to entertain the possibility that the original text might have
+  the best ratio
+- Angled text is now placed correctly
+
+## ggfittext 0.7.0
+
+CRAN release: 2019-05-29
+
+### Major changes
+
+- Add support for automatic sizing of text on discrete (categorical)
+  axes
+- Fully deprecate ‘width’ and ‘height’ as aesthetics
+- Increase required R version to 3.2.3
+
+### Minor changes
+
+- Remove default values for ‘width’ and ‘height’ parameters
+- Add new `formatter` argument to
+  [`geom_fit_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md).
+- Add visual tests with vdiffr.
+
+### Bug fixes
+
+- Fix tests that use `expect_silent()` and draw plots.
+
+## ggfittext 0.6.0
+
+CRAN release: 2018-07-06
+
+### Major changes
+
+- Change `width` and `height` from aesthetics to arguments.
+- Allow `width` and `height` arguments to be provided in native units
+  (thanks to [@corybrunson](https://github.com/corybrunson)).
+- Add support for `position = "stack"`.
+
+### Minor changes
+
+- Miscellaneous code quality improvements.
+
+### Bug fixes
+
+- Fix typo in DESCRIPTION.
+
+## ggfittext 0.5.0
+
+CRAN release: 2017-11-17
+
+### Minor changes
+
+- Change R and grid dependency to 3.1.
+
+### Bug fixes
+
+- Fix typo in README.
+- Remove README.html so README renders correctly on GitHub.
+
+## ggfittext 0.4.3
+
+CRAN release: 2017-08-21
+
+### Minor changes
+
+- Style change for CRAN submission.
+- Add example to
+  [`geom_fit_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  documentation.
+
+## ggfittext 0.4.2
+
+### Minor changes
+
+- Release version for CRAN submission.
+
+### Bug fixes
+
+- Tidy up some namespace issues (thanks to
+  [@JohnsonHsieh](https://github.com/JohnsonHsieh)).
+- Rewrite documentation.
+- Add example to README, edit and produce vignette.
+- Misc. minor fixes to pass R CMD check.
+
+### Minor changes
+
+- Deprecate `geom_shrink_text()` and `geom_grow_text()`.
+
+## ggfittext 0.4.1
+
+### Bug fixes
+
+- Fix wide characters causing problems in non-UTF-8 locales.
+
+## ggfittext 0.4
+
+### Major changes
+
+- Add ‘reflow’ option to `geom_fit_text`.
+
+### Bug fixes
+
+- Fix height calculation on text with ascenders/descenders.
+
+## ggfittext 0.3
+
+### Major changes
+
+- Much faster text resizing algorithm.
+- Rename arguments: ‘discrete.width’ and ‘discrete.height’ to ‘width’
+  and ‘height’; ‘fill.text’ to ‘grow’.
+
+## ggfittext 0.2
+
+### Major changes
+
+- `geom_shrink_text()` and `geom_fill_text()` replaced with single
+  [`geom_fit_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  with ‘fill_text’ option. (The old geoms still work, but as wrappers
+  for
+  [`geom_fit_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)).
+- Add support for discrete axes with new `discrete.height` and
+  `discrete.width` options.
+
+### Bug fixes
+
+- Font sizes now correctly and consistently represented as point sizes.
+
+## ggfittext 0.1
+
+First release!
