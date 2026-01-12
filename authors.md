@@ -11,13 +11,13 @@
 Source:
 [`DESCRIPTION`](https://github.com/wilkox/ggfittext/blob/master/DESCRIPTION)
 
-Wilkins D (2025). *ggfittext: Fit Text Inside a Box in 'ggplot2'*. R
+Wilkins D (2026). *ggfittext: Fit Text Inside a Box in 'ggplot2'*. R
 package version 0.10.3, <https://wilkox.org/ggfittext/>.
 
     @Manual{,
       title = {ggfittext: Fit Text Inside a Box in 'ggplot2'},
       author = {David Wilkins},
-      year = {2025},
+      year = {2026},
       note = {R package version 0.10.3},
       url = {https://wilkox.org/ggfittext/},
     }
