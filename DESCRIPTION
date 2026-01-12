@@ -19,7 +19,7 @@ Imports:
     ggplot2 (>= 2.2.1),
     cli (>= 3.6.1)
 RoxygenNote: 7.3.1
-URL: https://wilkox.org/ggfittext/
+URL: https://wilkox.org/ggfittext/, http://wilkox.org/ggfittext/
 BugReports: https://github.com/wilkox/ggfittext/issues/
 Suggests: 
     knitr,
