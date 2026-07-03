@@ -9,10 +9,11 @@
   than a string, e.g. `position_dodge(width = 0.9)`
   ([\#44](https://github.com/wilkox/ggfittext/issues/44))
 - [`geom_bar_text()`](https://wilkox.org/ggfittext/dev/reference/geom_fit_text.md)
-  now labels implied-flip horizontal bars
-  (`aes(x = value, y = category)`) with the bar value rather than the
-  category index when no `label` aesthetic is mapped
+  now labels implied-flip horizontal bars with the bar value rather than
+  the category index when no `label` aesthetic is mapped
   ([\#45](https://github.com/wilkox/ggfittext/issues/45))
+- Fix bug which would sometimes result in selecting too-wide reflow
+  ([\#47](https://github.com/wilkox/ggfittext/issues/47))
 
 ## ggfittext 0.10.3
 
