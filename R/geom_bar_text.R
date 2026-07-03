@@ -88,15 +88,16 @@ GeomBarText <- ggplot2::ggproto(
     data,
     params
   ) {
-    # If the label is missing, assume y is the label (as with stat_count)
-    if (!"label" %in% names(data)) {
-      data$label <- data$y
-    }
-
     # Detect if the bar is to be drawn with 'implied' flipped orientation as
     # permitted in ggplot2 v3.3.0
     implied_flip <- "mapped_discrete" %in% class(data$y)
     data$implied_flip <- implied_flip
+
+    # If the label is missing, assume the value axis is the label (as with
+    # stat_count). For flipped bars the value axis is x, otherwise y.
+    if (!"label" %in% names(data)) {
+      data$label <- if (implied_flip) data$x else data$y
+    }
 
     # Set bar width using the method of geom_boxplot, unless width/height
     # parameters are provided

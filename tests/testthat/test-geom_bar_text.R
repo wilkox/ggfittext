@@ -114,6 +114,16 @@ test_that("geom_bar_text() correctly handles explicit and implied flipped axes",
   })
 })
 
+test_that("horizontal bars are labelled with the value, not the category index (#45)", {
+  p <- ggplot(
+    data.frame(cat = c("a", "b"), val = c(10, 20)),
+    aes(x = val, y = cat)
+  ) +
+    geom_col() +
+    geom_bar_text()
+  expect_equal(layer_data(p, 2)$label, c(10, 20))
+})
+
 test_that("geom_bar_text() works with faceting", {
   expect_doppelganger("geom_bar_text() with faceting", {
     ggplot(

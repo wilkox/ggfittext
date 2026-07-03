@@ -4,6 +4,9 @@
 
 - `geom_bar_text()` no longer errors when `position` is given as a Position
   object rather than a string, e.g. `position_dodge(width = 0.9)` (#44)
+- `geom_bar_text()` now labels implied-flip horizontal bars (`aes(x = value, y
+  = category)`) with the bar value rather than the category index when no
+  `label` aesthetic is mapped (#45)
 
 # ggfittext 0.10.3
 
