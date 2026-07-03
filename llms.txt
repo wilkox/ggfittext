@@ -9,12 +9,14 @@ ggfittext is a ggplot2 extension for fitting text into boxes.
 Install the release version of ggfittext from CRAN:
 
 ``` r
+
 install.packages("ggfittext")
 ```
 
 If you want the development version, install it from GitHub:
 
 ``` r
+
 devtools::install_github("wilkox/ggfittext")
 ```
 
@@ -28,6 +30,7 @@ geom called
 that automatically resizes text to fit inside a box. It works like this:
 
 ``` r
+
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
   geom_tile(fill = "white", colour = "black") +
   geom_fit_text()
@@ -49,6 +52,7 @@ wrapping it over multiple lines. With the `reflow = TRUE` argument,
 will reflow the text before (if still necessary) shrinking it:
 
 ``` r
+
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
   geom_tile(fill = "white", colour = "black") +
   geom_fit_text(reflow = TRUE)
@@ -63,6 +67,7 @@ If you want the text to be as large as possible, the argument
 in the box. This works well in conjunction with `reflow`:
 
 ``` r
+
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
   geom_tile(fill = "white", colour = "black") +
   geom_fit_text(reflow = TRUE, grow = TRUE)
@@ -77,6 +82,7 @@ place it in a corner or on a side of the box with the `place` argument,
 which takes values like “top”, “topright”, “bottomleft” and so on:
 
 ``` r
+
 ggplot(animals, aes(x = type, y = flies, label = animal)) +
   geom_tile(fill = "white", colour = "black") +
   geom_fit_text(place = "topleft", reflow = TRUE)
@@ -91,6 +97,7 @@ ggfittext also provides a geom
 for labelling bars in bar plots:
 
 ``` r
+
 ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
   geom_col() +
   geom_bar_text()
@@ -102,6 +109,7 @@ ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
 works with stacked bar plots:
 
 ``` r
+
 ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
                     fill = ingredient)) +
   geom_col(position = "stack") +
@@ -113,6 +121,7 @@ ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
 And it works with dodged bar plots, and with flipped bar plots:
 
 ``` r
+
 ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
                     fill = ingredient)) +
   geom_col(position = "dodge") +
@@ -133,6 +142,7 @@ both support a limited subset of Markdown and HTML markup for text
 (rendered with [gridtext](https://wilkelab.org/gridtext/)).
 
 ``` r
+
 ggplot(animals_rich, aes(x = type, y = flies, label = animal)) +
   geom_tile(fill = "white", colour = "black") +
   geom_fit_text(reflow = TRUE, grow = TRUE, rich = TRUE)
@@ -151,6 +161,7 @@ them inferred from `x` and `y`), you can use `xmin` & `xmax` and/or
 `ymin` & `ymax`:
 
 ``` r
+
 ggplot(presidential, aes(ymin = start, ymax = end, x = party, label = name)) +
   geom_fit_text(grow = TRUE) +
   geom_errorbar(alpha = 0.5)
@@ -172,6 +183,7 @@ simply by adding `coord_polar()` to the plot. This feature is
 experimental and any bug reports are very welcome.
 
 ``` r
+
 p <- ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, 
                  fill = linenumber, label = line)) +
   coord_polar() +
@@ -187,6 +199,7 @@ When text is drawn in polar coordinates, the `flip = TRUE` argument can
 be used to flip upside-down text the ‘right way up’ to ease readability:
 
 ``` r
+
 p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)
 ```
 
@@ -203,6 +216,7 @@ can also be used with
   text so it contrasts against a background `fill`:
 
 ``` r
+
 ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   geom_tile() +
   geom_fit_text(reflow = TRUE, grow = TRUE, contrast = TRUE)

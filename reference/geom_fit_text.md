@@ -221,6 +221,7 @@ all features are available when doing so.
 ## Examples
 
 ``` r
+
 ggplot2::ggplot(ggplot2::presidential, ggplot2::aes(ymin = start, ymax = end,
     label = name, x = party)) +
   geom_fit_text(grow = TRUE)
