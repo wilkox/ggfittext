@@ -351,3 +351,43 @@ test_that("The flip argument works properly when drawing in polar coordinates", 
       geom_fit_text(min.size = 0, flip = TRUE, place = "topleft")
   })
 })
+
+# Logic-level test for the reflow engine. Unlike the vdiffr snapshots above, it
+# inspects the returned grob directly, so it catches metric bugs that leave a
+# visually plausible but incorrect result.
+
+test_that("reflow_and_resize() never returns an unshrunk wrap that overflows the box (#47)", {
+
+  # A label whose successive candidate wraps are non-monotone in rendered width
+  # (mixed wide/narrow glyphs). This is what exposed the bug: the "widest wrap
+  # that fits" filter could select a wrap that does not fit, and because that
+  # branch returns early the text was never shrunk to compensate.
+  label <- "MMMM ii MMMM iiiiiiiiii MM iii MMMMM WW i WWWW"
+  text <- data.frame(
+    label = label, size = 12, angle = 0, colour = "black", alpha = 1,
+    family = "", fontface = 1, lineheight = 0.9, stringsAsFactors = FALSE
+  )
+
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off())
+
+  ydim <- 30
+
+  # Sweep box widths across the range where candidate wrap widths diverge. The
+  # exact trigger band is font-metric-dependent, so we assert the invariant over
+  # a broad sweep rather than at one fragile point.
+  for (xdim in seq(40, 70, by = 0.5)) {
+    tg <- reflow_and_resize(
+      text, reflow = TRUE, grow = FALSE, fullheight = FALSE,
+      xdim = xdim, ydim = ydim, rich = FALSE
+    )
+
+    # If the font size is unchanged, no shrinking was applied, so the chosen
+    # wrap must genuinely fit the box in both dimensions.
+    if (isTRUE(all.equal(getfontsize(tg), text$size))) {
+      dim <- tgDimensions(tg, FALSE, text$angle)
+      expect_lte(dim$width, xdim + 1e-6)
+      expect_lte(dim$height, ydim + 1e-6)
+    }
+  }
+})

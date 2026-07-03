@@ -688,8 +688,7 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) 
 
       wraps$width <- unlist(lapply(wraps$tgdim, function(tgdim) tgdim$width))
       wraps$height <- unlist(lapply(wraps$tgdim, function(tgdim) tgdim$height))
-      fit_wraps <- wraps[which(wraps$width < xdim), ]
-      fit_wraps <- wraps[which(fit_wraps$height < ydim), ]
+      fit_wraps <- wraps[wraps$width < xdim & wraps$height < ydim, ]
 
       if (nrow(fit_wraps) > 0) {
         best_index <- which(fit_wraps$wrapwidth == max(fit_wraps$wrapwidth))[1]
