@@ -18,7 +18,6 @@ Imports:
     gridtext (>= 0.1.4),
     ggplot2 (>= 2.2.1),
     cli (>= 3.6.1)
-RoxygenNote: 7.3.1
 URL: https://wilkox.org/ggfittext/, http://wilkox.org/ggfittext/
 BugReports: https://github.com/wilkox/ggfittext/issues/
 Suggests: 
@@ -32,3 +31,4 @@ Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Language: en-GB
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
