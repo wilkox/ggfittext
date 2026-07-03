@@ -1,3 +1,10 @@
+# ggfittext 0.10.4 (development)
+
+## Bug fixes
+
+- `geom_bar_text()` no longer errors when `position` is given as a Position
+  object rather than a string, e.g. `position_dodge(width = 0.9)` (#44)
+
 # ggfittext 0.10.3
 
 ## Bug fixes

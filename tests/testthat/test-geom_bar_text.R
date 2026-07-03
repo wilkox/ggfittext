@@ -154,6 +154,23 @@ test_that("geom_bar_text() draws contrasting text", {
   })
 })
 
+test_that("outside default is derived from position (string or object)", {
+  # position_identity(): outside should default to TRUE, whether the position
+  # is given as a string or as a Position object (#44)
+  expect_true(geom_bar_text(position = "identity")$geom_params$outside)
+  expect_true(geom_bar_text(position = position_identity())$geom_params$outside)
+
+  # Any other position defaults outside to FALSE. A Position object is required
+  # whenever a dodge width must be set, and comparing it with == would error.
+  expect_false(geom_bar_text(position = "stack")$geom_params$outside)
+  expect_false(
+    geom_bar_text(position = position_dodge(width = 0.9))$geom_params$outside
+  )
+
+  # An explicit outside is always honoured over the position-derived default.
+  expect_false(geom_bar_text(position = "identity", outside = FALSE)$geom_params$outside)
+})
+
 test_that("width works as expected", {
   expect_doppelganger("geom_bar_text() with width to match geom_col() width", {
     ggplot(
