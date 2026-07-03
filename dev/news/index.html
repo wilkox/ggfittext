@@ -42,6 +42,8 @@
 <h3 id="bug-fixes-0-10-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-10-4"></a></h3>
 <ul><li>
 <code><a href="../reference/geom_fit_text.html">geom_bar_text()</a></code> no longer errors when <code>position</code> is given as a Position object rather than a string, e.g. <code>position_dodge(width = 0.9)</code> (<a href="https://github.com/wilkox/ggfittext/issues/44" class="external-link">#44</a>)</li>
+<li>
+<code><a href="../reference/geom_fit_text.html">geom_bar_text()</a></code> now labels implied-flip horizontal bars (<code>aes(x = value, y = category)</code>) with the bar value rather than the category index when no <code>label</code> aesthetic is mapped (<a href="https://github.com/wilkox/ggfittext/issues/45" class="external-link">#45</a>)</li>
 </ul></div>
 </div>
     <div class="section level2">
