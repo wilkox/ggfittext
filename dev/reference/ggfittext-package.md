@@ -9,11 +9,17 @@ Useful links:
 
 - <https://wilkox.org/ggfittext/>
 
+- <http://wilkox.org/ggfittext/>
+
 - Report bugs at <https://github.com/wilkox/ggfittext/issues/>
 
 ## Author
 
 **Maintainer**: David Wilkins <david@wilkox.org>
+
+Authors:
+
+- David Wilkins <david@wilkox.org>
 
 Other contributors:
 
