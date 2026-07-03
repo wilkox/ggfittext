@@ -110,6 +110,22 @@ test_that("geom_fit_text() handles blank labels", {
   })
 })
 
+# Logic-level test for the blank-label filter (#48). The vdiffr snapshot above
+# would still pass with the old, accidentally-working condition, so we inspect
+# the drawn grob tree directly: NA and empty labels must be dropped, leaving one
+# child grob for the single real label.
+test_that("makeContent.fittexttree() drops NA and empty labels (#48)", {
+  df <- data.frame(x = 1:3, y = 1:3, label = c("a", NA, ""))
+  p <- ggplot(df, aes(x, y, label = label)) + geom_fit_text()
+
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off())
+
+  ftt <- suppressWarnings(layer_grob(p)[[1]])
+  drawn <- grid::makeContent(ftt)
+  expect_length(drawn$children, 1)
+})
+
 test_that("geom_fit_text() warns when box limits are outside of plot limits", {
   df <- data.frame(x = letters[1:5], y = 0:4, lb = 3)
 

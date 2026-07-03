@@ -13,7 +13,7 @@
 #' There are three ways to define the box in which you want the text to be
 #' drawn. The extents of the box on the x and y axes are independent, so any
 #' combination of these methods can be used:
-#' 
+#'
 #' 1. If the `x` and/or `y` aesthetics are used to set the location of the box,
 #' the width or height will be set automatically based on the number of
 #' discrete values in `x` and/and `y`.
@@ -75,7 +75,7 @@
 #' placing text; if `FALSE`, only the x-height and ascenders will be counted.
 #' The main use for this option is for aligning text at the baseline (`FALSE`)
 #' or preventing descenders from spilling outside the box (`TRUE`). By default
-#' this is set automatically depending on `place` and `grow`. 
+#' this is set automatically depending on `place` and `grow`.
 #' @param width,height When using `x` and/or `y` aesthetics, these set the
 #' width and/or height of the box. These should be either `grid::unit()`
 #' objects or numeric values on the `x` and `y` scales.
@@ -188,9 +188,12 @@ GeomFitText <- ggplot2::ggproto(
   ),
 
   setup_params = function(data, params) {
-
     # Standardise the place argument
-    params$place <- ifelse(params$place %in% c("middle", "center"), "centre", params$place)
+    params$place <- ifelse(
+      params$place %in% c("middle", "center"),
+      "centre",
+      params$place
+    )
 
     params
   },
@@ -199,25 +202,24 @@ GeomFitText <- ggplot2::ggproto(
     data,
     params
   ) {
-
     # Check that valid aesthetics have been supplied for each dimension
-    if (! (! is.null(data$xmin) & ! is.null(data$xmax) | ! is.null(data$x))) {
+    if (!(!is.null(data$xmin) & !is.null(data$xmax) | !is.null(data$x))) {
       cli::cli_abort("geom_fit_text needs either 'xmin' and 'xmax', or 'x'")
     }
-    if (! (! is.null(data$ymin) & ! is.null(data$ymax) | ! is.null(data$y))) {
+    if (!(!is.null(data$ymin) & !is.null(data$ymax) | !is.null(data$y))) {
       cli::cli_abort("geom_fit_text needs either 'ymin' and 'ymax', or 'y'")
     }
 
     # If 'width' is provided, but not as unit, interpret it as a numeric on the
     # x scale
-    if ((! is.null(params$width)) & (! inherits(params$width, "unit"))) {
+    if ((!is.null(params$width)) & (!inherits(params$width, "unit"))) {
       data$xmin <- data$x - params$width / 2
       data$xmax <- data$x + params$width / 2
     }
 
     # If 'height' is provided, but not a unit, interpret it as a numeric on the
     # y scale
-    if ((! is.null(params$height)) & (! inherits(params$height, "unit"))) {
+    if ((!is.null(params$height)) & (!inherits(params$height, "unit"))) {
       data$ymin <- data$y - params$height / 2
       data$ymax <- data$y + params$height / 2
     }
@@ -241,19 +243,27 @@ GeomFitText <- ggplot2::ggproto(
     }
 
     # Apply a formatter function, if one was given
-    if (! is.null(params$formatter)) {
-
+    if (!is.null(params$formatter)) {
       # Check that 'formatter' is a function
-      if (! is.function(params$formatter)) {
+      if (!is.function(params$formatter)) {
         cli::cli_abort("`formatter` must be a function")
       }
 
       # Apply formatter to the labels, checking that the output is a character
       # vector of the correct length
-      formatted_labels <- vapply(data$label, params$formatter, character(1), USE.NAMES = FALSE)
-      if ((! length(formatted_labels) == length(data$label)) | 
-          (! is.character(formatted_labels))) {
-        cli::cli_abort("`formatter` must produce a character vector of same length as input")
+      formatted_labels <- vapply(
+        data$label,
+        params$formatter,
+        character(1),
+        USE.NAMES = FALSE
+      )
+      if (
+        (!length(formatted_labels) == length(data$label)) |
+          (!is.character(formatted_labels))
+      ) {
+        cli::cli_abort(
+          "`formatter` must produce a character vector of same length as input"
+        )
       }
       data$label <- formatted_labels
     }
@@ -286,7 +296,6 @@ GeomFitText <- ggplot2::ggproto(
     rich = FALSE,
     flip = FALSE
   ) {
-
     # Rich text cannot be used in polar coordinates
     if (inherits(coord, "CoordPolar") & rich) {
       cli::cli_abort("Cannot draw rich text in polar coordinates")
@@ -295,7 +304,9 @@ GeomFitText <- ggplot2::ggproto(
     # Transform data to plot scales; if in polar coordinates, we need to ensure
     # that x and y values are given
     if (inherits(coord, "CoordPolar")) {
-      if (is.null(data$x)) data$x <- 1
+      if (is.null(data$x)) {
+        data$x <- 1
+      }
       if (is.null(data$y)) data$y <- 1
     }
     data <- coord$transform(data, panel_scales)
@@ -304,16 +315,16 @@ GeomFitText <- ggplot2::ggproto(
     # theta and r values respectively; these can be used later to accurately
     # set the width and height of the bounding box in polar space
     if (inherits(coord, "CoordPolar")) {
-      if (! is.null(data$xmin)) {
+      if (!is.null(data$xmin)) {
         data$xmin <- theta_rescale(coord, data$xmin, panel_scales)
       }
-      if (! is.null(data$xmax)) {
+      if (!is.null(data$xmax)) {
         data$xmax <- theta_rescale(coord, data$xmax, panel_scales)
       }
-      if (! is.null(data$ymin)) {
+      if (!is.null(data$ymin)) {
         data$ymin <- r_rescale(coord, data$ymin, panel_scales$r.range)
       }
-      if (! is.null(data$ymax)) {
+      if (!is.null(data$ymax)) {
         data$ymax <- r_rescale(coord, data$ymax, panel_scales$r.range)
       }
     }
@@ -335,7 +346,11 @@ GeomFitText <- ggplot2::ggproto(
       contrast = contrast,
       rich = rich,
       flip = flip,
-      cl = ifelse(inherits(coord, "CoordPolar"), "fittexttreepolar", "fittexttree")
+      cl = ifelse(
+        inherits(coord, "CoordPolar"),
+        "fittexttreepolar",
+        "fittexttree"
+      )
     )
     gt$name <- grid::grobName(gt, "geom_fit_text")
     gt
@@ -345,7 +360,6 @@ GeomFitText <- ggplot2::ggproto(
 #' @importFrom grid makeContent
 #' @export
 makeContent.fittexttree <- function(x) {
-
   # Extract data
   ftt <- x
   data <- ftt$data
@@ -387,15 +401,18 @@ makeContent.fittexttree <- function(x) {
   }
 
   # Remove any rows with NA boundaries
-  na_rows <- which(is.na(data$xmin) | is.na(data$xmax) | is.na(data$ymin) | 
-                   is.na(data$ymax))
+  na_rows <- which(
+    is.na(data$xmin) | is.na(data$xmax) | is.na(data$ymin) | is.na(data$ymax)
+  )
   if (length(na_rows) > 0) {
     data <- data[-na_rows, ]
-    cli::cli_warn("Removed {length(na_rows)} rows where box limits were outside plot limits ({.fun geom_fit_text}).")
+    cli::cli_warn(
+      "Removed {length(na_rows)} rows where box limits were outside plot limits ({.fun geom_fit_text})."
+    )
   }
 
   # Remove any rows with blank labels
-  data <- data[which(! is.na(data$label) | data$label == ""), ]
+  data <- data[!is.na(data$label) & data$label != "", ]
 
   # Clean up angles
   data$angle <- data$angle %% 360
@@ -403,10 +420,9 @@ makeContent.fittexttree <- function(x) {
   # If contrast is set, and the shade of a text colour is too close to the
   # shade of the fill colour, change the colour to its complement
   if (ftt$contrast) {
-
     # If any fill value is NA, emit a warning and set to the default
     # ggplot2 background grey
-    if (! is.null(data$fill)) {
+    if (!is.null(data$fill)) {
       if (any(is.na(data$fill))) {
         cli::cli_warn("NA values in fill")
         data$fill <- data$fill %NA% "grey35"
@@ -433,7 +449,6 @@ makeContent.fittexttree <- function(x) {
 
   # Prepare grob for each text label
   grobs <- lapply(seq_len(nrow(data)), function(i) {
-
     # Convenience
     text <- data[i, ]
 
@@ -442,7 +457,15 @@ makeContent.fittexttree <- function(x) {
     ydim <- hnpc2mm(abs(text$ymin - text$ymax) - (2 * ftt$padding.y))
 
     # Reflow and/or resize the text into a textGrob
-    tg <- reflow_and_resize(text, ftt$reflow, ftt$grow, ftt$fullheight, xdim, ydim, ftt$rich)
+    tg <- reflow_and_resize(
+      text,
+      ftt$reflow,
+      ftt$grow,
+      ftt$fullheight,
+      xdim,
+      ydim,
+      ftt$rich
+    )
 
     # If the font size is too small and 'outside' has been set, try reflowing
     # and resizing again in the 'outside' position
@@ -474,17 +497,28 @@ makeContent.fittexttree <- function(x) {
         bg_colour <- "grey92"
         text_colour <- text$colour %||% "black"
         if (
-          abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) < 50
+          abs(shades::lightness(bg_colour) - shades::lightness(text_colour)) <
+            50
         ) {
           complement <- shades::complement(shades::shade(text_colour))
           text$colour <- as.character(complement)
         }
       }
-      tg <- reflow_and_resize(text, ftt$reflow, ftt$grow, ftt$fullheight, xdim, ydim, ftt$rich)
+      tg <- reflow_and_resize(
+        text,
+        ftt$reflow,
+        ftt$grow,
+        ftt$fullheight,
+        xdim,
+        ydim,
+        ftt$rich
+      )
     }
 
     # If the font size is still too small, don't draw this label
-    if (getfontsize(tg) < ftt$min.size) return()
+    if (getfontsize(tg) < ftt$min.size) {
+      return()
+    }
 
     # Set hjust and vjust
     tg$hjust <- ftt$hjust
@@ -518,13 +552,13 @@ makeContent.fittexttree <- function(x) {
     # We can use these values to calculate the magnitude of the vector from the
     # centre point to the anchor point, using the Pythagorean identity
     if (ftt$fullheight) {
-      rise <- ((tg_height_unrot * tg$vjust) + tg_descent_unrot) - 
-                ((tg_height_unrot + tg_descent_unrot) * 0.5)
+      rise <- ((tg_height_unrot * tg$vjust) + tg_descent_unrot) -
+        ((tg_height_unrot + tg_descent_unrot) * 0.5)
     } else {
       rise <- (tg_height_unrot * tg$vjust) - (tg_height_unrot * 0.5)
     }
     run <- (tg_width_unrot * tg$hjust) - (tg_width_unrot * 0.5)
-    magnitude <- sqrt((rise ^ 2) + (run ^ 2))
+    magnitude <- sqrt((rise^2) + (run^2))
 
     # The angle between the baseline and the vector can be calculated from the
     # known rise and run
@@ -612,8 +646,15 @@ geom_shrink_text <- function(...) {
 #' dimensions
 #'
 #' @noRd
-reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) {
-
+reflow_and_resize <- function(
+  text,
+  reflow,
+  grow,
+  fullheight,
+  xdim,
+  ydim,
+  rich
+) {
   # Create textGrob or richtext_grob
   if (rich) {
     tg <- gridtext::richtext_grob(
@@ -633,11 +674,20 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) 
       ),
       use_markdown = TRUE
     )
-    tg$params <- list(text = text$label, x = 0.5, y = 0.5, hjust = 0.5, vjust = 0.5, 
-                      rot = text$angle, colour = text$colour, alpha = text$alpha, 
-                      fontsize = text$size, fontfamily = text$family, 
-                      fontface = text$fontface, lineheight = text$lineheight)
-
+    tg$params <- list(
+      text = text$label,
+      x = 0.5,
+      y = 0.5,
+      hjust = 0.5,
+      vjust = 0.5,
+      rot = text$angle,
+      colour = text$colour,
+      alpha = text$alpha,
+      fontsize = text$size,
+      fontfamily = text$family,
+      fontface = text$fontface,
+      lineheight = text$lineheight
+    )
   } else {
     tg <- grid::textGrob(
       label = text$label,
@@ -662,9 +712,11 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) 
 
   # Reflow the text, if reflow = TRUE and either the text doesn't currently
   # fit or grow = TRUE and if text contains spaces
-  if (reflow & (grow | tgdim$width > xdim | tgdim$height > ydim) & 
-      stringi::stri_detect_regex(getlabel(tg), "\\s")) {
-
+  if (
+    reflow &
+      (grow | tgdim$width > xdim | tgdim$height > ydim) &
+      stringi::stri_detect_regex(getlabel(tg), "\\s")
+  ) {
     # Generate a list of all wraps for the text
     wraps <- wraplabel(tg)
 
@@ -677,15 +729,14 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) 
     )
     wraps$aspect_ratio <- vapply(
       wraps$tgdim,
-      function(tgdim) tgdim$width/tgdim$height,
+      function(tgdim) tgdim$width / tgdim$height,
       double(1)
     )
     wraps$ar_diff <- abs(wraps$aspect_ratio - (xdim / ydim))
 
     # If grow is false, select the widest wrap that fits the box (if there is
     # one) and return it
-    if (! grow) {
-
+    if (!grow) {
       wraps$width <- unlist(lapply(wraps$tgdim, function(tgdim) tgdim$width))
       wraps$height <- unlist(lapply(wraps$tgdim, function(tgdim) tgdim$height))
       fit_wraps <- wraps[wraps$width < xdim & wraps$height < ydim, ]
@@ -712,10 +763,9 @@ reflow_and_resize <- function(text, reflow, grow, fullheight, xdim, ydim, rich) 
   if (
     # Standard condition - is text too big for box?
     (tgdim$width > xdim | tgdim$height > ydim) |
-    # grow = TRUE condition - is text too small for box?
-    (grow & tgdim$width < xdim & tgdim$height < ydim)
+      # grow = TRUE condition - is text too small for box?
+      (grow & tgdim$width < xdim & tgdim$height < ydim)
   ) {
-
     # Get the slopes of the relationships between font size and label
     # dimensions
     slopew <- getfontsize(tg) / tgdim$width

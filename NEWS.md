@@ -7,6 +7,8 @@
 - `geom_bar_text()` now labels implied-flip horizontal bars with the bar value
   rather than the category index when no `label` aesthetic is mapped (#45)
 - Fix bug which would sometimes result in selecting too-wide reflow (#47)
+- Correct the blank-label filtering logic in `geom_fit_text()`, which kept empty
+  string labels and dropped `NA` labels only as a side effect (#48)
 
 # ggfittext 0.10.3
 
