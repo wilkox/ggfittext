@@ -8,6 +8,8 @@
   `geom_shrink_text()` deprecation stubs, and an unused `flip` data
   column set by `GeomFitText$setup_data()`
   ([\#59](https://github.com/wilkox/ggfittext/issues/59))
+- Expand test coverage
+  ([\#63](https://github.com/wilkox/ggfittext/issues/63))
 
 ### Bug fixes
 
