@@ -18,6 +18,10 @@
   [`geom_fit_text()`](https://wilkox.org/ggfittext/dev/reference/geom_fit_text.md),
   which kept empty string labels and dropped `NA` labels only as a side
   effect ([\#48](https://github.com/wilkox/ggfittext/issues/48))
+- [`geom_bar_text()`](https://wilkox.org/ggfittext/dev/reference/geom_fit_text.md)
+  no longer errors when contrast auto-detection encounters an `NA` text
+  colour; `NA` colours are now ignored when deciding whether to enable
+  contrast ([\#56](https://github.com/wilkox/ggfittext/issues/56))
 
 ## ggfittext 0.10.3
 
