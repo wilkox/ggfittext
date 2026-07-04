@@ -5,6 +5,7 @@
 - Remove dead code: the unexported, unreachable `geom_grow_text()` and
   `geom_shrink_text()` deprecation stubs, and an unused `flip` data column set by
   `GeomFitText$setup_data()` (#59)
+- Expand test coverage (#63)
 
 ## Bug fixes
 

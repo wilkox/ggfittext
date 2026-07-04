@@ -419,3 +419,115 @@ test_that("deprecated geom_grow_text()/geom_shrink_text() stubs are removed", {
   expect_false(exists("geom_grow_text", envir = ns, inherits = FALSE))
   expect_false(exists("geom_shrink_text", envir = ns, inherits = FALSE))
 })
+
+# Logic-level test for the min.size gate. A label that can only be fitted by
+# shrinking below min.size must be dropped entirely, leaving no child grob. With
+# grow = FALSE the 12 pt text is never enlarged, so a 200 pt floor is guaranteed
+# to reject every label whatever the box size or font metrics.
+test_that("labels that must shrink below min.size produce no child grob", {
+  df <- data.frame(x = 1:3, y = 1:3, label = c("a", "b", "c"))
+  p <- ggplot(df, aes(x, y, label = label)) + geom_fit_text(min.size = 200)
+
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off())
+
+  drawn <- grid::makeContent(suppressWarnings(layer_grob(p)[[1]]))
+  expect_length(drawn$children, 0)
+})
+
+# hjust is derived from the horizontal component of `place`, and manual
+# hjust/vjust must override the derived defaults. The box is large enough that
+# the label always draws (asserted before indexing, so a dropped label fails
+# semantically rather than with a subscript error).
+test_that("hjust follows place, and manual hjust/vjust override it", {
+  df <- data.frame(xmin = 0, xmax = 10, ymin = 0, ymax = 10, label = "hi")
+  child <- function(...) {
+    p <- ggplot(
+      df,
+      aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = label)
+    ) +
+      geom_fit_text(...)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    drawn <- grid::makeContent(suppressWarnings(layer_grob(p)[[1]]))
+    expect_length(drawn$children, 1)
+    drawn$children[[1]]
+  }
+
+  # hjust follows the horizontal component of `place`. vjust is not
+  # place-derived — vertical position is handled by the placement maths, so it
+  # always defaults to 0.5.
+  hjusts <- c(
+    topleft = 0, left = 0, bottomleft = 0,
+    top = 0.5, centre = 0.5, bottom = 0.5,
+    topright = 1, right = 1, bottomright = 1
+  )
+  for (place in names(hjusts)) {
+    tg <- child(place = place)
+    expect_equal(tg$hjust, hjusts[[place]], info = place)
+    expect_equal(tg$vjust, 0.5, info = place)
+  }
+
+  # Explicit hjust/vjust take precedence over the place-derived defaults.
+  overridden <- child(place = "centre", hjust = 0, vjust = 1)
+  expect_equal(overridden$hjust, 0)
+  expect_equal(overridden$vjust, 1)
+})
+
+# The `outside` path (R/geom_fit_text.R draw of below-min.size labels) is the
+# flagship behaviour of geom_bar_text() but lives in the shared engine. A label
+# too big for its box but with room outside it should be dropped when
+# outside = FALSE and rescued when outside = TRUE.
+test_that("outside = TRUE draws below-min.size labels outside the box", {
+  # A wide but extremely short box, with ample room above it in the panel.
+  df <- data.frame(xmin = 0, xmax = 100, ymin = 0, ymax = 0.1, label = "hi")
+  draw <- function(outside) {
+    p <- ggplot(
+      df,
+      aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, label = label)
+    ) +
+      geom_fit_text(place = "top", outside = outside, min.size = 8) +
+      ylim(0, 10)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    grid::makeContent(suppressWarnings(layer_grob(p)[[1]]))$children
+  }
+
+  expect_length(draw(FALSE), 0)
+  expect_length(draw(TRUE), 1)
+})
+
+# A valid formatter is applied to each label during the build step.
+test_that("geom_fit_text() applies a valid formatter to the labels", {
+  p <- ggplot(
+    data.frame(x = 1:2, y = 1:2, label = c("a", "b")),
+    aes(x, y, label = label)
+  ) +
+    geom_fit_text(formatter = function(x) paste0(x, "!"))
+  expect_equal(layer_data(p)$label, c("a!", "b!"))
+})
+
+# An invalid formatter must be rejected during the build step, before any
+# drawing. A non-function is caught by the geom's own check; a formatter that
+# returns the wrong type or length is rejected by vapply's template enforcement
+# before that check. Either way a bad formatter never reaches drawing.
+test_that("geom_fit_text() rejects invalid formatters", {
+  base <- ggplot(
+    data.frame(x = 1:2, y = 1:2, label = c("a", "b")),
+    aes(x, y, label = label)
+  )
+
+  # Not a function at all (the geom's own check).
+  expect_error(
+    ggplot_build(base + geom_fit_text(formatter = "nope")),
+    "must be a function"
+  )
+
+  # Returns the wrong type.
+  expect_error(ggplot_build(base + geom_fit_text(formatter = function(x) 1)))
+
+  # Returns more than one value per label.
+  expect_error(
+    ggplot_build(base + geom_fit_text(formatter = function(x) c(x, x)))
+  )
+})
