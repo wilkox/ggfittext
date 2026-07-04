@@ -68,9 +68,9 @@ arguments as for \code{ggplot2::geom_text()}.}
 \item{padding.x, padding.y}{Horizontal and vertical padding around the text,
 expressed in \code{grid::unit()} objects. Both default to 1 mm.}
 
-\item{min.size}{Minimum font size, in points. Text that would need to be
-shrunk below this size to fit the box will be hidden. Defaults to 4 pt (8 pt
-for \code{geom_bar_text()})}
+\item{min.size}{Minimum font size, in points. Text smaller than this, whether
+as supplied or after being shrunk to fit the box, will be hidden. Defaults to
+4 pt (8 pt for \code{geom_bar_text()}).}
 
 \item{place}{Where inside the box to place the text. Default is 'centre';
 other options are 'topleft', 'top', 'topright', 'right', 'bottomright',
@@ -81,30 +81,32 @@ not specified.}
 \item{outside}{If \code{TRUE}, text placed in one of 'top', 'right', 'bottom' or
 'left' that would need to be shrunk smaller than \code{min.size} to fit the box
 will be drawn outside the box if possible. This is mostly useful for drawing
-text inside bar/column geoms. Defaults to TRUE for \code{position = "identity"}
-when using \code{geom_bar_text()}, otherwise FALSE.}
+text inside bar/column geoms. Defaults to \code{TRUE} for \code{position = "identity"}
+when using \code{geom_bar_text()}, otherwise \code{FALSE}.}
 
 \item{grow}{If \code{TRUE}, text will be grown as well as shrunk to fill the box.
-Defaults to FALSE.}
+Defaults to \code{FALSE}.}
 
 \item{reflow}{If \code{TRUE}, text will be reflowed (wrapped) to better fit the
-box. Defaults to FALSE.}
+box. Defaults to \code{FALSE}.}
 
-\item{hjust, vjust}{Horizontal and vertical justification of the text. By
-default, these are automatically set to appropriate values based on \code{place}.}
+\item{hjust, vjust}{Horizontal and vertical justification of the text.
+\code{vjust} defaults to 0.5. \code{hjust} defaults to 0.5, except for left placements
+('left', 'topleft' and 'bottomleft'), where it defaults to 0, and right
+placements, where it defaults to 1.}
 
 \item{fullheight}{If \code{TRUE}, descenders will be counted when resizing and
 placing text; if \code{FALSE}, only the x-height and ascenders will be counted.
 The main use for this option is for aligning text at the baseline (\code{FALSE})
 or preventing descenders from spilling outside the box (\code{TRUE}). By default
-this is set automatically depending on \code{place} and \code{grow}.}
+this is set automatically depending on \code{grow}.}
 
 \item{width, height}{When using \code{x} and/or \code{y} aesthetics, these set the
 width and/or height of the box. These should be either \code{grid::unit()}
 objects or numeric values on the \code{x} and \code{y} scales.}
 
 \item{formatter}{A function that will be applied to the text before it is
-drawn. This is useful when using \code{geom_fit_text()} in context involving
+drawn. This is useful when using \code{geom_fit_text()} in contexts involving
 interpolated variables, such as with the 'gganimate' package. \code{formatter}
 will be applied serially to each element in the \code{label} column, so it does
 not need to be a vectorised function.}
@@ -117,7 +119,7 @@ heuristically for \code{geom_bar_text()}.}
 \item{rich}{If \code{TRUE}, text will be formatted with markdown and HTML markup
 as implemented by \code{gridtext::richtext_grob()}. \code{FALSE} by default. Rich text
 cannot be drawn in polar coordinates. Please note that rich text support is
-\strong{experimental} and breaking changes are likely}
+\strong{experimental} and breaking changes are likely.}
 
 \item{flip}{If \code{TRUE}, when in polar coordinates 'upside-down' text will be
 flipped the 'right way up', to enhance readability.}
@@ -137,8 +139,9 @@ drawn. The extents of the box on the x and y axes are independent, so any
 combination of these methods can be used:
 \enumerate{
 \item If the \code{x} and/or \code{y} aesthetics are used to set the location of the box,
-the width or height will be set automatically based on the number of
-discrete values in \code{x} and/and \code{y}.
+the width and/or height will be set automatically based on the spacing
+between values on the axis, following the method used by
+\code{ggplot2::geom_boxplot()}.
 \item Alternatively, if \code{x} and/or \code{y} aesthetics are used, the width and/or
 height of the box can be overridden with a 'width' and/or 'height' argument.
 These should be \code{grid::unit()} objects; if not, they will be assumed to use
@@ -170,10 +173,16 @@ features are available when doing so.
 \item angle
 \item colour
 \item family
+\item fill (with \code{contrast = TRUE}, used to select a contrasting text colour)
 \item fontface
 \item lineheight
-\item size
+\item size (in points; note that this differs from \code{ggplot2::geom_text()},
+which expresses size in mm)
 }
+
+\code{geom_bar_text()} requires only the \code{x} and \code{y} aesthetics, which are used
+to infer the extent of the bar. If no \code{label} aesthetic is provided, the
+bar's value (\code{y}, or \code{x} for flipped bars) will be used as the label.
 }
 
 \examples{

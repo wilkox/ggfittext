@@ -15,8 +15,9 @@
 #' combination of these methods can be used:
 #'
 #' 1. If the `x` and/or `y` aesthetics are used to set the location of the box,
-#' the width or height will be set automatically based on the number of
-#' discrete values in `x` and/and `y`.
+#' the width and/or height will be set automatically based on the spacing
+#' between values on the axis, following the method used by
+#' `ggplot2::geom_boxplot()`.
 #' 2. Alternatively, if `x` and/or `y` aesthetics are used, the width and/or
 #' height of the box can be overridden with a 'width' and/or 'height' argument.
 #' These should be `grid::unit()` objects; if not, they will be assumed to use
@@ -46,15 +47,21 @@
 #' - angle
 #' - colour
 #' - family
+#' - fill (with `contrast = TRUE`, used to select a contrasting text colour)
 #' - fontface
 #' - lineheight
-#' - size
+#' - size (in points; note that this differs from `ggplot2::geom_text()`,
+#' which expresses size in mm)
+#'
+#' `geom_bar_text()` requires only the `x` and `y` aesthetics, which are used
+#' to infer the extent of the bar. If no `label` aesthetic is provided, the
+#' bar's value (`y`, or `x` for flipped bars) will be used as the label.
 #'
 #' @param padding.x,padding.y Horizontal and vertical padding around the text,
 #' expressed in `grid::unit()` objects. Both default to 1 mm.
-#' @param min.size Minimum font size, in points. Text that would need to be
-#' shrunk below this size to fit the box will be hidden. Defaults to 4 pt (8 pt
-#' for `geom_bar_text()`)
+#' @param min.size Minimum font size, in points. Text smaller than this, whether
+#' as supplied or after being shrunk to fit the box, will be hidden. Defaults to
+#' 4 pt (8 pt for `geom_bar_text()`).
 #' @param place Where inside the box to place the text. Default is 'centre';
 #' other options are 'topleft', 'top', 'topright', 'right', 'bottomright',
 #' 'bottom', 'bottomleft', 'left', and 'center'/'middle' which are both
@@ -63,24 +70,26 @@
 #' @param outside If `TRUE`, text placed in one of 'top', 'right', 'bottom' or
 #' 'left' that would need to be shrunk smaller than `min.size` to fit the box
 #' will be drawn outside the box if possible. This is mostly useful for drawing
-#' text inside bar/column geoms. Defaults to TRUE for `position = "identity"`
-#' when using `geom_bar_text()`, otherwise FALSE.
+#' text inside bar/column geoms. Defaults to `TRUE` for `position = "identity"`
+#' when using `geom_bar_text()`, otherwise `FALSE`.
 #' @param grow If `TRUE`, text will be grown as well as shrunk to fill the box.
-#' Defaults to FALSE.
+#' Defaults to `FALSE`.
 #' @param reflow If `TRUE`, text will be reflowed (wrapped) to better fit the
-#' box. Defaults to FALSE.
-#' @param hjust,vjust Horizontal and vertical justification of the text. By
-#' default, these are automatically set to appropriate values based on `place`.
+#' box. Defaults to `FALSE`.
+#' @param hjust,vjust Horizontal and vertical justification of the text.
+#' `vjust` defaults to 0.5. `hjust` defaults to 0.5, except for left placements
+#' ('left', 'topleft' and 'bottomleft'), where it defaults to 0, and right
+#' placements, where it defaults to 1.
 #' @param fullheight If `TRUE`, descenders will be counted when resizing and
 #' placing text; if `FALSE`, only the x-height and ascenders will be counted.
 #' The main use for this option is for aligning text at the baseline (`FALSE`)
 #' or preventing descenders from spilling outside the box (`TRUE`). By default
-#' this is set automatically depending on `place` and `grow`.
+#' this is set automatically depending on `grow`.
 #' @param width,height When using `x` and/or `y` aesthetics, these set the
 #' width and/or height of the box. These should be either `grid::unit()`
 #' objects or numeric values on the `x` and `y` scales.
 #' @param formatter A function that will be applied to the text before it is
-#' drawn. This is useful when using `geom_fit_text()` in context involving
+#' drawn. This is useful when using `geom_fit_text()` in contexts involving
 #' interpolated variables, such as with the 'gganimate' package. `formatter`
 #' will be applied serially to each element in the `label` column, so it does
 #' not need to be a vectorised function.
@@ -93,7 +102,7 @@
 #' @param rich If `TRUE`, text will be formatted with markdown and HTML markup
 #' as implemented by `gridtext::richtext_grob()`. `FALSE` by default. Rich text
 #' cannot be drawn in polar coordinates. Please note that rich text support is
-#' **experimental** and breaking changes are likely
+#' **experimental** and breaking changes are likely.
 #' @param data,stat,position,na.rm,show.legend,inherit.aes,... Standard geom
 #' arguments as for `ggplot2::geom_text()`.
 #' @param flip If `TRUE`, when in polar coordinates 'upside-down' text will be

@@ -12,7 +12,6 @@ A 'ggplot2' extension to fit text into a box by growing, shrinking or wrapping t
 Useful links:
 \itemize{
   \item \url{https://wilkox.org/ggfittext/}
-  \item \url{http://wilkox.org/ggfittext/}
   \item Report bugs at \url{https://github.com/wilkox/ggfittext/issues/}
 }
 

@@ -6,6 +6,8 @@
   `geom_shrink_text()` deprecation stubs, and an unused `flip` data column set by
   `GeomFitText$setup_data()` (#59)
 - Expand test coverage (#63)
+- Correct documentation errors (#49, #57)
+- Add a vignette example for `outside` (#65)
 
 ## Bug fixes
 

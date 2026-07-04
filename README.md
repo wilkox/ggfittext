@@ -4,7 +4,7 @@
 [![R-CMD-check](https://github.com/wilkox/ggfittext/workflows/R-CMD-check/badge.svg)](https://github.com/wilkox/ggfittext/actions)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
 # ggfittext
@@ -194,8 +194,9 @@ p + geom_fit_text(min.size = 0, grow = TRUE, flip = TRUE)
 
 ## Other useful arguments
 
-All arguments to `geom_fit_text()` can also be used with
-`geom_bar_text()`.
+Most arguments to `geom_fit_text()` can also be used with
+`geom_bar_text()` (the exception is `flip`, which only applies in polar
+coordinates).
 
 - **`contrast`** can be used to automatically invert the colour of the
   text so it contrasts against a background `fill`:
@@ -211,8 +212,9 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
 - **`padding.x`** and **`padding.y`** can be used to set the padding
   between the text and the edge of the box. By default this is 1 mm.
   These values must be given as `grid::unit()` objects.
-- **`min.size`** sets the minimum font size in points, by default 4
-  pt. Text smaller than this will be hidden (see also `outside`).
+- **`min.size`** sets the minimum font size in points, by default 4 pt
+  (8 pt for `geom_bar_text()`). Text smaller than this will be hidden
+  (see also `outside`).
 - **`outside`** is `FALSE` by default for `geom_fit_text()`. If `TRUE`,
   text that is placed at “top”, “bottom”, “left” or “right” and must be
   shrunk smaller than `min.size` to fit in the box will be flipped to
@@ -220,15 +222,17 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   drawing text inside bars in a bar plot.
 - **`hjust`** and **`vjust`** set the horizontal and vertical
   justification of the text, scaled between 0 (left/bottom) and 1
-  (right/top). These are both 0.5 by default.
+  (right/top). `vjust` defaults to 0.5, as does `hjust` except for left
+  placements, where it defaults to 0, and right placements, where it
+  defaults to 1.
 - **`formatter`** allows you to provide a function that will be applied
   to the text before it is drawn. This is mostly useful in contexts
   where variables may be interpolated, such as when using
   [gganimate](https://gganimate.com/).
-- **`fullheight`** is automatically set depending on place, but can be
+- **`fullheight`** is automatically set depending on `grow`, but can be
   overridden with this option. This is used to determine the bounding
   box around the text. If `FALSE`, the bounding box includes the
-  x-height of the text and ascenders, but not any descenders. If TRUE,
+  x-height of the text and ascenders, but not any descenders. If `TRUE`,
   it extends from the top of the ascenders to the bottom of the
   descenders. This is mostly useful in situations where you want to
   ensure the baseline of text is consistent between labels

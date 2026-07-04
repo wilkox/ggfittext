@@ -1,6 +1,6 @@
 Package: ggfittext
 Title: Fit Text Inside a Box in 'ggplot2'
-Version: 0.10.3.9004
+Version: 0.10.3.9005
 Authors@R: c(person("David", "Wilkins", email = "david@wilkox.org",
                   role = c("aut", "cre")), 
              person("Brady", "Johnston", email = "brady.johnston@me.com", 
@@ -18,7 +18,7 @@ Imports:
     gridtext (>= 0.1.4),
     ggplot2 (>= 2.2.1),
     cli (>= 3.6.1)
-URL: https://wilkox.org/ggfittext/, http://wilkox.org/ggfittext/
+URL: https://wilkox.org/ggfittext/
 BugReports: https://github.com/wilkox/ggfittext/issues/
 Suggests: 
     knitr,

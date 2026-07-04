@@ -5,7 +5,7 @@
 \alias{gold}
 \title{Robert Frost's poem \emph{Nothing Gold Can Stay} (1923)}
 \format{
-A data frame with 8 rows and 5 variables:
+A data frame with 8 rows and 6 variables:
 \describe{
 \item{line}{a line from the poem}
 \item{xmin}{the xmin coordinate with which to draw the line}
