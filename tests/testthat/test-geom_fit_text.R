@@ -407,3 +407,15 @@ test_that("reflow_and_resize() never returns an unshrunk wrap that overflows the
     }
   }
 })
+
+test_that("GeomFitText$setup_data() does not add a dead 'flip' column", {
+  p <- ggplot(animals, aes(x = type, y = flies, label = animal)) +
+    geom_fit_text()
+  expect_false("flip" %in% names(layer_data(p)))
+})
+
+test_that("deprecated geom_grow_text()/geom_shrink_text() stubs are removed", {
+  ns <- asNamespace("ggfittext")
+  expect_false(exists("geom_grow_text", envir = ns, inherits = FALSE))
+  expect_false(exists("geom_shrink_text", envir = ns, inherits = FALSE))
+})

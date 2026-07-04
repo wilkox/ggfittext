@@ -1,5 +1,11 @@
 # ggfittext 0.10.4 (development)
 
+## Minor changes
+
+- Remove dead code: the unexported, unreachable `geom_grow_text()` and
+  `geom_shrink_text()` deprecation stubs, and an unused `flip` data column set by
+  `GeomFitText$setup_data()` (#59)
+
 ## Bug fixes
 
 - `geom_bar_text()` no longer errors when `position` is given as a Position

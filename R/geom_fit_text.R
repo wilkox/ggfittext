@@ -268,8 +268,6 @@ GeomFitText <- ggplot2::ggproto(
       data$label <- formatted_labels
     }
 
-    data$flip <- params$flip
-
     data
   },
 
@@ -628,18 +626,6 @@ makeContent.fittexttree <- function(x) {
 
   class(grobs) <- "gList"
   grid::setChildren(ftt, grobs)
-}
-
-#' geom_fit_text
-#' @noRd
-geom_grow_text <- function(...) {
-  .Deprecated("geom_fit_text(grow = T, ...)")
-}
-
-#' geom_fit_text
-#' @noRd
-geom_shrink_text <- function(...) {
-  .Deprecated("geom_fit_text(grow = F, ...)")
 }
 
 #' Return a textGrob with the text reflowed and/or resized to fit given
