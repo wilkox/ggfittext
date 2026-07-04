@@ -14,6 +14,10 @@
   ([\#45](https://github.com/wilkox/ggfittext/issues/45))
 - Fix bug which would sometimes result in selecting too-wide reflow
   ([\#47](https://github.com/wilkox/ggfittext/issues/47))
+- Correct the blank-label filtering logic in
+  [`geom_fit_text()`](https://wilkox.org/ggfittext/dev/reference/geom_fit_text.md),
+  which kept empty string labels and dropped `NA` labels only as a side
+  effect ([\#48](https://github.com/wilkox/ggfittext/issues/48))
 
 ## ggfittext 0.10.3
 

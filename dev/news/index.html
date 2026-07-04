@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggfittext</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.10.3.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.10.3.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +45,7 @@
 <li>
 <code><a href="../reference/geom_fit_text.html">geom_bar_text()</a></code> now labels implied-flip horizontal bars with the bar value rather than the category index when no <code>label</code> aesthetic is mapped (<a href="https://github.com/wilkox/ggfittext/issues/45" class="external-link">#45</a>)</li>
 <li>Fix bug which would sometimes result in selecting too-wide reflow (<a href="https://github.com/wilkox/ggfittext/issues/47" class="external-link">#47</a>)</li>
+<li>Correct the blank-label filtering logic in <code><a href="../reference/geom_fit_text.html">geom_fit_text()</a></code>, which kept empty string labels and dropped <code>NA</code> labels only as a side effect (<a href="https://github.com/wilkox/ggfittext/issues/48" class="external-link">#48</a>)</li>
 </ul></div>
 </div>
     <div class="section level2">
