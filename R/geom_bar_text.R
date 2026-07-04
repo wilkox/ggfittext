@@ -194,7 +194,7 @@ GeomBarText <- ggplot2::ggproto(
     # it's probably been left as the default so contrast should be on.
     # Otherwise, it should be turned off
     if (is.null(contrast)) {
-      contrast <- all(data$colour == "black")
+      contrast <- all(data$colour == "black", na.rm = TRUE)
     }
 
     # Detect flipped coordinate system, including the 'implied flip' from

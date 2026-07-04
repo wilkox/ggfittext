@@ -164,6 +164,26 @@ test_that("geom_bar_text() draws contrasting text", {
   })
 })
 
+test_that("contrast auto-detection tolerates NA colours (#56)", {
+  # When contrast is left to auto-detect and every non-NA text colour is the
+  # default black, a single NA colour previously made all(colour == "black")
+  # evaluate to NA, crashing makeContent() with "missing value where
+  # TRUE/FALSE needed". Auto-detection should ignore NA colours instead.
+  df <- data.frame(
+    cat = c("a", "b", "c"),
+    val = c(1, 1, 1),
+    txt = c("black", "black", NA)
+  )
+  p <- ggplot(df, aes(x = cat, y = val, label = cat, colour = txt)) +
+    geom_col() +
+    geom_bar_text() +
+    scale_colour_identity()
+
+  pdf(NULL)
+  on.exit(dev.off())
+  expect_no_error(print(p))
+})
+
 test_that("outside default is derived from position (string or object)", {
   # position_identity(): outside should default to TRUE, whether the position
   # is given as a string or as a Position object (#44)

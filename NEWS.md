@@ -9,6 +9,9 @@
 - Fix bug which would sometimes result in selecting too-wide reflow (#47)
 - Correct the blank-label filtering logic in `geom_fit_text()`, which kept empty
   string labels and dropped `NA` labels only as a side effect (#48)
+- `geom_bar_text()` no longer errors when contrast auto-detection encounters an
+  `NA` text colour; `NA` colours are now ignored when deciding whether to enable
+  contrast (#56)
 
 # ggfittext 0.10.3
 
