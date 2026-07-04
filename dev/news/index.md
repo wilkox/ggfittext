@@ -10,6 +10,11 @@
   ([\#59](https://github.com/wilkox/ggfittext/issues/59))
 - Expand test coverage
   ([\#63](https://github.com/wilkox/ggfittext/issues/63))
+- Correct documentation errors
+  ([\#49](https://github.com/wilkox/ggfittext/issues/49),
+  [\#57](https://github.com/wilkox/ggfittext/issues/57))
+- Add a vignette example for `outside`
+  ([\#65](https://github.com/wilkox/ggfittext/issues/65))
 
 ### Bug fixes
 

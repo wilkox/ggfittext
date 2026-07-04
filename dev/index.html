@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggfittext</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.10.3.9004</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.10.3.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -179,7 +179,7 @@
 <div class="section level2">
 <h2 id="other-useful-arguments">Other useful arguments<a class="anchor" aria-label="anchor" href="#other-useful-arguments"></a>
 </h2>
-<p>All arguments to <code><a href="reference/geom_fit_text.html">geom_fit_text()</a></code> can also be used with <code><a href="reference/geom_fit_text.html">geom_bar_text()</a></code>.</p>
+<p>Most arguments to <code><a href="reference/geom_fit_text.html">geom_fit_text()</a></code> can also be used with <code><a href="reference/geom_fit_text.html">geom_bar_text()</a></code> (the exception is <code>flip</code>, which only applies in polar coordinates).</p>
 <ul>
 <li>
 <strong><code>contrast</code></strong> can be used to automatically invert the colour of the text so it contrasts against a background <code>fill</code>:</li>
@@ -193,15 +193,15 @@
 <li>
 <strong><code>padding.x</code></strong> and <strong><code>padding.y</code></strong> can be used to set the padding between the text and the edge of the box. By default this is 1 mm. These values must be given as <code><a href="https://rdrr.io/r/grid/unit.html" class="external-link">grid::unit()</a></code> objects.</li>
 <li>
-<strong><code>min.size</code></strong> sets the minimum font size in points, by default 4 pt. Text smaller than this will be hidden (see also <code>outside</code>).</li>
+<strong><code>min.size</code></strong> sets the minimum font size in points, by default 4 pt (8 pt for <code><a href="reference/geom_fit_text.html">geom_bar_text()</a></code>). Text smaller than this will be hidden (see also <code>outside</code>).</li>
 <li>
 <strong><code>outside</code></strong> is <code>FALSE</code> by default for <code><a href="reference/geom_fit_text.html">geom_fit_text()</a></code>. If <code>TRUE</code>, text that is placed at “top”, “bottom”, “left” or “right” and must be shrunk smaller than <code>min.size</code> to fit in the box will be flipped to the outside of the box (if it fits there). This is mostly useful for drawing text inside bars in a bar plot.</li>
 <li>
-<strong><code>hjust</code></strong> and <strong><code>vjust</code></strong> set the horizontal and vertical justification of the text, scaled between 0 (left/bottom) and 1 (right/top). These are both 0.5 by default.</li>
+<strong><code>hjust</code></strong> and <strong><code>vjust</code></strong> set the horizontal and vertical justification of the text, scaled between 0 (left/bottom) and 1 (right/top). <code>vjust</code> defaults to 0.5, as does <code>hjust</code> except for left placements, where it defaults to 0, and right placements, where it defaults to 1.</li>
 <li>
 <strong><code>formatter</code></strong> allows you to provide a function that will be applied to the text before it is drawn. This is mostly useful in contexts where variables may be interpolated, such as when using <a href="https://gganimate.com/" class="external-link">gganimate</a>.</li>
 <li>
-<strong><code>fullheight</code></strong> is automatically set depending on place, but can be overridden with this option. This is used to determine the bounding box around the text. If <code>FALSE</code>, the bounding box includes the x-height of the text and ascenders, but not any descenders. If TRUE, it extends from the top of the ascenders to the bottom of the descenders. This is mostly useful in situations where you want to ensure the baseline of text is consistent between labels (<code>fullheight = FALSE</code>), or when you want to avoid descenders spilling out of the bounding box (<code>fullheight = TRUE</code>).</li>
+<strong><code>fullheight</code></strong> is automatically set depending on <code>grow</code>, but can be overridden with this option. This is used to determine the bounding box around the text. If <code>FALSE</code>, the bounding box includes the x-height of the text and ascenders, but not any descenders. If <code>TRUE</code>, it extends from the top of the ascenders to the bottom of the descenders. This is mostly useful in situations where you want to ensure the baseline of text is consistent between labels (<code>fullheight = FALSE</code>), or when you want to avoid descenders spilling out of the bounding box (<code>fullheight = TRUE</code>).</li>
 </ul>
 <p><img src="reference/figures/README-unnamed-chunk-16-1.png"><!-- --></p>
 <p><img src="reference/figures/README-unnamed-chunk-17-1.png"><!-- --></p>
@@ -245,7 +245,7 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/wilkox/ggfittext/actions" class="external-link"><img src="https://github.com/wilkox/ggfittext/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://cran.r-project.org/package=ggfittext" class="external-link"><img src="http://www.r-pkg.org/badges/version/ggfittext" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
 </ul>
 </div>
 

@@ -14,7 +14,7 @@ A data frame with 6 rows and 4 variables:
 
 - animal:
 
-  the name of the animal
+  the name of the animal, in rich text
 
 - type:
 

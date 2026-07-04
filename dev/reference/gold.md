@@ -10,7 +10,7 @@ gold
 
 ## Format
 
-A data frame with 8 rows and 5 variables:
+A data frame with 8 rows and 6 variables:
 
 - line:
 
