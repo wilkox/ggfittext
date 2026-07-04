@@ -2,6 +2,13 @@
 
 ## ggfittext 0.10.4 (development)
 
+### Minor changes
+
+- Remove dead code: the unexported, unreachable `geom_grow_text()` and
+  `geom_shrink_text()` deprecation stubs, and an unused `flip` data
+  column set by `GeomFitText$setup_data()`
+  ([\#59](https://github.com/wilkox/ggfittext/issues/59))
+
 ### Bug fixes
 
 - [`geom_bar_text()`](https://wilkox.org/ggfittext/dev/reference/geom_fit_text.md)
