@@ -4,6 +4,8 @@
 
 ## ggfittext 0.10.4
 
+CRAN release: 2026-07-05
+
 ### Minor changes
 
 - Remove dead code: the unexported, unreachable `geom_grow_text()` and
