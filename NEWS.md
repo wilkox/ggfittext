@@ -1,28 +1,25 @@
 # ggfittext 0.10.4
 
-# ggfittext 0.10.4 (development)
-
 ## Minor changes
 
 - Remove dead code: the unexported, unreachable `geom_grow_text()` and
   `geom_shrink_text()` deprecation stubs, and an unused `flip` data column set by
-  `GeomFitText$setup_data()` (#59)
-- Expand test coverage (#63)
-- Correct documentation errors (#49, #57)
-- Add a vignette example for `outside` (#65)
+  `GeomFitText$setup_data()` (#59).
+- Expand test coverage (#63).
+- Correct documentation errors (#49, #57).
+- Add a vignette example for `outside` (#65).
 
 ## Bug fixes
 
-- `geom_bar_text()` no longer errors when `position` is given as a Position
-  object rather than a string, e.g. `position_dodge(width = 0.9)` (#44)
+- `geom_bar_text()` now accepts a `position` given as a Position object rather
+  than a string, e.g. `position_dodge(width = 0.9)` (#44).
 - `geom_bar_text()` now labels implied-flip horizontal bars with the bar value
-  rather than the category index when no `label` aesthetic is mapped (#45)
-- Fix bug which would sometimes result in selecting too-wide reflow (#47)
-- Correct the blank-label filtering logic in `geom_fit_text()`, which kept empty
-  string labels and dropped `NA` labels only as a side effect (#48)
-- `geom_bar_text()` no longer errors when contrast auto-detection encounters an
-  `NA` text colour; `NA` colours are now ignored when deciding whether to enable
-  contrast (#56)
+  rather than the category index when no `label` aesthetic is mapped (#45).
+- Reflowed text now stays within the box width (#47).
+- `geom_fit_text()` now drops both empty-string and `NA` labels through
+  explicit filtering (#48).
+- `geom_bar_text()` now ignores `NA` text colours when deciding whether to
+  enable contrast, rather than erroring (#56).
 
 # ggfittext 0.10.3
 
