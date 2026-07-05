@@ -9,7 +9,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/wilkox/ggfittext/blob/master/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/wilkox/ggfittext/blob/v0.10.4/DESCRIPTION)
 
 Wilkins D (2026). *ggfittext: Fit Text Inside a Box in 'ggplot2'*. R
 package version 0.10.4, <https://wilkox.org/ggfittext/>.
