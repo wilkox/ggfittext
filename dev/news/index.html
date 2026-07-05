@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggfittext</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.10.3.9005</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.10.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,24 +37,28 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.10.4" id="ggfittext-0104-development">ggfittext 0.10.4 (development)<a class="anchor" aria-label="anchor" href="#ggfittext-0104-development"></a></h2>
+<h2 class="pkg-version" data-toc-text="development version" id="ggfittext-development-version">ggfittext (development version)<a class="anchor" aria-label="anchor" href="#ggfittext-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.10.4" id="ggfittext-0104">ggfittext 0.10.4<a class="anchor" aria-label="anchor" href="#ggfittext-0104"></a></h2>
 <div class="section level3">
 <h3 id="minor-changes-0-10-4">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-10-4"></a></h3>
-<ul><li>Remove dead code: the unexported, unreachable <code>geom_grow_text()</code> and <code>geom_shrink_text()</code> deprecation stubs, and an unused <code>flip</code> data column set by <code>GeomFitText$setup_data()</code> (<a href="https://github.com/wilkox/ggfittext/issues/59" class="external-link">#59</a>)</li>
-<li>Expand test coverage (<a href="https://github.com/wilkox/ggfittext/issues/63" class="external-link">#63</a>)</li>
-<li>Correct documentation errors (<a href="https://github.com/wilkox/ggfittext/issues/49" class="external-link">#49</a>, <a href="https://github.com/wilkox/ggfittext/issues/57" class="external-link">#57</a>)</li>
-<li>Add a vignette example for <code>outside</code> (<a href="https://github.com/wilkox/ggfittext/issues/65" class="external-link">#65</a>)</li>
+<ul><li>Remove dead code: the unexported, unreachable <code>geom_grow_text()</code> and <code>geom_shrink_text()</code> deprecation stubs, and an unused <code>flip</code> data column set by <code>GeomFitText$setup_data()</code> (<a href="https://github.com/wilkox/ggfittext/issues/59" class="external-link">#59</a>).</li>
+<li>Expand test coverage (<a href="https://github.com/wilkox/ggfittext/issues/63" class="external-link">#63</a>).</li>
+<li>Correct documentation errors (<a href="https://github.com/wilkox/ggfittext/issues/49" class="external-link">#49</a>, <a href="https://github.com/wilkox/ggfittext/issues/57" class="external-link">#57</a>).</li>
+<li>Add a vignette example for <code>outside</code> (<a href="https://github.com/wilkox/ggfittext/issues/65" class="external-link">#65</a>).</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-10-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-10-4"></a></h3>
 <ul><li>
-<code><a href="../reference/geom_fit_text.html">geom_bar_text()</a></code> no longer errors when <code>position</code> is given as a Position object rather than a string, e.g. <code>position_dodge(width = 0.9)</code> (<a href="https://github.com/wilkox/ggfittext/issues/44" class="external-link">#44</a>)</li>
+<code><a href="../reference/geom_fit_text.html">geom_bar_text()</a></code> now accepts a <code>position</code> given as a Position object rather than a string, e.g. <code>position_dodge(width = 0.9)</code> (<a href="https://github.com/wilkox/ggfittext/issues/44" class="external-link">#44</a>).</li>
 <li>
-<code><a href="../reference/geom_fit_text.html">geom_bar_text()</a></code> now labels implied-flip horizontal bars with the bar value rather than the category index when no <code>label</code> aesthetic is mapped (<a href="https://github.com/wilkox/ggfittext/issues/45" class="external-link">#45</a>)</li>
-<li>Fix bug which would sometimes result in selecting too-wide reflow (<a href="https://github.com/wilkox/ggfittext/issues/47" class="external-link">#47</a>)</li>
-<li>Correct the blank-label filtering logic in <code><a href="../reference/geom_fit_text.html">geom_fit_text()</a></code>, which kept empty string labels and dropped <code>NA</code> labels only as a side effect (<a href="https://github.com/wilkox/ggfittext/issues/48" class="external-link">#48</a>)</li>
+<code><a href="../reference/geom_fit_text.html">geom_bar_text()</a></code> now labels implied-flip horizontal bars with the bar value rather than the category index when no <code>label</code> aesthetic is mapped (<a href="https://github.com/wilkox/ggfittext/issues/45" class="external-link">#45</a>).</li>
+<li>Reflowed text now stays within the box width (<a href="https://github.com/wilkox/ggfittext/issues/47" class="external-link">#47</a>).</li>
 <li>
-<code><a href="../reference/geom_fit_text.html">geom_bar_text()</a></code> no longer errors when contrast auto-detection encounters an <code>NA</code> text colour; <code>NA</code> colours are now ignored when deciding whether to enable contrast (<a href="https://github.com/wilkox/ggfittext/issues/56" class="external-link">#56</a>)</li>
+<code><a href="../reference/geom_fit_text.html">geom_fit_text()</a></code> now drops both empty-string and <code>NA</code> labels through explicit filtering (<a href="https://github.com/wilkox/ggfittext/issues/48" class="external-link">#48</a>).</li>
+<li>
+<code><a href="../reference/geom_fit_text.html">geom_bar_text()</a></code> now ignores <code>NA</code> text colours when deciding whether to enable contrast, rather than erroring (<a href="https://github.com/wilkox/ggfittext/issues/56" class="external-link">#56</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
