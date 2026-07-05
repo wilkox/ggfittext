@@ -2,7 +2,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/wilkox/ggfittext/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/wilkox/ggfittext/actions/workflows/R-CMD-check.yaml)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ggfittext)](https://cran.r-project.org/package=ggfittext)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
