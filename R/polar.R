@@ -1,27 +1,40 @@
 #' @importFrom grid makeContent
 #' @export
 makeContent.fittexttreepolar <- function(x) {
-
   data <- x$data
 
   # If ymin/ymax are not provided, generate boundary box from height. A similar
   # transformation will be performed for xmin/xmax for each grob individually
   # later, as it needs to be done in the context of the y position of the grob.
   if (!("ymin" %in% names(data))) {
-    data$ymin <- data$r - 
+    data$ymin <- data$r -
       (grid::convertHeight(x$height, "npc", valueOnly = TRUE) / 2)
-    data$ymax <- data$r + 
+    data$ymax <- data$r +
       (grid::convertHeight(x$height, "npc", valueOnly = TRUE) / 2)
   }
 
   # Handle parameters
-  if (is.null(x$contrast)) x$contrast <- FALSE
-  if (is.null(x$outside)) x$outside <- FALSE
-  if (is.null(x$fullheight)) x$fullheight <- x$grow
-  if (x$outside) cli::cli_warn("Outside is not supported in polar coordinates")
-  if (x$reflow) cli::cli_warn("Reflowing is not supported in polar coordinates")
-  if (! is.null(x$hjust)) cli::cli_warn("hjust is not supported in polar coordinates")
-  if (! is.null(x$vjust)) cli::cli_warn("vjust is not supported in polar coordinates")
+  if (is.null(x$contrast)) {
+    x$contrast <- FALSE
+  }
+  if (is.null(x$outside)) {
+    x$outside <- FALSE
+  }
+  if (is.null(x$fullheight)) {
+    x$fullheight <- x$grow
+  }
+  if (x$outside) {
+    cli::cli_warn("Outside is not supported in polar coordinates")
+  }
+  if (x$reflow) {
+    cli::cli_warn("Reflowing is not supported in polar coordinates")
+  }
+  if (!is.null(x$hjust)) {
+    cli::cli_warn("hjust is not supported in polar coordinates")
+  }
+  if (!is.null(x$vjust)) {
+    cli::cli_warn("vjust is not supported in polar coordinates")
+  }
 
   # Convert padding.x and padding.y to mm
   padding.x <- grid::convertWidth(x$padding.x, "mm", valueOnly = TRUE)
@@ -29,26 +42,37 @@ makeContent.fittexttreepolar <- function(x) {
 
   # Prepare grob for each text label
   grobs <- lapply(seq_len(nrow(data)), function(i) {
-
     # Convenience
     text <- data[i, ]
 
     # Handle angled text
-    if (! text$angle == 0) cli::cli_warn("Angled text is not supported in polar coordinates")
+    if (!text$angle == 0) {
+      cli::cli_warn("Angled text is not supported in polar coordinates")
+    }
 
-    # Set hjust and vjust 
+    # Set hjust and vjust
     # A vjust of 0.2 strikes a good visual balance in the kerning of characters
     # in polar coordinates
     x$hjust <- 0.5
     x$vjust <- 0.2
 
     # Create starting textGrob
-    tg <- grid::textGrob(label = text$label, x = 0.5, y = 0.5, default.units = "mm", 
-                         hjust = x$hjust, vjust = x$vjust, rot = text$angle, 
-                         gp = grid::gpar(col = ggplot2::alpha(text$colour, text$alpha), 
-                                         fontsize = text$size, fontfamily = text$family, 
-                                         fontface = text$fontface, 
-                                         lineheight = text$lineheight))
+    tg <- grid::textGrob(
+      label = text$label,
+      x = 0.5,
+      y = 0.5,
+      default.units = "mm",
+      hjust = x$hjust,
+      vjust = x$vjust,
+      rot = text$angle,
+      gp = grid::gpar(
+        col = ggplot2::alpha(text$colour, text$alpha),
+        fontsize = text$size,
+        fontfamily = text$family,
+        fontface = text$fontface,
+        lineheight = text$lineheight
+      )
+    )
 
     # Get starting textGrob dimensions
     tgdim <- tgDimensions(tg, x$fullheight, text$angle)
@@ -73,10 +97,14 @@ makeContent.fittexttreepolar <- function(x) {
         r <- ymax - padding.y - ((1 - x$vjust) * tgdim$height)
       }
       c <- 2 * pi * r
-      text$xmin <- text$theta - 
-        (((grid::convertWidth(x$width, "mm", valueOnly = TRUE) / 2) / c) * 2 * pi)
-      text$xmax <- text$theta + 
-        (((grid::convertWidth(x$width, "mm", valueOnly = TRUE) / 2) / c) * 2 * pi)
+      text$xmin <- text$theta -
+        (((grid::convertWidth(x$width, "mm", valueOnly = TRUE) / 2) / c) *
+          2 *
+          pi)
+      text$xmax <- text$theta +
+        (((grid::convertWidth(x$width, "mm", valueOnly = TRUE) / 2) / c) *
+          2 *
+          pi)
     }
 
     xdim <- ifelse(
@@ -88,11 +116,9 @@ makeContent.fittexttreepolar <- function(x) {
     if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
       r <- ymin + (x$vjust * tgdim$height) + padding.y
       xdim_mm <- r * xdim
-
     } else if (x$place %in% c("left", "centre", "right")) {
       r <- ((ymin + ymax) / 2) - ((0.5 - x$vjust) * tgdim$height)
       xdim_mm <- r * xdim
-
     } else if (x$place %in% c("topleft", "top", "topright")) {
       r <- ymax - padding.y - ((1 - x$vjust) * tgdim$height)
       xdim_mm <- r * xdim
@@ -100,12 +126,11 @@ makeContent.fittexttreepolar <- function(x) {
 
     # Resize text to fit bounding box if it doesn't fit
     if (
-        # Standard condition - is text too big for box?
-        (tgdim$width > xdim_mm | tgdim$height > ydim) |
-          # grow = TRUE condition - is text too small for box?
-          (x$grow & tgdim$width < xdim_mm & tgdim$height < ydim)
-        ) {
-
+      # Standard condition - is text too big for box?
+      (tgdim$width > xdim_mm | tgdim$height > ydim) |
+        # grow = TRUE condition - is text too small for box?
+        (x$grow & tgdim$width < xdim_mm & tgdim$height < ydim)
+    ) {
       # Get the relationships between font size and label dimensions
       slopew <- tg$gp$fontsize / tgdim$width
       slopeh <- tg$gp$fontsize / tgdim$height
@@ -119,13 +144,11 @@ makeContent.fittexttreepolar <- function(x) {
       if (x$place %in% c("bottomleft", "bottom", "bottomright")) {
         w <- xdim * (ymin + padding.y)
         targetfsw <- w * slopew
-
       } else if (x$place %in% c("left", "centre", "right")) {
         k <- (tgdim$height * x$vjust) / tgdim$width
         R <- (ymin + ymax) / 2
         w <- ((xdim * R) / ((xdim * k) + 1)) - (2 * padding.x)
         targetfsw <- w * slopew
-
       } else if (x$place %in% c("topleft", "top", "topright")) {
         k <- tgdim$height / tgdim$width
         R <- ymax - padding.y
@@ -138,7 +161,9 @@ makeContent.fittexttreepolar <- function(x) {
     }
 
     # Hide if below minimum font size
-    if (tg$gp$fontsize < x$min.size) return()
+    if (tg$gp$fontsize < x$min.size) {
+      return()
+    }
 
     # Update the textGrob dimensions
     tgdim <- tgDimensions(tg, x$fullheight, text$angle)
@@ -154,15 +179,18 @@ makeContent.fittexttreepolar <- function(x) {
     } else if (x$place %in% c("topleft", "top", "topright")) {
       r <- ymax - padding.y - ((1 - x$vjust) * tgdim$height)
     }
-    if (x$fullheight) r <- r + (grid::convertHeight(tgdim$descent, "mm", TRUE) * (1 - x$vjust))
+    if (x$fullheight) {
+      r <- r + (grid::convertHeight(tgdim$descent, "mm", TRUE) * (1 - x$vjust))
+    }
 
     # c = the circumference of the baseline
     c <- 2 * pi * r
 
     # char_widths = widths of each character in the string
     chars <- strsplit(as.character(text$label), "")[[1]]
-    char_widths <- (grid::calcStringMetric(chars)$width / 
-                      sum(grid::calcStringMetric(chars)$width)) * tgdim$width
+    char_widths <- (grid::calcStringMetric(chars)$width /
+      sum(grid::calcStringMetric(chars)$width)) *
+      tgdim$width
 
     # char_arcs = arcwidth of each character, in degrees
     char_arcs <- 360 * char_widths / c
@@ -199,8 +227,9 @@ makeContent.fittexttreepolar <- function(x) {
 
       # re-calc string positions
       chars <- strsplit(as.character(text$label), "")[[1]]
-      char_widths <- (grid::calcStringMetric(chars)$width / 
-                        sum(grid::calcStringMetric(chars)$width)) * tgdim$width
+      char_widths <- (grid::calcStringMetric(chars)$width /
+        sum(grid::calcStringMetric(chars)$width)) *
+        tgdim$width
 
       # char_arcs = arcwidth of each character, in degrees
       char_arcs <- 360 * char_widths / c
@@ -224,7 +253,6 @@ makeContent.fittexttreepolar <- function(x) {
       }
     }
 
-
     # angle = ?? I can't even remember what this is supposed to do but it
     # works. Converting from radians to degrees with some sort of correction?
     angle <- 450 - rad2deg(theta)
@@ -232,12 +260,13 @@ makeContent.fittexttreepolar <- function(x) {
     # char_thetas = theta position of the anchors for each character (assuming
     # hjust = 0.5 for the textGrob representing this character), in degrees
     lag_vector <- function(x) c(0, x[seq_along(x) - 1])
-    char_thetas <- angle - lag_vector(cumsum(char_arcs)) - 
-                     (char_arcs / 2) + (sum(char_arcs) / 2)
+    char_thetas <- angle -
+      lag_vector(cumsum(char_arcs)) -
+      (char_arcs / 2) +
+      (sum(char_arcs) / 2)
 
     # Generate a textGrob for each character
     tgs <- lapply(seq_along(char_thetas), function(i) {
-
       char <- chars[i]
       theta <- char_thetas[i]
       theta_rad <- deg2rad(theta)

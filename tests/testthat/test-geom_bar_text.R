@@ -198,7 +198,9 @@ test_that("outside default is derived from position (string or object)", {
   )
 
   # An explicit outside is always honoured over the position-derived default.
-  expect_false(geom_bar_text(position = "identity", outside = FALSE)$geom_params$outside)
+  expect_false(
+    geom_bar_text(position = "identity", outside = FALSE)$geom_params$outside
+  )
 })
 
 # geom_bar_text() nests one fittexttree per sign group inside an outer gTree, so

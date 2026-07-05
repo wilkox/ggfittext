@@ -5,8 +5,8 @@
 ## Minor changes
 
 - Remove dead code: the unexported, unreachable `geom_grow_text()` and
-  `geom_shrink_text()` deprecation stubs, and an unused `flip` data column set by
-  `GeomFitText$setup_data()` (#59).
+  `geom_shrink_text()` deprecation stubs, and an unused `flip` data column set
+  by `GeomFitText$setup_data()` (#59).
 - Expand test coverage (#63).
 - Correct documentation errors (#49, #57).
 - Add a vignette example for `outside` (#65).
@@ -18,8 +18,8 @@
 - `geom_bar_text()` now labels implied-flip horizontal bars with the bar value
   rather than the category index when no `label` aesthetic is mapped (#45).
 - Reflowed text now stays within the box width (#47).
-- `geom_fit_text()` now drops both empty-string and `NA` labels through
-  explicit filtering (#48).
+- `geom_fit_text()` now drops both empty-string and `NA` labels through explicit
+  filtering (#48).
 - `geom_bar_text()` now ignores `NA` text colours when deciding whether to
   enable contrast, rather than erroring (#56).
 
@@ -42,8 +42,8 @@
 
 ## Minor changes
 
-- Fix the 'ggfittext-package' documentation after a [breaking change to
-  roxygen2](https://github.com/r-lib/roxygen2/issues/1491)
+- Fix the 'ggfittext-package' documentation after a
+  [breaking change to roxygen2](https://github.com/r-lib/roxygen2/issues/1491)
 
 # ggfittext 0.10.0
 
@@ -54,8 +54,8 @@
 - Add **experimental** support for rich text, with the `rich` argument to
   `geom_fit_text()` and `geom_bar_text()`. Uses
   [gridtext](https://wilkelab.org/gridtext/) to render a subset of Markdown and
-  HTML. This is liable to change and in particular there may be breaking
-  changes as a result of upstream changes in gridtext
+  HTML. This is liable to change and in particular there may be breaking changes
+  as a result of upstream changes in gridtext
 - Move ggplot2 from 'Depends' to 'Imports'
 
 ## Minor changes
@@ -102,8 +102,8 @@
   defaulting to TRUE, it defaults to true if the text colour is black but to
   FALSE otherwise (#22, thanks @ds-jim)
 - `geom_bar_text()` now defaults to `contrast = TRUE`
-- `outside` now defaults to FALSE with `geom_bar_text()` unless `position =
-"identity"`
+- `outside` now defaults to FALSE with `geom_bar_text()` unless
+  `position = "identity"`
 - Add visual examples for `fullheight`
 
 ## Bug fixes
@@ -131,8 +131,7 @@
 ## Major changes
 
 - New `geom_bar_text()` convenience function for labelling of bars in bar plots
-- New `contrast` argument for automatically contrasting a background fill
-  colour
+- New `contrast` argument for automatically contrasting a background fill colour
 - New `fullheight` argument for including or excluding descenders in text size
 - Faster for many common uses
 - New `hjust` and `vjust` arguments that can be controlled independent of
@@ -148,8 +147,8 @@
 
 - When reflowing text, calculation of the best aspect ratio now takes into
   account the output device's aspect ratio
-- When reflowing text, calculation of the best aspect ratio no longer refuses
-  to entertain the possibility that the original text might have the best ratio
+- When reflowing text, calculation of the best aspect ratio no longer refuses to
+  entertain the possibility that the original text might have the best ratio
 - Angled text is now placed correctly
 
 # ggfittext 0.7.0
@@ -175,8 +174,8 @@
 ## Major changes
 
 - Change `width` and `height` from aesthetics to arguments.
-- Allow `width` and `height` arguments to be provided in native units (thanks
-  to @corybrunson).
+- Allow `width` and `height` arguments to be provided in native units (thanks to
+  @corybrunson).
 - Add support for `position = "stack"`.
 
 ## Minor changes

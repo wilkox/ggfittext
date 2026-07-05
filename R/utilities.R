@@ -7,8 +7,12 @@
 #' Conversions between degrees and radians
 #'
 #' @noRd
-deg2rad <- function(deg) { deg * (pi / 180) }
-rad2deg <- function(rad) { rad * (180 / pi) }
+deg2rad <- function(deg) {
+  deg * (pi / 180)
+}
+rad2deg <- function(rad) {
+  rad * (180 / pi)
+}
 
 #' Return a reversed string
 #' @param string String to be returned with reversed characters.
@@ -18,7 +22,7 @@ strrev <- function(string) {
 }
 
 #' Textgrob dimensions, in mm
-#' 
+#'
 #' @noRd
 tgDimensions <- function(tg, fullheight, angle) {
   width <- wunit2mm(grid::grobWidth(tg))
@@ -97,7 +101,9 @@ setlabel.text <- function(tg, value) {
 }
 
 #' @export
-setlabel.richtext_grob <- function(tg, value) set_richtext_grob_param(tg, "text", value)
+setlabel.richtext_grob <- function(tg, value) {
+  set_richtext_grob_param(tg, "text", value)
+}
 
 getfontsize <- function(tg) UseMethod("getfontsize")
 
@@ -124,7 +130,9 @@ setx <- function(tg, x) UseMethod("setx")
 
 #' @export
 setx.text <- function(tg, x) {
-  if (!inherits(x, "unit")) x <- grid::unit(x, "npc")
+  if (!inherits(x, "unit")) {
+    x <- grid::unit(x, "npc")
+  }
   tg$x <- x
   tg
 }
@@ -138,7 +146,9 @@ sety <- function(tg, y) UseMethod("sety")
 
 #' @export
 sety.text <- function(tg, y) {
-  if (!inherits(y, "unit")) y <- grid::unit(y, "npc")
+  if (!inherits(y, "unit")) {
+    y <- grid::unit(y, "npc")
+  }
   tg$y <- y
   tg
 }
@@ -159,7 +169,6 @@ wraplabel <- function(tg) UseMethod("wraplabel")
 
 #' @export
 wraplabel.text <- function(tg) {
-
   label <- getlabel(tg)
 
   # Split the string into lines
@@ -170,28 +179,34 @@ wraplabel.text <- function(tg) {
   # allow for non-wrapped wrap
   breakpoints <- lapply(
     lines,
-    function(line) stringi::stri_locate_all(line, regex = "\\s")[[1]][,1]
+    function(line) stringi::stri_locate_all(line, regex = "\\s")[[1]][, 1]
   )
   breakpoints <- c(breakpoints, stringi::stri_length(lines))
   breakpoints <- sort(unique(unlist(breakpoints)))
 
   # Generate wraps for those lengths
   wraps <- data.frame(wrapwidth = breakpoints)
-  wraps$wrap <- vapply(wraps$wrapwidth, function(w) {
-    paste0(lapply(lines, function(line) {
+  wraps$wrap <- vapply(
+    wraps$wrapwidth,
+    function(w) {
       paste0(
-        stringi::stri_wrap(str = line, width = w, normalise = FALSE),
+        lapply(lines, function(line) {
+          paste0(
+            stringi::stri_wrap(str = line, width = w, normalise = FALSE),
+            collapse = "\n"
+          )
+        }),
         collapse = "\n"
       )
-    } ), collapse = "\n")
-  }, character(1))
+    },
+    character(1)
+  )
 
   return(wraps)
 }
 
 #' @export
 wraplabel.richtext_grob <- function(tg) {
-
   label <- getlabel(tg)
 
   # Split the string into lines
@@ -202,26 +217,33 @@ wraplabel.richtext_grob <- function(tg) {
   # allow for non-wrapped wrap
   breakpoints <- lapply(
     lines,
-    function(line) stringi::stri_locate_all(line, regex = "\\s")[[1]][,1]
+    function(line) stringi::stri_locate_all(line, regex = "\\s")[[1]][, 1]
   )
   breakpoints <- c(breakpoints, stringi::stri_length(lines))
   breakpoints <- sort(unique(unlist(breakpoints)))
 
   # Generate wraps for those lengths
   wraps <- data.frame(wrapwidth = breakpoints)
-  wraps$wrap <- vapply(wraps$wrapwidth, function(w) {
-    paste0(lapply(lines, function(line) {
+  wraps$wrap <- vapply(
+    wraps$wrapwidth,
+    function(w) {
       paste0(
-        wrap_rich(line, w),
+        lapply(lines, function(line) {
+          paste0(
+            wrap_rich(line, w),
+            collapse = "<br>"
+          )
+        }),
         collapse = "<br>"
       )
-    } ), collapse = "<br>")
-  }, character(1))
+    },
+    character(1)
+  )
 
   return(wraps)
 }
 
-#' An (approximate) wrapper for strings containing markdown and HTML. 
+#' An (approximate) wrapper for strings containing markdown and HTML.
 #'
 #' It aims to handle (approximately) the same set of markup as gridtext.
 #' Markdown parsing is implemented as a something resembling a finite state
@@ -238,25 +260,28 @@ wraplabel.richtext_grob <- function(tg) {
 #'
 #' @noRd
 wrap_rich <- function(string, w) {
-
   chars <- unlist(strsplit(string, split = NULL))
 
   # If the string is less than the wrap width, return the string
-  if (length(chars) <= w) return(string)
+  if (length(chars) <= w) {
+    return(string)
+  }
 
   states <- character(length(chars))
   pos <- 1
   while (pos <= length(chars)) {
-
     # Skip if this position has already been parsed
-    if (! states[pos] == "") {
-      pos <- pos + 1; next
+    if (!states[pos] == "") {
+      pos <- pos + 1
+      next
     }
 
     # Make sure the machine hasn't jumped ahead for some reason
     if (pos > 1) {
       if (states[pos - 1] == "") {
-        cli::cli_abort("Markdown parser stuck in a bad state at position {pos} - unable to parse")
+        cli::cli_abort(
+          "Markdown parser stuck in a bad state at position {pos} - unable to parse"
+        )
       }
     }
 
@@ -266,7 +291,8 @@ wrap_rich <- function(string, w) {
     # Possibly the start of an HTML tag
     if (char == "<") {
       states[pos] <- "html_start"
-      pos <- pos + 1; next
+      pos <- pos + 1
+      next
     }
 
     # Possibly the end of an HTML tag. Look back, and if there is an HTML start
@@ -275,7 +301,9 @@ wrap_rich <- function(string, w) {
     if (char == ">") {
       backpos <- pos - 1
       while (backpos > 0) {
-        if (states[backpos] == "html") break
+        if (states[backpos] == "html") {
+          break
+        }
         if (states[backpos] == "html_start") {
           states[seq(backpos, pos)] <- "html"
           break
@@ -283,7 +311,8 @@ wrap_rich <- function(string, w) {
         backpos <- backpos - 1
       }
       if (states[pos] == "html") {
-        pos <- pos + 1; next
+        pos <- pos + 1
+        next
       }
     }
 
@@ -291,9 +320,8 @@ wrap_rich <- function(string, w) {
     # three-asterisk series (more than three asterisks don't count, so will begin
     # a new series). Then, look back to see if this is the end of a matched pair.
     if (char == "*") {
-
-      if (chars[pos + 1] == "*" & ! is.na(chars[pos + 1])) {
-        if (chars[pos + 2] == "*" & ! is.na(chars[pos + 2])) {
+      if (chars[pos + 1] == "*" & !is.na(chars[pos + 1])) {
+        if (chars[pos + 2] == "*" & !is.na(chars[pos + 2])) {
           states[seq(pos, (pos + 2))] <- "asterisk3"
         } else {
           states[seq(pos, (pos + 1))] <- "asterisk2"
@@ -305,7 +333,9 @@ wrap_rich <- function(string, w) {
       backpos <- pos - 1
       while (backpos > 0) {
         if (states[pos] == "asterisk1") {
-          if (states[backpos] == "endasterisk1") break
+          if (states[backpos] == "endasterisk1") {
+            break
+          }
           if (states[backpos] == "asterisk1") {
             states[backpos] <- "startasterisk1"
             states[pos] <- "endasterisk1"
@@ -313,7 +343,9 @@ wrap_rich <- function(string, w) {
           }
         }
         if (states[pos] == "asterisk2") {
-          if (states[backpos] == "endasterisk2") break
+          if (states[backpos] == "endasterisk2") {
+            break
+          }
           if (states[backpos] == "asterisk2") {
             states[seq(backpos - 1, backpos)] <- "startasterisk2"
             states[seq(pos, pos + 1)] <- "endasterisk2"
@@ -321,7 +353,9 @@ wrap_rich <- function(string, w) {
           }
         }
         if (states[pos] == "asterisk3") {
-          if (states[backpos] == "endasterisk3") break
+          if (states[backpos] == "endasterisk3") {
+            break
+          }
           if (states[backpos] == "asterisk3") {
             states[seq(backpos - 2, backpos)] <- "startasterisk3"
             states[seq(pos, pos + 2)] <- "endasterisk3"
@@ -331,9 +365,15 @@ wrap_rich <- function(string, w) {
         backpos <- backpos - 1
       }
 
-      if (states[pos] == "asterisk1") pos <- pos + 1
-      if (states[pos] == "asterisk2") pos <- pos + 2
-      if (states[pos] == "asterisk3") pos <- pos + 3
+      if (states[pos] == "asterisk1") {
+        pos <- pos + 1
+      }
+      if (states[pos] == "asterisk2") {
+        pos <- pos + 2
+      }
+      if (states[pos] == "asterisk3") {
+        pos <- pos + 3
+      }
       next
     }
 
@@ -341,7 +381,8 @@ wrap_rich <- function(string, w) {
     # pair
     if (char %in% c("^")) {
       states[pos] <- "markup"
-      pos <- pos + 1; next
+      pos <- pos + 1
+      next
     }
 
     states[pos] <- "plain"
@@ -352,7 +393,9 @@ wrap_rich <- function(string, w) {
 
   # If the number of characters that count is less than the wrap width, return
   # the string
-  if (sum(states) <= w) return(string)
+  if (sum(states) <= w) {
+    return(string)
+  }
 
   # Wrap to the specified character width
   #
@@ -368,11 +411,17 @@ wrap_rich <- function(string, w) {
   line_l <- 0
   state <- "expand"
   while (pos <= length(chars)) {
-
     if (state == "expand") {
-      if (line_l == w) { state <- "contract"; next }
-      if (pos == length(chars)) { break }
-      if (states[pos]) { line_l <- line_l + 1 }
+      if (line_l == w) {
+        state <- "contract"
+        next
+      }
+      if (pos == length(chars)) {
+        break
+      }
+      if (states[pos]) {
+        line_l <- line_l + 1
+      }
       pos <- pos + 1
       next
     }
@@ -401,7 +450,9 @@ wrap_rich <- function(string, w) {
         state <- "expand"
         next
       }
-      if (pos == length(chars)) break
+      if (pos == length(chars)) {
+        break
+      }
       pos <- pos + 1
       next
     }
