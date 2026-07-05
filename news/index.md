@@ -1,5 +1,41 @@
 # Changelog
 
+## ggfittext 0.10.4
+
+### Minor changes
+
+- Remove dead code: the unexported, unreachable `geom_grow_text()` and
+  `geom_shrink_text()` deprecation stubs, and an unused `flip` data
+  column set by `GeomFitText$setup_data()`
+  ([\#59](https://github.com/wilkox/ggfittext/issues/59)).
+- Expand test coverage
+  ([\#63](https://github.com/wilkox/ggfittext/issues/63)).
+- Correct documentation errors
+  ([\#49](https://github.com/wilkox/ggfittext/issues/49),
+  [\#57](https://github.com/wilkox/ggfittext/issues/57)).
+- Add a vignette example for `outside`
+  ([\#65](https://github.com/wilkox/ggfittext/issues/65)).
+
+### Bug fixes
+
+- [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  now accepts a `position` given as a Position object rather than a
+  string, e.g. `position_dodge(width = 0.9)`
+  ([\#44](https://github.com/wilkox/ggfittext/issues/44)).
+- [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  now labels implied-flip horizontal bars with the bar value rather than
+  the category index when no `label` aesthetic is mapped
+  ([\#45](https://github.com/wilkox/ggfittext/issues/45)).
+- Reflowed text now stays within the box width
+  ([\#47](https://github.com/wilkox/ggfittext/issues/47)).
+- [`geom_fit_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  now drops both empty-string and `NA` labels through explicit filtering
+  ([\#48](https://github.com/wilkox/ggfittext/issues/48)).
+- [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+  now ignores `NA` text colours when deciding whether to enable
+  contrast, rather than erroring
+  ([\#56](https://github.com/wilkox/ggfittext/issues/56)).
+
 ## ggfittext 0.10.3
 
 CRAN release: 2025-12-13

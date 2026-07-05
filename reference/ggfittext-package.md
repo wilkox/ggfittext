@@ -15,6 +15,10 @@ Useful links:
 
 **Maintainer**: David Wilkins <david@wilkox.org>
 
+Authors:
+
+- David Wilkins <david@wilkox.org>
+
 Other contributors:
 
 - Brady Johnston <brady.johnston@me.com> \[contributor\]

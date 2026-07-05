@@ -82,9 +82,9 @@ geom_fit_text(
 
 - min.size:
 
-  Minimum font size, in points. Text that would need to be shrunk below
-  this size to fit the box will be hidden. Defaults to 4 pt (8 pt for
-  `geom_bar_text()`)
+  Minimum font size, in points. Text smaller than this, whether as
+  supplied or after being shrunk to fit the box, will be hidden.
+  Defaults to 4 pt (8 pt for `geom_bar_text()`).
 
 - place:
 
@@ -99,23 +99,26 @@ geom_fit_text(
   If `TRUE`, text placed in one of 'top', 'right', 'bottom' or 'left'
   that would need to be shrunk smaller than `min.size` to fit the box
   will be drawn outside the box if possible. This is mostly useful for
-  drawing text inside bar/column geoms. Defaults to TRUE for
-  `position = "identity"` when using `geom_bar_text()`, otherwise FALSE.
+  drawing text inside bar/column geoms. Defaults to `TRUE` for
+  `position = "identity"` when using `geom_bar_text()`, otherwise
+  `FALSE`.
 
 - grow:
 
   If `TRUE`, text will be grown as well as shrunk to fill the box.
-  Defaults to FALSE.
+  Defaults to `FALSE`.
 
 - reflow:
 
   If `TRUE`, text will be reflowed (wrapped) to better fit the box.
-  Defaults to FALSE.
+  Defaults to `FALSE`.
 
 - hjust, vjust:
 
-  Horizontal and vertical justification of the text. By default, these
-  are automatically set to appropriate values based on `place`.
+  Horizontal and vertical justification of the text. `vjust` defaults to
+  0.5. `hjust` defaults to 0.5, except for left placements ('left',
+  'topleft' and 'bottomleft'), where it defaults to 0, and right
+  placements, where it defaults to 1.
 
 - fullheight:
 
@@ -123,7 +126,7 @@ geom_fit_text(
   if `FALSE`, only the x-height and ascenders will be counted. The main
   use for this option is for aligning text at the baseline (`FALSE`) or
   preventing descenders from spilling outside the box (`TRUE`). By
-  default this is set automatically depending on `place` and `grow`.
+  default this is set automatically depending on `grow`.
 
 - width, height:
 
@@ -135,7 +138,7 @@ geom_fit_text(
 - formatter:
 
   A function that will be applied to the text before it is drawn. This
-  is useful when using `geom_fit_text()` in context involving
+  is useful when using `geom_fit_text()` in contexts involving
   interpolated variables, such as with the 'gganimate' package.
   `formatter` will be applied serially to each element in the `label`
   column, so it does not need to be a vectorised function.
@@ -154,7 +157,7 @@ geom_fit_text(
   [`gridtext::richtext_grob()`](https://wilkelab.org/gridtext/reference/richtext_grob.html).
   `FALSE` by default. Rich text cannot be drawn in polar coordinates.
   Please note that rich text support is **experimental** and breaking
-  changes are likely
+  changes are likely.
 
 - flip:
 
@@ -171,8 +174,9 @@ drawn. The extents of the box on the x and y axes are independent, so
 any combination of these methods can be used:
 
 1.  If the `x` and/or `y` aesthetics are used to set the location of the
-    box, the width or height will be set automatically based on the
-    number of discrete values in `x` and/and `y`.
+    box, the width and/or height will be set automatically based on the
+    spacing between values on the axis, following the method used by
+    [`ggplot2::geom_boxplot()`](https://ggplot2.tidyverse.org/reference/geom_boxplot.html).
 
 2.  Alternatively, if `x` and/or `y` aesthetics are used, the width
     and/or height of the box can be overridden with a 'width' and/or
@@ -212,11 +216,21 @@ all features are available when doing so.
 
 - family
 
+- fill (with `contrast = TRUE`, used to select a contrasting text
+  colour)
+
 - fontface
 
 - lineheight
 
-- size
+- size (in points; note that this differs from
+  [`ggplot2::geom_text()`](https://ggplot2.tidyverse.org/reference/geom_text.html),
+  which expresses size in mm)
+
+`geom_bar_text()` requires only the `x` and `y` aesthetics, which are
+used to infer the extent of the bar. If no `label` aesthetic is
+provided, the bar's value (`y`, or `x` for flipped bars) will be used as
+the label.
 
 ## Examples
 

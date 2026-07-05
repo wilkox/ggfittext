@@ -88,6 +88,26 @@ ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
 
 ![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-5-1.png)
 
+When a bar is too short for its label to fit inside, even after being
+shrunk down to `min.size`,
+[`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+draws the label just outside the bar instead of hiding it, provided
+there is room. This is the `outside` argument, which is `TRUE` by
+default for
+[`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+when `position = "identity"`. Setting `outside = FALSE` keeps every
+label inside its bar, so a label that cannot fit is shrunk or hidden
+instead:
+
+``` r
+
+ggplot(altitudes, aes(x = craft, y = altitude, label = altitude)) +
+  geom_col() +
+  geom_bar_text(outside = FALSE)
+```
+
+![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-6-1.png)
+
 [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
 works with stacked bar plots:
 
@@ -99,7 +119,7 @@ ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
   geom_bar_text(position = "stack", reflow = TRUE)
 ```
 
-![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-6-1.png)
+![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-7-1.png)
 
 And it works with dodged bar plots, and with flipped bar plots:
 
@@ -113,7 +133,7 @@ ggplot(beverages, aes(x = beverage, y = proportion, label = ingredient,
   coord_flip()
 ```
 
-![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-7-1.png)
+![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-8-1.png)
 
 ## Specifying the box limits
 
@@ -128,7 +148,7 @@ ggplot(presidential, aes(ymin = start, ymax = end, x = party, label = name)) +
   geom_errorbar(alpha = 0.5)
 ```
 
-![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-8-1.png)
+![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-9-1.png)
 
 Alternatively, you can set the width and/or height with the `width`
 and/or `height` arguments, which should be
@@ -152,7 +172,7 @@ ggplot(animals_rich, aes(x = type, y = flies, label = animal)) +
   geom_fit_text(reflow = TRUE, grow = TRUE, rich = TRUE)
 ```
 
-![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-9-1.png)
+![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-10-1.png)
 
 Rich text cannot be drawn in polar coordinates. Please note that this
 feature is liable to change, and is subject to upstream changes to
@@ -177,14 +197,15 @@ ggplot(gold, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax,
   scale_fill_gradient(low = "#fee391", high = "#238443")
 ```
 
-![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-10-1.png)
+![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-11-1.png)
 
 ## Other useful arguments
 
-All arguments to
+Most arguments to
 [`geom_fit_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
 can also be used with
-[`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md).
+[`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)
+(the exception is `flip`, which only applies in polar coordinates).
 
 - **`contrast`** can be used to automatically invert the colour of the
   text so it contrasts against a background `fill`:
@@ -196,14 +217,16 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   geom_fit_text(reflow = TRUE, grow = TRUE, contrast = TRUE)
 ```
 
-![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-11-1.png)
+![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-12-1.png)
 
 - **`padding.x`** and **`padding.y`** can be used to set the padding
   between the text and the edge of the box. By default this is 1 mm.
   These values must be given as
   [`grid::unit()`](https://rdrr.io/r/grid/unit.html) objects.
-- **`min.size`** sets the minimum font size in points, by default 4
-  pt. Text smaller than this will be hidden (see also `outside`).
+- **`min.size`** sets the minimum font size in points, by default 4 pt
+  (8 pt for
+  [`geom_bar_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md)).
+  Text smaller than this will be hidden (see also `outside`).
 - **`outside`** is `FALSE` by default for
   [`geom_fit_text()`](https://wilkox.org/ggfittext/reference/geom_fit_text.md).
   If `TRUE`, text that is placed at “top”, “bottom”, “left” or “right”
@@ -212,21 +235,23 @@ ggplot(animals, aes(x = type, y = flies, fill = mass, label = animal)) +
   useful for drawing text inside bars in a bar plot.
 - **`hjust`** and **`vjust`** set the horizontal and vertical
   justification of the text, scaled between 0 (left/bottom) and 1
-  (right/top). These are both 0.5 by default.
+  (right/top). `vjust` defaults to 0.5, as does `hjust` except for left
+  placements, where it defaults to 0, and right placements, where it
+  defaults to 1.
 - **`formatter`** allows you to provide a function that will be applied
   to the text before it is drawn. This is mostly useful in contexts
   where variables may be interpolated, such as when using
   [gganimate](https://gganimate.com/).
-- **`fullheight`** is automatically set depending on place, but can be
+- **`fullheight`** is automatically set depending on `grow`, but can be
   overridden with this option. This is used to determine the bounding
   box around the text. If `FALSE`, the bounding box includes the
-  x-height of the text and ascenders, but not any descenders. If TRUE,
+  x-height of the text and ascenders, but not any descenders. If `TRUE`,
   it extends from the top of the ascenders to the bottom of the
   descenders. This is mostly useful in situations where you want to
   ensure the baseline of text is consistent between labels
   (`fullheight = FALSE`), or when you want to avoid descenders spilling
   out of the bounding box (`fullheight = TRUE`).
 
-![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-12-1.png)
-
 ![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-13-1.png)
+
+![](introduction-to-ggfittext_files/figure-html/unnamed-chunk-14-1.png)
