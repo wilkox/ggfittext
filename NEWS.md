@@ -1,3 +1,5 @@
+# ggfittext (development version)
+
 # ggfittext 0.10.4
 
 ## Minor changes
